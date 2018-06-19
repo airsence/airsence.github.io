@@ -1,0 +1,497 @@
+[
+    {
+        "threshold": {
+            "aqhi": {
+                "green": {
+                    "low": 1,
+                    "high": 3
+                },
+                "lightgreen": {
+                    "low": 3,
+                    "high": 5
+                },
+                "yellow": {
+                    "low": 5,
+                    "high": 7
+                },
+                "orange": {
+                    "low": 7,
+                    "high": 9
+                },
+                "red": {
+                    "low": 9,
+                    "high": 11
+                }
+            },
+            "co": {
+                "green": {
+                    "low": 0,
+                    "high": 300
+                },
+                "lightgreen": {
+                    "low": 300,
+                    "high": 500
+                },
+                "yellow": {
+                    "low": 500,
+                    "high": 700
+                },
+                "orange": {
+                    "low": 700,
+                    "high": 1000
+                },
+                "red": {
+                    "low": 1000,
+                    "high": 1800
+                }
+            },
+            "no": {
+                "green": {
+                    "low": 0,
+                    "high": 10
+                },
+                "lightgreen": {
+                    "low": 10,
+                    "high": 25
+                },
+                "yellow": {
+                    "low": 25,
+                    "high": 50
+                },
+                "orange": {
+                    "low": 50,
+                    "high": 80
+                },
+                "red": {
+                    "low": 80,
+                    "high": 120
+                }
+            },
+            "no2": {
+                "green": {
+                    "low": 0,
+                    "high": 25
+                },
+                "lightgreen": {
+                    "low": 25,
+                    "high": 60
+                },
+                "yellow": {
+                    "low": 60,
+                    "high": 80
+                },
+                "orange": {
+                    "low": 80,
+                    "high": 100
+                },
+                "red": {
+                    "low": 100,
+                    "high": 140
+                }
+            },
+            "o3": {
+                "green": {
+                    "low": 0,
+                    "high": 25
+                },
+                "lightgreen": {
+                    "low": 25,
+                    "high": 60
+                },
+                "yellow": {
+                    "low": 60,
+                    "high": 80
+                },
+                "orange": {
+                    "low": 80,
+                    "high": 100
+                },
+                "red": {
+                    "low": 100,
+                    "high": 150
+                }
+            },
+            "co2": {
+                "green": {
+                    "low": 0,
+                    "high": 400
+                },
+                "lightgreen": {
+                    "low": 400,
+                    "high": 500
+                },
+                "yellow": {
+                    "low": 500,
+                    "high": 600
+                },
+                "orange": {
+                    "low": 600,
+                    "high": 700
+                },
+                "red": {
+                    "low": 700,
+                    "high": 1500
+                }
+            },
+            "so2": {
+                "green": {
+                    "low": 0,
+                    "high": 1
+                },
+                "lightgreen": {
+                    "low": 1,
+                    "high": 3
+                },
+                "yellow": {
+                    "low": 3,
+                    "high": 5
+                },
+                "orange": {
+                    "low": 5,
+                    "high": 7
+                },
+                "red": {
+                    "low": 7,
+                    "high": 12
+                }
+            },
+            "pm2_5": {
+                "green": {
+                    "low": 0,
+                    "high": 5
+                },
+                "lightgreen": {
+                    "low": 5,
+                    "high": 10
+                },
+                "yellow": {
+                    "low": 10,
+                    "high": 25
+                },
+                "orange": {
+                    "low": 25,
+                    "high": 50
+                },
+                "red": {
+                    "low": 50,
+                    "high": 80
+                }
+            },
+            "pm10": {
+                "green": {
+                    "low": 0,
+                    "high": 10
+                },
+                "lightgreen": {
+                    "low": 10,
+                    "high": 20
+                },
+                "yellow": {
+                    "low": 20,
+                    "high": 40
+                },
+                "orange": {
+                    "low": 40,
+                    "high": 60
+                },
+                "red": {
+                    "low": 60,
+                    "high": 80
+                }
+            }
+        },
+        "map_feature": [
+            {
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#f5f5f5"
+                    }
+                ]
+            },
+            {
+                "elementType": "labels.icon",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#616161"
+                    }
+                ]
+            },
+            {
+                "elementType": "labels.text.stroke",
+                "stylers": [
+                    {
+                        "color": "#f5f5f5"
+                    }
+                ]
+            },
+            {
+                "featureType": "administrative.land_parcel",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#bdbdbd"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#eeeeee"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#757575"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#e5e5e5"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi.park",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#9e9e9e"
+                    }
+                ]
+            },
+            {
+                "featureType": "road",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#ffffff"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#757575"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#dadada"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#616161"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#9e9e9e"
+                    }
+                ]
+            },
+            {
+                "featureType": "transit.line",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#e5e5e5"
+                    }
+                ]
+            },
+            {
+                "featureType": "transit.station",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#eeeeee"
+                    }
+                ]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#c9c9c9"
+                    }
+                ]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#9e9e9e"
+                    }
+                ]
+            }
+        ],
+        "chart_feature": {
+            "largeFont": {
+                "type": "time",
+                "bounds": "ticks",
+                "distribution": "series",
+                "time": {
+                    "unit": "second",
+                    "parser": "YYYY-MM-DD HH-mm-ss",
+                    "displayFormats": {
+                        "second": "MMM DD HH:mm"
+                    }
+                },
+                "ticks": {
+                    "source": "labels",
+                    "maxRotation": 0,
+                    "fontSize": 14,
+                    "fontColor": "#515151"
+                }
+            },
+            "smallFont": {
+                "type": "time",
+                "bounds": "ticks",
+                "distribution": "series",
+                "time": {
+                    "unit": "second",
+                    "parser": "YYYY-MM-DD HH-mm-ss",
+                    "displayFormats": {
+                        "second": "MMM DD HH:mm"
+                    }
+                },
+                "ticks": {
+                    "source": "labels",
+                    "maxRotation": 0,
+                    "fontSize": 10,
+                    "fontColor": "#515151"
+                }
+            },
+            "o3_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 160,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "so2_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 16,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "co2_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 1000,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "no2_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 160,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "no_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 120,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "co_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 1600,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "aqhi_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 10,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "pm2_5_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 100,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            },
+            "pm10_yAxes": {
+                "ticks": {
+                    "beginAtZero": true,
+                    "fontSize": 14,
+                    "max": 100,
+                    "min": 0
+                },
+                "fontColor": "#515151"
+            }
+        },
+        "colorMap":{
+            "red":"#D7191C",
+            "yellow":"#FFFF4D",
+            "lightgreen":"#91D049",
+            "green":"#1A9641",
+            "orange":"#FD9935"
+        },
+        "unitArray":["co","no2","no","aqhi","o3","pm2_5","so2","co2"],
+        "pastDue":6,
+        "checkDays":14,
+        "mapCenter":{"lat":43.6508,"lng":-79.3822},
+        "lastClick":5,
+        "refreshTimeChart":1800000,
+        "refreshTimeButton":180000
+    }
+]
