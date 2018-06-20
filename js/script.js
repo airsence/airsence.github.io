@@ -12,7 +12,7 @@ function onMainLoad(){
  ******************************************************/
 //var infoURL = "php/getInfo.php";
 //var infoURL = "api/v1/getinfo";
-var infoURL = "http://www.signalfusion.com:9000/api/v1/getinfo";
+var infoURL = "https://www.signalfusion.com:9000/api/v1/getinfo";
 var thresholdInfo,colorMap,unitArray;
 //var unitArray = ['co','no2','no','aqhi','o3','pm2_5'];
 //var colorMap = {red:"#D7191C",yellow:"#FFFF4D",lightgreen:"#91D049",green:"#1A9641",orange:"#FD9935"};
@@ -240,7 +240,7 @@ function autoRefreshChart(){
 var refreshTimeButton;
 //var isAutoRefreshButton = false;
 //var getLatestURL = "api/v1/getlatest";
-var getLatestURL = "http://www.signalfusion.com:9000/api/v1/getlatest";
+var getLatestURL = "https://www.signalfusion.com:9000/api/v1/getlatest";
 function autoRefreshButton(){
     window.setInterval(function(){
         for (var i = 0; i < markers.length; i++) {
@@ -664,7 +664,7 @@ function initMap(mapFeature,mapCenter) {
  * Function for getting sensor location information
  * and put marker on the map
  ******************************************************/
-var sensorUrl = "http://www.signalfusion.com:9000/api/v1/getlocation";
+var sensorUrl = "https://www.signalfusion.com:9000/api/v1/getlocation";
 //var sensorUrl = "api/v1/getlocation";
 //var sensorUrl = "php/getSensorLocationWithPollutant.php";
 var bounds,lng1,lng2,lat1,lat2;
@@ -729,7 +729,7 @@ function checkAQHI(aqhi) {
  ******************************************************/
 //var pollutantURL = "php/getPollutantDataDB.php";
 //var pollutantURL = "api/v1/getpollutant";
-var pollutantURL = "http://www.signalfusion.com:9000/api/v1/getpollutant";
+var pollutantURL = "https://www.signalfusion.com:9000/api/v1/getpollutant";
 var checkDays;
 var sensorIDArray = [];
 function addMarker(sensorInfo) {
