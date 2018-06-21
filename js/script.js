@@ -147,10 +147,10 @@ function changeContent(buttonID){
             else {
                 unit.innerHTML = unitNum > 0 && unitNum != null && unitNum != "NULL"? unitNum.toFixed(1) : "--";
             }
-            //enoughPoint flag is to check whether there are enough points for updating the chart
-            enoughPoint = checkNullPoint(buttonID); 
-            updateChart(buttonID);
         }
+        //enoughPoint flag is to check whether there are enough points for updating the chart
+        enoughPoint = checkNullPoint(buttonID); 
+        updateChart(buttonID);
     }
     catch(exception){
         console.error("changeContent Exception:",exception);
@@ -255,8 +255,13 @@ function autoRefreshButton(){
                             if(json != null && json.length > 0)
                             markers[i].pollutant_data = json[0]['pollutant_data'];
                             markers[i].updateTime = json[0]['timestamp'];
-                            changeButtonColor(markers[i]);
-                            changeTime(markers[i].updateTime);
+                            if(checkTime(markers[i].updateTime)){
+                                changeButtonColor(markers[i]);
+                                changeTime(markers[i].updateTime);
+                            }
+                            else{
+                                notLatestSensor();
+                            }
                         }
                         else{
                             console.error("ERROR: " + err + "when auto refresh button value");
@@ -583,6 +588,9 @@ function checkNullPoint(pollutant){
                 return true
             } 
         }
+        else{
+            disablePeriodButton(3);
+        }
     }
     catch(err){
         console.error("ERROR: " + err + " when checkNullPoint");
@@ -692,10 +700,13 @@ function drop() {
     //clearMarkers();
     //console.log("enter drop");
     try{
-        for (var i = 0; i < sensorInfoJSON.length; i++) {
-            addMarker(sensorInfoJSON[i]);
+        if (sensorInfoJSON && sensorInfoJSON.length > 0){
+            for (var i = 0; i < sensorInfoJSON.length; i++) {
+                addMarker(sensorInfoJSON[i]);
+            }
         }
         //After drop the marker, send a 'click' trigger to the last clicked marker
+        //This will only do once when the whole website is first loaded.
         if(firstDrop){
             for (var i = 0; i < markers.length; i++) {
                 if (markers[i].deviceID == lastClick) {
@@ -745,10 +756,11 @@ function addMarker(sensorInfo) {
         var sensorColor;
         if(checkTime(sensorInfo.timestamp))
             sensorColor = checkAQHI(parseInt(sensorInfo.sensor_info.aqhi));
-        else
+        else{
             sensorColor = "grey";
+        }
         var iconPath = 'images/' + sensorColor + '.png';
-        var pinPath = 'images/pin_' + sensorColor + '.png';
+        //var pinPath = 'images/pin_' + sensorColor + '.png';
         sensorIDArray.push(sensorInfo.sensor_info.device_id);
         var newMarker = {
             name: sensorInfo.sensor_info.station_name,
@@ -813,8 +825,13 @@ function addMarker(sensorInfo) {
                     if(pollutantJSON != null && pollutantJSON.length > 0){
                         //changepollutantJSON(newMarker);
                         //console.log("Pollutant Json:",json);
-                        changeButtonColor(newMarker);
-                        changeTime(newMarker.updateTime);
+                        if(checkTime(newMarker.updateTime)){
+                            changeButtonColor(newMarker);
+                            changeTime(newMarker.updateTime);
+                        }
+                        else{
+                            notLatestSensor();
+                        }
                     } 
                     else nullPollutantJSON();
                     if(isAutoRefreshChart){
