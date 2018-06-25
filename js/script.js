@@ -117,9 +117,9 @@ function enablePeriodButton(numOfButton){
     }
 }
 /*********************************************
- * Function to change main showing data in the
+ * Function to update main showing data in the
  * parameter panel when click on the button.
- * Also will change the chart.
+ * Also will update the chart.
  *********************************************/
 var lastClickPollution = "aqhi";
 var enoughPoint = true;
@@ -129,8 +129,8 @@ function changeContent(buttonID){
         Get all the element that need to be change when
         a pollution button is clicked.
     */
-    lastClickPollution = buttonID;
-    //console.log("lastClickPollution in changeContent",lastClickPollution);                                  //store the last clicked pollution for later period button click
+    lastClickPollution = buttonID;                              //store the last clicked pollution for later period button click
+    //console.log("lastClickPollution in changeContent",lastClickPollution);                                  
     var paramname = document.getElementById("paramname");       //pollution name shown in the circle
     var unit = document.getElementById("unit");                  //pollution unit shown in the circle
     var legend = document.getElementById("legend");             //pollution name shown in the chart
@@ -265,7 +265,10 @@ function autoRefreshButton(){
                         if(err == null){
                             if(json != null && json.length > 0)
                             markers[i].pollutant_data = json[0]['pollutant_data'];
-                            markers[i].updateTime = json[0]['timestamp'];
+                            //Change the timestamp to local time
+                            var stillUtc = moment.utc(json[0]['timestamp']).toDate();
+                            var local = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
+                            markers[i].updateTime = local;
                             if(checkTime(markers[i].updateTime)){
                                 changeButtonColor(markers[i]);
                                 changeTime(markers[i].updateTime);
@@ -634,7 +637,9 @@ function updateChart(pollutant){
         if(pollutantJSON != null && pollutantJSON.length > 0 && enoughPoint){
             for(var i = 0; i < numPoint; i++){
                 //console.log("json length:",pollutantJSON.length);
-                date.push(pollutantJSON[i*multiple].timestamp);
+                var stillUtc = moment.utc(pollutantJSON[i*multiple].timestamp).toDate();
+                var local = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
+                date.push(local);
                 value.push(pollutantJSON[i*multiple][pollutant]);
             }
             eval("myChart.options.scales.yAxes[0] = " + pollutant + "_yAxes");  //Ajust yAxes according to the pollutant
@@ -652,11 +657,11 @@ function updateChart(pollutant){
     
 }
 
-/******************************************************
+/*************************************************************
  * Function for initialize Google Map. The center is 
- * set at A.U.G. It will test whether the browser support
- * html5 geolocation and locate the user position.
- ******************************************************/
+ * fetch from the info json. It will test whether the browser 
+ * support html5 geolocation and locate the user position.
+ *************************************************************/
 var map,infoWindow;
 var sensorInfoJSON;
 var markers = [];
@@ -782,6 +787,8 @@ function addMarker(sensorInfo) {
         var iconPath = 'images/' + sensorColor + '.png';
         //var pinPath = 'images/pin_' + sensorColor + '.png';
         sensorIDArray.push(sensorInfo.sensor_info.device_id);
+        var stillUtc = moment.utc(sensorInfo.timestamp).toDate();
+        var local = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
         var newMarker = {
             name: sensorInfo.sensor_info.station_name,
             marker: new google.maps.Marker({
@@ -797,8 +804,9 @@ function addMarker(sensorInfo) {
             }),
             aqhi: sensorInfo.pollutant_data.aqhi,
             pollutant_data:sensorInfo.pollutant_data,
-            updateTime: sensorInfo.timestamp
+            updateTime: local
         };
+
         /*
          Here we add marker onclick listener to google marker object 
          (Not the marker object we make ourselves).This onclick function 
@@ -841,10 +849,17 @@ function addMarker(sensorInfo) {
             postJSON(pollutantURL,function(err,json){
                 if(err == null){
                     pollutantJSON = json;
-                    //console.log(json);
+                    /*
+                        First check whether is data for the sensor. If there is 
+                        not any data can be loaded, then call the nullPollutantJSON 
+                        function to handle this situation.
+                    */
                     if(pollutantJSON != null && pollutantJSON.length > 0){
-                        //changepollutantJSON(newMarker);
-                        //console.log("Pollutant Json:",json);
+                        /*
+                            If there is data can be loaded from the sensor,
+                            the next step is to check whether it is the latest 
+                            data.
+                        */
                         if(checkTime(newMarker.updateTime)){
                             changeButtonColor(newMarker);
                             changeTime(newMarker.updateTime);
@@ -854,6 +869,14 @@ function addMarker(sensorInfo) {
                         }
                     } 
                     else nullPollutantJSON();
+                    /*
+                        Auto refresh and client click have different process way.
+                        For auto refresh, it will not change the button to AQHI and 
+                        just refresh all the value shown in the button, refrehs the chert
+                        and won't change the chart period to one day. For client click,
+                        we need to change the button to AQHI and also change the period back 
+                        to one day.
+                    */
                     if(isAutoRefreshChart){
                         changeContent(lastClickPollution);
                         isAutoRefreshChart = false;
@@ -925,6 +948,10 @@ function changeButtonColor(newMarker){
     }
     
 }
+/******************************************************
+ * Function for check the according color for given 
+ * pollutant level. 
+ ******************************************************/
 function checkColor(value,id,threshold){
     try{
         var button = document.getElementById(id);
@@ -1078,7 +1105,10 @@ function nullPollutantJSON(){
         console.error("ERROR: " + err + " when nullPollutantJSON");
     }
 }
-
+/******************************************************
+ * Function dealing with the sitution when there is no
+ * LATEST data for the sensor can be loaded.
+ ******************************************************/
 function notLatestSensor(){
     try{
         document.getElementById("time").innerHTML = "Data is out of date";

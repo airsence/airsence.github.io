@@ -490,7 +490,7 @@
         "pastDue":6,
         "checkDays":14,
         "mapCenter":{"lat":43.6508,"lng":-79.3822},
-        "lastClick":5,
+        "lastClick":15,
         "refreshTimeChart":1800000,
         "refreshTimeButton":180000
     }
