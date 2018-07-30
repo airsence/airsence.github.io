@@ -8,16 +8,27 @@ function onMainLoad(){
 /*********************************************
  * URL for access database
  *********************************************/
-//var infoURL = "api/v1/getinfo";
+
+/*******************For website hosted on GitHub*****************************/
 var infoURL = "https://www.signalfusion.com:9000/api/v1/getinfo";
-//var getLatestURL = "api/v1/getlatest";
 var getLatestURL = "https://www.signalfusion.com:9000/api/v1/getlatest";
-//var sensorUrl = "api/v1/getlocation";
-//var sensorUrl = "php/getSensorLocationWithPollutant.php";
 var sensorUrl = "https://www.signalfusion.com:9000/api/v1/getlocation";
-//var pollutantURL = "php/getPollutantDataDB.php";
-//var pollutantURL = "api/v1/getpollutant";
 var pollutantURL = "https://www.signalfusion.com:9000/api/v1/getpollutant";
+/****************************************************************************/
+
+/*******************For website hosted inside AUG***************************/
+//var infoURL = "api/test/getinfo";
+//var getLatestURL = "api/v1/getlatest";
+//var sensorUrl = "api/v1/getlocation";
+//var pollutantURL = "api/v1/getpollutant";
+/***************************************************************************/
+
+/***********For website hosted inside AUG (using test DB)*******************/
+//var infoURL = "api/test/getinfo";
+//var getLatestURL = "api/test/getlatest";
+//var sensorUrl = "api/test/getlocation";
+//var pollutantURL = "api/test/getpollutant";
+/***************************************************************************/
 /******************************************************
  * Function for loading every feature to performing the
  * website. This function is called when google map 
@@ -613,10 +624,13 @@ function checkNullPoint(pollutant){
             else if(valueNum < 672){
                 disablePeriodButton(1);
                 return true
-            } 
+            }
+            else
+                return true 
         }
         else{
             disablePeriodButton(3);
+            return false
         }
     }
     catch(err){
