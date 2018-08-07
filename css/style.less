@@ -21,11 +21,18 @@
 @darkgrey:#515151;
 @lightblack:#292F33;
 //for gradiant color
-@lightgreen:#91D049;
-@green:#1A9641;
-@red:#D7191C;
-@yellow:#FFFF4D;
-@orange:#FD9935;
+/*
+@high:#D7191C;
+@medium_high:#FD9935;
+@medium:#FFFF4D;
+@low:#91D049;
+@very_low:#1A9641;
+*/
+@high:#cc0000;
+@medium_high:#ff6666;
+@medium:#ffcc00;
+@low:#006699;
+@very_low:#00ccff;
 @col: 8.33%;
 
 :root{
@@ -42,10 +49,10 @@
     --header-search-bar-font-size:30px;
     --header-search-bar-input-font-size:16pt;
     --header-search-bar-margin:5px;
-    --header-search-bar-input-margin:5px;
+    --header-search-bar-input-margin:3px;
     --header-search-bar-input-width:8*@col;
     --header-search-bar-button-width:0.5*@col;
-    --header-search-bar-button-padding:-0.5*@col;
+    --header-search-bar-button-padding:-@col;
     --header-left:5*@col;
     --header-left-margin:@col;
     --header-search-bar-left:5*@col;
@@ -318,7 +325,7 @@ header {
         height: inherit;
         position: relative;
         button[type=button],
-        input[type=text],
+        .address
         {
             float:right;
             position: relative;
@@ -326,17 +333,25 @@ header {
             margin-top:var(--header-search-bar-input-margin);
             font-size: var(--header-search-bar-input-font-size);
         }
-        input[type = text]{
+        
+        .address
+        {
             width:var(--header-search-bar-input-width);
             opacity: 0.95;
             border: 5px @lightgrey;
             float: left;
             text-align: left;
             left:@col;
-            padding-left:10px;
+            //padding-left:10px;
             font-family: Arial, sans-serif; 
             border-radius: 5px;
             background-color: white;
+            z-index: 3; 
+            input[type=text],li{
+                font-family: Arial, sans-serif;
+                font-size: var(--header-search-bar-input-font-size);
+                z-index: 3; 
+            }
         }
         button[type=button]{
             background: transparent;
@@ -351,6 +366,8 @@ header {
                 opacity: 0.8;
             }
         }
+        .mapboxgl-ctrl-geocoder { min-width:100%; }
+
     }
     .logo{
         height: inherit;
@@ -606,20 +623,20 @@ article{
                             font-size: var(--circle-unit-font-size);
                         }                   
                     } //end of circle
-                    .lightgreen{
-                        border: solid @lightgreen var(--circle-width);
+                    .low{
+                        border: solid @low var(--circle-width);
                     }
-                    .red{
-                        border: solid @red  var(--circle-width);
+                    .high{
+                        border: solid @high  var(--circle-width);
                     }
-                    .orange{
-                        border: solid @orange  var(--circle-width);
+                    .medium_high{
+                        border: solid @medium_high  var(--circle-width);
                     }
-                    .yellow{
-                        border: solid @yellow  var(--circle-width);
+                    .medium{
+                        border: solid @medium  var(--circle-width);
                     }
-                    .green{
-                        border: solid @green  var(--circle-width);
+                    .very_low{
+                        border: solid @very_low  var(--circle-width);
                     }
                     .grey{
                         border: solid @lightgrey var(--circle-width);
@@ -677,20 +694,20 @@ article{
                                 &:extend(.shadow-button);
                             }
                             @border-width:5px;
-                            .lightgreen{
-                                border-bottom: solid @lightgreen  @border-width;
+                            .low{
+                                border-bottom: solid @low  @border-width;
                             }
-                            .red{
-                                border-bottom: solid @red  @border-width;
+                            .high{
+                                border-bottom: solid @high  @border-width;
                             }
-                            .orange{
-                                border-bottom: solid @orange  @border-width;
+                            .medium_high{
+                                border-bottom: solid @medium_high  @border-width;
                             }
-                            .yellow{
-                                border-bottom: solid @yellow  @border-width;
+                            .medium{
+                                border-bottom: solid @medium  @border-width;
                             }
-                            .green{
-                                border-bottom: solid @green  @border-width;
+                            .very_low{
+                                border-bottom: solid @very_low  @border-width;
                             }
                             .grey{
                                 border-bottom: solid @lightgrey @border-width;
@@ -743,16 +760,78 @@ article{
                 left:0.5*@col;
                 width: var(--chart-width);
             }
-            #color-bar{
+            .popup-container{
+                visibility: hidden;
+                width: 70px;
+                height: 250px;
+                //background-color: #555;
+                color: #fff;
+                text-align: center;
+                //border-radius: 6px;
+                padding: 2% 0;
                 position: relative;
-                border-radius: 20px;
-                margin-top:10px;
-                float: right;
+                z-index: 5;
+                opacity: 0.8;
+                margin-bottom: 10%;
+                /*
+                &::after {
+                    content: "";
+                    position: relative;
+                    bottom: 80%;
+                    left: 100%;
+                    //margin-left: -10px;
+                    border-width: 10px;
+                    border-style: solid;
+                    border-color:  transparent transparent transparent#555 ;
+                }
+                */
+                .color-bar{
+                    position: relative;
+                    display: inline;
+                    float: left;
+                    left: 25%;
+                    top:2%;
+                }
+                
+                ul{
+                    position: relative;
+                    float: left;
+                    display:inline-block;
+                    left: 15%;
+                    height: 210px;
+                    width: 40px;
+                    display: none;
+                    li{
+                        list-style-type: none;
+                        height: 19%;
+                        position: relative;
+                        float: left;
+                        font-size: 14px;
+                        text-align: left;
+                        clear: both;
+                    }
+                }
+                
+                /* Add animation (fade in the popup) */
+                @-webkit-keyframes fadeIn {
+                    from {opacity: 0;} 
+                    to {opacity: 0.8;}
+                }
+                
+                @keyframes fadeIn {
+                    from {opacity: 0;}
+                    to {opacity: 0.8;}
+                }
+            }
+            .show {
+                visibility: visible;
+                -webkit-animation: fadeIn 1s;
+                animation: fadeIn 1s;
             }  
             .legend{
                 float: left;
                 height: 300px;
-                width: @col;    
+                width: @col; 
                 h1,h2{
                     color: @darkgrey;
                     font-size: var(--chart-legend-font-size);
@@ -761,6 +840,9 @@ article{
                     sub{
                         font-size: 16px;
                     }
+                }
+                h1{
+                    cursor: pointer;   
                 }
                 h2{
                     font-size: 14px;
@@ -811,6 +893,8 @@ article{
             height: var(--map-height);
             margin-top:30px;
             overflow-y:hidden;
+            z-index: 2;
+            .mapboxgl-canvas-container{z-index: 2;}
         }
         .detail-info{
             display: none;
