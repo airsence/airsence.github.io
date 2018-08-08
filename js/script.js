@@ -19,7 +19,7 @@ const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1/getpollutant";
 /****************************************************************************/
 
 /*******************For website hosted inside AUG***************************/
-//const INFO_URL = "api/test/getinfo";
+//const INFO_URL = "api/v1/getinfo";
 //const GET_LATEST_URL = "api/v1/getlatest";
 //const SENSOR_URL = "api/v1/getlocation";
 //const POLLUTANT_URL = "api/v1/getpollutant";
@@ -112,21 +112,21 @@ function enablePeriodButton(numOfButton){
         switch(numOfButton){
             case 1:
                 pastDay.disabled = false;
-                pastDay.className = pastDay.classList.remove("disable");
+                pastDay.classList.remove("disabled");
                 break;
             case 2:
                 pastDay.disabled = false;
-                pastDay.className = pastDay.classList.remove("disable");
+                pastDay.classList.remove("disabled");
                 pastWeek.disabled = false;
-                pastWeek.className = pastWeek.classList.remove("disable");
+                pastWeek.classList.remove("disabled");
                 break;
             case 3:
                 pastDay.disabled = false;
-                pastDay.className = pastDay.classList.remove("disable");
+                pastDay.classList.remove("disabled");
                 pastWeek.disabled = false;
-                pastWeek.className = pastWeek.classList.remove("disable");
+                pastWeek.classList.remove("disabled");
                 past2Week.disabled = false;
-                past2Week.className = past2Week.classList.remove("disable");
+                past2Week.classList.remove("disabled");
                 break;
         }
     }
@@ -169,13 +169,23 @@ function changeContent(buttonID){
     circle.classList.add(selectedButton.className.split(" ")[1]);
     //Change the value and color for the circle
     try{
-        if (singleSensorJSON != null ) {
+        if (singleSensorJSON != null && singleSensorJSON.length > 0) {
             let unitNum = singleSensorJSON[0][buttonID];
             if (buttonID == "aqhi") {
                 unit.innerHTML = unitNum != null && unitNum != "NULL" ?parseInt(unitNum) :  "--";
             }
             else {
-                unit.innerHTML = unitNum > 0 && unitNum != null && unitNum != "NULL"? unitNum.toFixed(1) : "--";
+                if(unitNum != null && unitNum != "NULL"){
+                    if(unitNum >= thresholdInfo[buttonID].low_limit){
+                        unit.innerHTML = unitNum.toFixed(1);
+                    }
+                    else{
+                        unit.innerHTML = "<" + thresholdInfo[buttonID].low_limit;
+                    }
+                }
+                else{
+                    unit.innerHTML = "--";
+                }
             }
         }
         //enoughPoint flag is to check whether there are enough points for updating the chart
@@ -733,12 +743,14 @@ function updateChart(pollutant){
         if(Math.max(...value) > thresholdInfo[pollutant].medium.high){
             //Ajust yAxes according to the pollutant
             eval("myChart.options.scales.yAxes[0] = " + pollutant + "_yAxes");
-            myChart.data.datasets[0].backgroundColor = normalGradient;
+            //myChart.data.datasets[0].backgroundColor = normalGradient;
+            changeGradient(pollutant,5);
         }
         else{
             //Ajust yAxes according to the pollutant to the half version
             eval("myChart.options.scales.yAxes[0] = " + pollutant + "_yAxes_half");
-            myChart.data.datasets[0].backgroundColor = halfGradient; 
+            //myChart.data.datasets[0].backgroundColor = halfGradient; 
+            changeGradient(pollutant,3);
         }
         myChart.data.labels = date;
         myChart.data.datasets[0].data = value;
@@ -756,7 +768,31 @@ function updateChart(pollutant){
     }
     
 }
+/*************************************************************************
+ * Change gradient for color bar and chart background. The gradient is 
+ * generated differently according to different pollutant. It will use
+ * the threshold information of different pollutant to calculate the 
+ * stop point of the color.
+ ************************************************************************/
 
+function changeGradient(pollutant,levelNum){
+    let ctx = document.getElementById("myChart").getContext('2d');
+    let gradient = ctx.createLinearGradient(0,0,0,300);
+    let colorBar = document.getElementById("color-bar").getContext('2d');
+    let gradientBar = colorBar.createLinearGradient(0,0,0,245);
+    let level = ['very_low','low','medium','medium_high','high'];
+    let full = 1;
+    for(let i = 0; i < levelNum; i++){
+        let difference = thresholdInfo[pollutant][level[i]].high - thresholdInfo[pollutant][level[i]].low;
+        let percentage = difference / thresholdInfo[pollutant][level[levelNum-1]].high;
+        gradient.addColorStop(full-percentage,colorMap[level[i]]);
+        gradientBar.addColorStop(full-percentage,colorMap[level[i]]);
+        full -= percentage,colorMap[level[i]];
+    }
+    colorBar.fillStyle = gradientBar;
+    colorBar.fillRect(0,0,30,245);
+    myChart.data.datasets[0].backgroundColor = gradient;
+}
 /*************************************************************
  * Function for initialize Google Map. The center is 
  * fetch from the info json. It will test whether the browser 
