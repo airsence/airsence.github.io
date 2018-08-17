@@ -4,25 +4,25 @@
  *********************************************/
 function onMainLoad(){
     //addEnterToInput();
-    onResize();
     loadingInfo();
+    onResize();
 }
 /*********************************************
  * URL for access database
  *********************************************/
 
 /*******************For website hosted on GitHub*****************************/
-const INFO_URL = "https://www.signalfusion.com:9000/api/v1/getinfo";
-const GET_LATEST_URL = "https://www.signalfusion.com:9000/api/v1/getlatest";
-const SENSOR_URL = "https://www.signalfusion.com:9000/api/v1/getlocation";
-const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1/getpollutant";
+const INFO_URL = "https://www.signalfusion.com:9000/api/v1.1/getinfo";
+const GET_LATEST_URL = "https://www.signalfusion.com:9000/api/v1.1/getlatest";
+const SENSOR_URL = "https://www.signalfusion.com:9000/api/v1.1/getlocation";
+const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
 /****************************************************************************/
 
 /*******************For website hosted inside AUG***************************/
-//const INFO_URL = "api/v1/getinfo";
-//const GET_LATEST_URL = "api/v1/getlatest";
-//const SENSOR_URL = "api/v1/getlocation";
-//const POLLUTANT_URL = "api/v1/getpollutant";
+//const INFO_URL = "api/v1.1/getinfo";
+//const GET_LATEST_URL = "api/v1.1/getlatest";
+//const SENSOR_URL = "api/v1.1/getlocation";
+//const POLLUTANT_URL = "api/v1.1/getpollutant";
 /***************************************************************************/
 
 /***********For website hosted inside AUG (using test DB)*******************/
@@ -38,13 +38,13 @@ const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1/getpollutant";
  * finishes loading.
  ******************************************************/
 //const INFO_URL = "php/getInfo.php";
-
+const UID = '4F09FC2FFE674AA9A568A2BD23C95CB9';
 let thresholdInfo,colorMap,unitArray,pastDue,refreshTimeChart,refreshTimeButton,checkDays;
 //const unitArray = ['co','no2','no','aqhi','o3','pm2_5'];
 //const colorMap = {red:"#D7191C",yellow:"#FFFF4D",lightgreen:"#91D049",green:"#1A9641",orange:"#FD9935"};
 function loadingInfo(){
     //console.log("Enter loadingInfo");
-    getJSON(INFO_URL,function(err,json){
+    postJSON(INFO_URL,function(err,json){
         if(err == null){
             initMap(json[0].map_feature,json[0].mapCenter);
             getChartFeature(json[0].chart_feature);
@@ -65,7 +65,7 @@ function loadingInfo(){
             console.error("ERROR when loadingInfo: " + err);
             window.alert("We have ERROR when we try to initial the web page. Please refresh and try again.");
         }
-    });
+    },encodeURI("id=" + UID));
 }
 /*********************************************
  * Function to set period button to disable
@@ -77,12 +77,12 @@ function disablePeriodButton(numOfButton) {
         let past2Week = document.getElementById("past_2_weeks");
         switch (numOfButton) {
             case 1:
-                past2Week.disabled = true;
-                past2Week.classList.add("disabled");
+                pastDay.disabled = true;
+                pastDay.classList.add("disabled");
                 break;
             case 2:
-                past2Week.disabled = true;
-                past2Week.classList.add("disabled");
+                pastDay.disabled = true;
+                pastDay.classList.add("disabled");
                 pastWeek.disabled = true;
                 pastWeek.classList.add("disabled");
                 break;
@@ -189,7 +189,7 @@ function changeContent(buttonID){
             }
         }
         //enoughPoint flag is to check whether there are enough points for updating the chart
-        enoughPoint = checkNullPoint(buttonID); 
+        checkEnoughPoint(buttonID);
         updateChart(buttonID);
     }
     catch(exception){
@@ -291,7 +291,7 @@ function autoRefreshButton(){
                 //isAutoRefreshButton = true;
                 let loadingOverlay = document.getElementById("loading");
                 loadingOverlay.classList.add("active");
-                let message = encodeURI("device_id=" + lastClick)
+                let message = encodeURI("id=" + UID + "&device_id=" + lastClick)
                 try{
                     postJSON(GET_LATEST_URL,function(err,json){
                         if(err == null){
@@ -626,7 +626,7 @@ function drawChart() {
                       mode: 'horizontal',
                       scaleID: 'y-axis-0',
                       value: 5,
-                      borderColor: 'rgb(75, 192, 192)',
+                      borderColor: 'rgba(75, 192, 192, 0.8)',
                       borderWidth: 3,
                       borderDash: [15, 5],
                       label: {
@@ -634,7 +634,8 @@ function drawChart() {
                         position: "right",
                         fontFamily: "sans-serif",
                         fontStyle: "bold",
-                        content: 'Detection Limit'
+                        content: 'Detection Limit',
+                        backgroundColor:'rgba(0, 0, 0, 0.4)'
                       }
                       
                     }]
@@ -690,20 +691,23 @@ function checkNullPoint(pollutant){
                     valueNum += 1;
             }
             //console.log("valueNum:",valueNum);
-            if(valueNum < 49){
-                disablePeriodButton(3);
-                return false;
-            }
-            else if(valueNum < 337){
-                disablePeriodButton(2);
+            if(624 < valueNum ){
+                onPeriodClicked(1,'past_day');
                 return true;
             }
-            else if(valueNum < 673){
+            else if(336 < valueNum && valueNum <= 624 ){
                 disablePeriodButton(1);
+                onPeriodClicked(7,'past_week');
+                return true;
+            }
+            else if( 0 < valueNum && valueNum <= 336){
+                disablePeriodButton(2);
+                onPeriodClicked(14,'past_2_weeks');
                 return true;
             }
             else
-                return true; 
+                disablePeriodButton(3);
+                return false; 
         }
         else{
             disablePeriodButton(3);
@@ -713,6 +717,62 @@ function checkNullPoint(pollutant){
     catch(err){
         console.error("ERROR when checkNullPoint: ",err);
         return false;
+    }
+}
+function checkEnoughPoint(pollutant){
+    try{
+        if (pollutantJSON != null && pollutantJSON.length > 0) {
+            let dayPointNum = 0;
+            let weekPointNum = 0;
+            let twoWeekPointNum = 0;
+            for (let i = 0; i < pollutantJSON.length; i++) {
+                if(pollutantJSON[i][pollutant] != null && pollutantJSON[i][pollutant] != "NULL"){
+                    //console.log(pollutantJSON.length,i);
+                    let dataTime = new Date(pollutantJSON[i].timestamp);
+                    let nowTime = new Date();
+                    let difference = (nowTime.getTime() - dataTime.getTime()) / (1000*60*30);
+                    if(difference <= 2 * 24){
+                        dayPointNum += 1;
+                        weekPointNum += 1;
+                        twoWeekPointNum += 1;
+                    }
+                    else if(24*2 < difference <= 2 * 24 * 7){
+                        weekPointNum += 1;
+                        twoWeekPointNum += 1;
+                    }
+                    else if(2 * 24 * 7 < difference){
+                        twoWeekPointNum += 1;
+                    }
+                }
+            }
+            if(dayPointNum > 0){
+                enoughPoint = true;
+                onPeriodClicked(1,'past_day');
+            }
+            else if(weekPointNum > 0){
+                enoughPoint = true;
+                onPeriodClicked(7,'past_week');
+                disablePeriodButton(1);
+            }
+            else if(twoWeekPointNum > 0){
+                enoughPoint = true;
+                onPeriodClicked(14,'past_2_weeks');
+                disablePeriodButton(2);
+            }
+            else{
+                enoughPoint = false;
+                disablePeriodButton(3);
+            }
+        }
+        else{
+            enoughPoint = false
+            disablePeriodButton(3);
+        }
+    }
+    catch(err){
+        enoughPoint = false;
+        console.error("ERROR when checkEnoughtPoint: ",err);
+        disablePeriodButton(3);
     }
 }
 /******************************************************
@@ -727,17 +787,48 @@ function updateChart(pollutant){
     let multiple = (numPoint == 49 ? 1:2);
     try{
         if(pollutantJSON != null && pollutantJSON.length > 0 && enoughPoint){
+            let now = new Date();
+            let nowTimeTick =parseInt((now.getTime()-(1000*60*30))/(1000*60*30) ) * (1000*60*30);
             for(let i = 0; i < numPoint; i++){
-                //console.log("json length:",pollutantJSON.length);
-                let stillUtc = moment.utc(pollutantJSON[i*multiple].timestamp).toDate();
-                let local = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
-                date.push(local);
-                value.push(pollutantJSON[i*multiple][pollutant]);
+                let timeTick = nowTimeTick - 1000*60*30*multiple*i;
+                let nowTime = moment(timeTick).local().format('YYYY-MM-DD HH:mm:ss');
+                date.push(nowTime);
             }
+            let numPointIndex,pollutantJSONIndex;
+            for (numPointIndex = 0, pollutantJSONIndex = 0; numPointIndex < numPoint; numPointIndex ++) {
 
+                let nextPollutantJsonPointNum = pollutantJSONIndex * multiple;
+                if(nextPollutantJsonPointNum >= pollutantJSON.length){
+                    nextPollutantJsonPointNum = pollutantJSON.length - 1;
+                }
+                let stillUtc = moment.utc(pollutantJSON[nextPollutantJsonPointNum].timestamp).toDate();
+                let local = moment(stillUtc).local().format('YYYY-MM-DD HH:mm:ss');
+
+                nextPollutantJsonPointNum = pollutantJSONIndex * multiple + 1;
+                if(nextPollutantJsonPointNum >= pollutantJSON.length){
+                    nextPollutantJsonPointNum = pollutantJSON.length - 1;
+                }
+                let stillUtcPlus = moment.utc(pollutantJSON[nextPollutantJsonPointNum].timestamp).toDate();
+                let localPlus = moment(stillUtcPlus).local().format('YYYY-MM-DD HH:mm:ss');
+                //console.log(local,localPlus,date[numPointIndex]);
+                if(local == date[numPointIndex]){
+                    value.push(pollutantJSON[pollutantJSONIndex * multiple][pollutant]);
+                    pollutantJSONIndex++; 
+                }
+                else if(localPlus == date[numPointIndex]){
+                    value.push(pollutantJSON[pollutantJSONIndex * multiple + 1][pollutant]);
+                    pollutantJSONIndex++;                   
+                }
+                else{
+                    value.push(-100);
+                }
+            }
+            //console.log("pollutantJSON:",pollutantJSON);
+            //console.log("date:",date);
         }
         else{
             //console.error("No data can be used for updating the chart");
+            //console.log(pollutantJSON,pollutantJSON.length,enoughPoint)
             window.alert("No data can be used for updating the chart");
         }
         if(Math.max(...value) > thresholdInfo[pollutant].medium.high){
@@ -785,8 +876,9 @@ function changeGradient(pollutant,levelNum){
     for(let i = 0; i < levelNum; i++){
         let difference = thresholdInfo[pollutant][level[i]].high - thresholdInfo[pollutant][level[i]].low;
         let percentage = difference / thresholdInfo[pollutant][level[levelNum-1]].high;
-        gradient.addColorStop(full-percentage,colorMap[level[i]]);
-        gradientBar.addColorStop(full-percentage,colorMap[level[i]]);
+        let colorPrecentage = full-percentage >= 0?full-percentage:0;
+        gradient.addColorStop(colorPrecentage,colorMap[level[i]]);
+        gradientBar.addColorStop(colorPrecentage,colorMap[level[i]]);
         full -= percentage,colorMap[level[i]];
     }
     colorBar.fillStyle = gradientBar;
@@ -843,7 +935,7 @@ function initMarker(){
     lat2 = bounds._ne.lat;
     lng1 = bounds._sw.lng;
     lng2 = bounds._ne.lng;
-    let boundsMessage = encodeURI('lng1=' + lng1 + '&lng2=' + lng2 + '&lat1=' + lat1 + '&lat2=' + lat2);
+    let boundsMessage = encodeURI('id=' + UID + '&lng1=' + lng1 + '&lng2=' + lng2 + '&lat1=' + lat1 + '&lat2=' + lat2);
     postJSON(SENSOR_URL,function(err,json){
         if(err == null){
             sensorInfoJSON = json;
@@ -941,7 +1033,7 @@ function addMarker(sensorInfo) {
                 name: sensorInfo.sensor_info.station_name,
                 marker: marker,
                 color: sensorColor,
-                deviceID: sensorInfo.sensor_info.device_id,
+                deviceID: sensorInfo.sensor_info.serial_number,
                 aqhi: sensorInfo.pollutant_data.aqhi,
                 pollutant_data: sensorInfo.pollutant_data,
                 updateTime: local,
@@ -974,15 +1066,21 @@ function addMarker(sensorInfo) {
                 }
                 lastClick = newMarker.deviceID;
                 //Change the number of point and gap for the chart back to one day style
-                numPoint = 49;
-                gap = 6;
+                //numPoint = 49;
+                //gap = 6;
                 //Make the icon of the sensor clicked this time to pin 
                 newMarker.popup.addTo(map);
                 markerElement.style.backgroundImage = 'url(../images/pin_' + newMarker.color + '.png)';
                 markerElement.style.height = '35px';
                 markerElement.style.width = '35px';
                 document.getElementById("sensor-address").innerHTML = newMarker.name;
-                let messagePollutant = encodeURI("device_id=" + lastClick + "&days=" + checkDays + "&interval_minutes=30");
+                let enddate = moment.utc().format("YYYY-MM-DD HH:mm:ss");
+                let startdate = moment.utc().subtract(checkDays * 24 + 1,"hours").format("YYYY-MM-DD HH:mm:ss");
+                console.log("enddate:",enddate);
+                console.log("startdate:",startdate);
+                let messagePollutant = encodeURI("id=" + UID + "&device_id=" + lastClick + "&startdate='" + startdate + "'&enddate='" + enddate + "'");
+                //console.log("startdate:",startdate);
+                //console.log("enddate:",enddate);
                 //console.log("message",messagePollutant);
 
                 //  While loading data from DB, an overlay will 
@@ -1028,7 +1126,7 @@ function addMarker(sensorInfo) {
                         }
                         else {
                             changeContent("aqhi");
-                            onPeriodClicked(1, "past_day");
+                            //onPeriodClicked(1, "past_day");
                         }
                         document.getElementById("article-left").classList.remove("non-active");
                     }
