@@ -42,7 +42,7 @@ function checkCookie(){
             let nowTime = new Date();
             let expireTime = moment(nowTime.getTime() + ONE_YEAR_EXPIRE).format("YYYY-MM-DD HH:mm:ss");
             document.cookie = "expires="+expireTime+';path="/"';
-            console.log("don't have cookie,",document.cookie);
+            //console.log("don't have cookie,",document.cookie);
             startGuide(true);
         }
         else{
@@ -50,11 +50,11 @@ function checkCookie(){
             let nowTime = new Date();
             if( nowTime.getTime() - expireTime.getTime()> 0){
                 document.cookie = "expires="+moment(nowTime.getTime() + ONE_YEAR_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path="/"';
-                console.log("have cookie,",document.cookie);
+                //console.log("have cookie,",document.cookie);
                 startGuide(false);
             }
             else{
-                console.log("don't need guide",document.cookie);
+                //console.log("don't need guide",document.cookie);
             }
         }
     }
@@ -88,7 +88,7 @@ function startGuide(firstTimeFlag){
     try {
         let overlay = document.getElementById('guide-overlay');
         tour = new Tour({
-            debug:true,
+            //debug:true,
             onStart: function (tour) {
                 overlay.classList.add('active');
             },
