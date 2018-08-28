@@ -12,17 +12,17 @@ function onMainLoad(){
  *********************************************/
 
 /*******************For website hosted on GitHub*****************************/
-const INFO_URL = "https://www.signalfusion.com:9000/api/v1.1/getinfo";
-const GET_LATEST_URL = "https://www.signalfusion.com:9000/api/v1.1/getlatest";
-const SENSOR_URL = "https://www.signalfusion.com:9000/api/v1.1/getlocation";
-const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
+//const INFO_URL = "https://www.signalfusion.com:9000/api/v1.1/getinfo";
+//const GET_LATEST_URL = "https://www.signalfusion.com:9000/api/v1.1/getlatest";
+//const SENSOR_URL = "https://www.signalfusion.com:9000/api/v1.1/getlocation";
+//const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
 /****************************************************************************/
 
 /*******************For website hosted inside AUG***************************/
-//const INFO_URL = "api/v1.1/getinfo";
-//const GET_LATEST_URL = "api/v1.1/getlatest";
-//const SENSOR_URL = "api/v1.1/getlocation";
-//const POLLUTANT_URL = "api/v1.1/getpollutant";
+const INFO_URL = "api/v1.1/getinfo";
+const GET_LATEST_URL = "api/v1.1/getlatest";
+const SENSOR_URL = "api/v1.1/getlocation";
+const POLLUTANT_URL = "api/v1.1/getpollutant";
 /***************************************************************************/
 
 /***********For website hosted inside AUG (using test DB)*******************/
@@ -31,17 +31,130 @@ const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
 //const SENSOR_URL = "api/test/getlocation";
 //const POLLUTANT_URL = "api/test/getpollutant";
 /***************************************************************************/
-
 /******************************************************
- * Function for loading every feature to performing the
- * website. This function is called when google map 
- * finishes loading.
- ******************************************************/
-//const INFO_URL = "php/getInfo.php";
-const UID = '4F09FC2FFE674AA9A568A2BD23C95CB9';
-let thresholdInfo,colorMap,unitArray,pastDue,refreshTimeChart,refreshTimeButton,checkDays;
-//const unitArray = ['co','no2','no','aqhi','o3','pm2_5'];
-//const colorMap = {red:"#D7191C",yellow:"#FFFF4D",lightgreen:"#91D049",green:"#1A9641",orange:"#FD9935"};
+* Check cookie to verify whether this user is first time
+* to the website. 
+******************************************************/
+function checkCookie(){
+    try{
+        let expires = getCookie("expires");
+        if(expires == ""){
+            let nowTime = new Date();
+            let expireTime = moment(nowTime.getTime() + ONE_YEAR_EXPIRE).format("YYYY-MM-DD HH:mm:ss");
+            document.cookie = "expires="+expireTime+';path="/"';
+            console.log("don't have cookie,",document.cookie);
+            startGuide(true);
+        }
+        else{
+            let expireTime = new Date(expires);
+            let nowTime = new Date();
+            if( nowTime.getTime() - expireTime.getTime()> 0){
+                document.cookie = "expires="+moment(nowTime.getTime() + ONE_YEAR_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path="/"';
+                console.log("have cookie,",document.cookie);
+                startGuide(false);
+            }
+            else{
+                console.log("don't need guide",document.cookie);
+            }
+        }
+    }
+    catch(err){
+        console.error("ERROR when checkCookie: "+err);
+    }
+}
+const ONE_YEAR_EXPIRE = 1000*60*60*24*365;
+/******************************************************
+* Function for getting speical proprety in the cookie.
+******************************************************/
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+/******************************************************
+* Setup user guide for user who first use this website
+******************************************************/
+function startGuide(firstTimeFlag){
+    try {
+        let overlay = document.getElementById('guide-overlay');
+        tour = new Tour({
+            debug:true,
+            onStart: function (tour) {
+                overlay.classList.add('active');
+            },
+            onEnd: function (tour) {
+                overlay.classList.remove('active');
+            }
+        });
+        for(let i = 0 ;i < guideStep.length;i++){
+            if(guideStep[i].element != "map"){
+                tour.addStep(
+                    {
+                        element:"#"+guideStep[i].element,
+                        title:guideStep[i].title,
+                        content:guideStep[i].content,
+                        onShown:function(tour){
+                            let block = document.getElementById(guideStep[i].element);
+                            block.classList.add('high-light');
+                        },
+                        onHidden:function(tour){
+                            let block = document.getElementById(guideStep[i].element);
+                            block.classList.remove('high-light');
+                        }
+                    }
+                );
+            }
+            else{
+                tour.addStep(
+                    {
+                        element:"#"+guideStep[i].element,
+                        title:guideStep[i].title,
+                        content:guideStep[i].content,
+                        placement:"left",
+                        onShown:function(tour){
+                            let block = document.getElementById(guideStep[i].element);
+                            block.classList.add('high-light');
+                        },
+                        onHidden:function(tour){
+                            let block = document.getElementById(guideStep[i].element);
+                            block.classList.remove('high-light');
+                        }
+                    }
+                )
+            }
+           
+        }
+        if(firstTimeFlag){
+            tour.init();
+            tour.start();
+        }
+        else{
+           tour.restart();
+        }
+        
+    }
+    catch (exception) {
+        console.error("ERROR when start guide: " + exception);
+    }
+}
+let tour;
+let firstLoading = true;
+/******************************************************
+* Function for loading every feature to performing the
+* website. This function is called when google map
+* finishes loading.
+******************************************************/
+
 function loadingInfo(){
     //console.log("Enter loadingInfo");
     postJSON(INFO_URL,function(err,json){
@@ -56,6 +169,7 @@ function loadingInfo(){
             lastClick = json[0].lastClick;
             refreshTimeChart = json[0].refreshTimeChart;
             refreshTimeButton = json[0].refreshTimeButton;
+            guideStep = json[0].guide_step;
             drawChart();
             autoRefreshChart();
             autoRefreshButton();
@@ -67,6 +181,9 @@ function loadingInfo(){
         }
     },encodeURI("id=" + UID));
 }
+const UID = '4F09FC2FFE674AA9A568A2BD23C95CB9';
+let thresholdInfo,colorMap,unitArray,pastDue,refreshTimeChart,refreshTimeButton,checkDays,guideStep;
+
 /*********************************************
  * Function to set period button to disable
  *********************************************/
@@ -139,8 +256,6 @@ function enablePeriodButton(numOfButton){
  * parameter panel when click on the button.
  * Also will update the chart.
  *********************************************/
-let lastClickPollution = "aqhi";
-let enoughPoint = true;
 function changeContent(buttonID){
     //console.log("enter changeContent with",let1);
     /*
@@ -247,6 +362,8 @@ function changeContent(buttonID){
     //changeLevel(buttonID);
     showColorBar();
 }
+let lastClickPollution = "aqhi";
+let enoughPoint = true;
 /*********************************************
  * Function to add Enter for searhing to the 
  * address search button
@@ -264,26 +381,22 @@ function addEnterToInput(){
  * Function to auto refresh chart value every
  * several time
  *********************************************/
-
-let isAutoRefreshChart = false;
 function autoRefreshChart(){
     window.setInterval(function(){
         for (let i = 0; i < markers.length; i++) {
             if (markers[i].deviceID == lastClick) {
                 isAutoRefreshChart = true;
-                markers[i].element.click();
+                markers[i].markerElement.click();
                 break;  
             }
         }
     },refreshTimeChart);
 }
+let isAutoRefreshChart = false;
 /*********************************************
  * Function to auto refresh button value every
  * several time
  *********************************************/
-
-//let isAutoRefreshButton = false;
-
 function autoRefreshButton(){
     window.setInterval(function(){
         for (let i = 0; i < markers.length; i++) {
@@ -328,7 +441,6 @@ function autoRefreshButton(){
  * Function to show the menu when menu button
  * clicked
  *********************************************/
-let menuClicked = false;
 function onMenuClick(){
     //console.log("enter onMenuClick");
     let menu = document.getElementById("navbar-collapse");
@@ -340,6 +452,7 @@ function onMenuClick(){
         menuClicked = false;
     }
 }
+let menuClicked = false;
 /*********************************************
  * Function to show the detail information of 
  * the chosen pollution, about and how to use
@@ -546,7 +659,7 @@ function getChartFeature(json) {
  * background. The color bar is using a different
  * color gradient from the chart
  ***********************************************/
-let normalGradient,halfGradient;
+
 function drawChart() {
     //console.log("Enter drawChart");
     let ctx = document.getElementById("myChart").getContext('2d');
@@ -648,6 +761,8 @@ function drawChart() {
         window.alert("We have ERROR when we try to draw the chart. Please refresh and try again.");
     }
 }
+
+let normalGradient,halfGradient;
 /*********************************************
  * Function to close pop out menu and change
  * the position of navbar button and logo
@@ -913,7 +1028,7 @@ function initMap(mapFeature,mapCenter) {
                     boundLock = false;
                 }, 4000);
             }
-        })
+        });
     }
     catch(err){
         window.alert("We have ERROR when we try to initialize Mapbox Map. Please refresh the page and try again.");
@@ -1076,8 +1191,8 @@ function addMarker(sensorInfo) {
                 document.getElementById("sensor-address").innerHTML = newMarker.name;
                 let enddate = moment.utc().format("YYYY-MM-DD HH:mm:ss");
                 let startdate = moment.utc().subtract(checkDays * 24 + 1,"hours").format("YYYY-MM-DD HH:mm:ss");
-                console.log("enddate:",enddate);
-                console.log("startdate:",startdate);
+                //console.log("enddate:",enddate);
+                //console.log("startdate:",startdate);
                 let messagePollutant = encodeURI("id=" + UID + "&device_id=" + lastClick + "&startdate='" + startdate + "'&enddate='" + enddate + "'");
                 //console.log("startdate:",startdate);
                 //console.log("enddate:",enddate);
@@ -1129,6 +1244,8 @@ function addMarker(sensorInfo) {
                             //onPeriodClicked(1, "past_day");
                         }
                         document.getElementById("article-left").classList.remove("non-active");
+                        loadingOverlay.classList.remove("active");
+                        checkCookie();
                     }
                     else {
                         console.error(err);

@@ -524,7 +524,7 @@ article{
         position: absolute;
         .col-12;
         height: 100%;
-        z-index: 10;
+        z-index: 6;
         background-color: rgba(0,0,0,0.4);
         display: none;
         .loader {
@@ -565,6 +565,7 @@ article{
             background-color: white;
             padding-top:20px;
             height:var(--data-panel-height);
+            position: inherit;
             h1,h2{
                 text-align: center;
                 margin: 0;
@@ -595,6 +596,7 @@ article{
                 }
             }
            .content{
+               position: relative;
                 .parammain{
                     float: right;
                     //padding-right:0.5*@col;
@@ -721,9 +723,13 @@ article{
             height: 360px;
             border: solid #b9b9b9 1.5px;
             padding: var(--chart-padding);
+            background-color: white;
+            position: relative;
             .period-choose{
-                position: relative;
+                position: inherit;
                 float: left;
+                background-color: white;
+                display: block;
                 //border: solid;
                 ul{
                     overflow: hidden;
@@ -752,7 +758,7 @@ article{
                         }
                     }
                 }
-            }
+            }//end of period-choose
             .param-chart{ 
                 position: relative;
                 float: left;
@@ -760,6 +766,13 @@ article{
                 left:0.5*@col;
                 width: var(--chart-width);
             }
+            /*
+            .high-light{
+                position: relative;
+                z-index: 10;
+                background-color: white;
+            }
+            */
             .popup-container{
                 visibility: hidden;
                 width: 70px;
@@ -770,7 +783,6 @@ article{
                 //border-radius: 6px;
                 padding: 2% 0;
                 position: relative;
-                z-index: 5;
                 opacity: 0.8;
                 margin-bottom: 10%;
                 /*
@@ -873,6 +885,11 @@ article{
         .active{
             display: block;
         }
+        .high-light{
+            position: relative;
+            z-index: 10;
+            background-color: white;
+        }
         .error-logo{
             padding:200px 0 100px 200px;
             img{
@@ -889,12 +906,16 @@ article{
         width: var(--article-right-width);
         right: var(--article-right-right);
         padding: var(--article-right-padding);
+        
         #map{
             height: var(--map-height);
+            position: relative;
             margin-top:30px;
             overflow-y:hidden;
-            z-index: 2;
             .mapboxgl-canvas-container{z-index: 2;}
+        }
+        .high-light{
+            z-index: 10;
         }
         .detail-info{
             display: none;

@@ -8,15 +8,24 @@
   <link href="css/style.css" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
-  <script src="js/script.js"></script>
-  <script src="js/Chart.bundle.min.js"></script>
-  <script src="js/moment.min.js"></script>
-  <script src="js/chartjs-plugin-annotation.min.js"></script>
+  
+  
+
+  <link href="css/bootstrap-tour-standalone.min.css" rel="stylesheet">
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap-tour-standalone.min.js"></script>
+
 
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
+
+  <script src="js/Chart.bundle.min.js"></script>
+  <script src="js/moment.min.js"></script>
+  <script src="js/chartjs-plugin-annotation.min.js"></script>
+  
+  <script src="js/script.js"></script>
 
 </head>
 
@@ -29,7 +38,7 @@
           <div class="bar"></div>
           <div class="bar"></div>
         </div>
-        <section class="logo">
+        <section class="logo" id="logo">
           <a href="/">
             <img src="images/logo.png">
           </a>
@@ -143,9 +152,11 @@
     <div id="loading" class="loading-overlay">
       <div class="loader"></div>
     </div>
+    <div id="guide-overlay" class="loading-overlay">
+    </div>
     <section id="article-left" class="left non-active">
 
-      <section class="data-panel col-12">
+      <section class="data-panel col-12" id="data-panel">
 
         <h1 id="sensor-address" class="col-12">----</h1>
         <h2 class="col-12">
@@ -242,7 +253,7 @@
         </h2>
       </section>
       <!-- End of data-panel -->
-      <section class="chart col-12">
+      <section  class="chart col-12" id="chart">
         <section class="legend">
             
             <div class="popup-container" id="popup">
@@ -262,13 +273,11 @@
             <h1 id="legend" onclick="toggleColorBar()"></h1>
             <h2 id="legend-unit" ></h2>
         </section>
-        <section class="param-chart">
+        <!--End of legend-->
+        <section class="param-chart" >
           <canvas id="myChart" height="300" width="700"></canvas>
         </section>
-
-        
-
-        <section class="period-choose col-12">
+        <section class="period-choose col-12" id="period">
           <ul>
             <li>
               <button type="button" class="period_button" id="past_day" onclick="onPeriodClicked(1,this.id)">
@@ -289,46 +298,51 @@
             </li>
           </ul>
         </section>
+        <!--End of period-choose-->
       </section>
       <!--End of chart-->
-      <section class="information-section col-12" id="pm2_5-info">
-        Fine Particulate Matter (PM<sub>2.5</sub>) is all airborne particles with a diameter of 2.5 microns or less. 
-        <button onclick="onClickHere(this.id)" id="pm2_5-info-"><a href="#pm2_5-info-detail">Click Here</a></button> to learn more!
+      <section id = "info-section">
+        <section class="information-section col-12" id="pm2_5-info">
+          Fine Particulate Matter (PM<sub>2.5</sub>) is all airborne particles with a diameter of 2.5 microns or less. 
+          <button onclick="onClickHere(this.id)" id="pm2_5-info-"><a href="#pm2_5-info-detail">Click Here</a></button> to learn more!
+        </section>
+        <section class="information-section col-12" id="no2-info">
+          Nitrogen Dioxide (NO<sub>2</sub>) us a by-product of incomplete combustion (gasoline, natural gas, coal) which can cause smog, airway irritation,
+          and induce attacks in asthmatics. 
+          <button onclick="onClickHere(this.id)" id="no2-info-"><a href="#no2-info-detail">Click Here</a></button> to learn more!
+        </section>
+        <section class="information-section col-12" id="no-info">
+          Nitrogen Oxide (NO) is a strong indicator of diesel vehicle emissions but can also come from other combustion processes. 
+          <button onclick="onClickHere(this.id)" id="no-info-"><a href="#no-info-detail">Click Here</a></button> to learn more!
+        </section>
+        <section class="information-section col-12" id="co-info">
+          Carbon Monoxide (CO) is produced by incomplete combustion from vehicles. Colourless and odourless, it can reduce oxygen delivery
+          within the human body.
+          <br> 
+          <button onclick="onClickHere(this.id)" id="co-info-"><a href="#co-info-detail">Click Here</a></button> to learn more!
+        </section>
+        <section class="information-section col-12" id="o3-info">
+          Ozone (O<sub>3</sub>) is an irritant and a major component of smog. It typically has similar concentrations across a city. 
+          <button onclick="onClickHere(this.id)" id="o3-info-"><a href="#o3-info-detail">Click Here</a></button> to learn more!
+        </section>
+        <section class="information-section col-12" id="aqhi-info">
+          The Air Quality Health Index (AQHI) is an air quality scale from 1-10+ that can help you make decisions so as to reduce health
+          risks arising from your exposure to air pollution. 
+          <button onclick="onClickHere(this.id)" id="aqhi-info-"><a href="#aqhi-info-detail">Click Here</a></button> to learn more!
+        </section>
+        <section class="information-section col-12" id="so2-info">
+          Sulfur dioxide(SO<sub>2</sub>) is an invisible gas with a sharp, pungent odour. It reacts easily with other substances to form harmful compounds, such
+          as sulfuric acid, sulfurous acid and sulfate particles.
+          <button onclick="onClickHere(this.id)" id="so2-info-"><a href="#so2-info-detail">Click Here</a></button> to learn more!
+        </section>
+        <section class="information-section col-12" id="co2-info">
+          Carbon dioxide(CO<sub>2</sub>) is the main product of combustion and respiration processes and typically occurs at concentrations near 400 ppb.
+          <button onclick="onClickHere(this.id)" id="co2-info-"><a href="#co2-info-detail">Click Here</a></button> to learn more!
+        </section>
       </section>
-      <section class="information-section col-12" id="no2-info">
-        Nitrogen Dioxide (NO<sub>2</sub>) us a by-product of incomplete combustion (gasoline, natural gas, coal) which can cause smog, airway irritation,
-        and induce attacks in asthmatics. 
-        <button onclick="onClickHere(this.id)" id="no2-info-"><a href="#no2-info-detail">Click Here</a></button> to learn more!
-      </section>
-      <section class="information-section col-12" id="no-info">
-        Nitrogen Oxide (NO) is a strong indicator of diesel vehicle emissions but can also come from other combustion processes. 
-        <button onclick="onClickHere(this.id)" id="no-info-"><a href="#no-info-detail">Click Here</a></button> to learn more!
-      </section>
-      <section class="information-section col-12" id="co-info">
-        Carbon Monoxide (CO) is produced by incomplete combustion from vehicles. Colourless and odourless, it can reduce oxygen delivery
-        within the human body.
-        <br> 
-        <button onclick="onClickHere(this.id)" id="co-info-"><a href="#co-info-detail">Click Here</a></button> to learn more!
-      </section>
-      <section class="information-section col-12" id="o3-info">
-        Ozone (O<sub>3</sub>) is an irritant and a major component of smog. It typically has similar concentrations across a city. 
-        <button onclick="onClickHere(this.id)" id="o3-info-"><a href="#o3-info-detail">Click Here</a></button> to learn more!
-      </section>
-      <section class="information-section col-12" id="aqhi-info">
-        The Air Quality Health Index (AQHI) is an air quality scale from 1-10+ that can help you make decisions so as to reduce health
-        risks arising from your exposure to air pollution. 
-        <button onclick="onClickHere(this.id)" id="aqhi-info-"><a href="#aqhi-info-detail">Click Here</a></button> to learn more!
-      </section>
-      <section class="information-section col-12" id="so2-info">
-        Sulfur dioxide(SO<sub>2</sub>) is an invisible gas with a sharp, pungent odour. It reacts easily with other substances to form harmful compounds, such
-        as sulfuric acid, sulfurous acid and sulfate particles.
-        <button onclick="onClickHere(this.id)" id="so2-info-"><a href="#so2-info-detail">Click Here</a></button> to learn more!
-      </section>
-      <section class="information-section col-12" id="co2-info">
-        Carbon dioxide(CO<sub>2</sub>) is the main product of combustion and respiration processes and typically occurs at concentrations near 400 ppb.
-        <button onclick="onClickHere(this.id)" id="co2-info-"><a href="#co2-info-detail">Click Here</a></button> to learn more!
-      </section>
+      <!--End of info-section-->
     </section>
+
     <!-- End of left -->
     <section class="right">
       <section class="detail-info" id="pm2_5-info-detail">
