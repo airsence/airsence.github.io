@@ -12,17 +12,17 @@ function onMainLoad(){
  *********************************************/
 
 /*******************For website hosted on GitHub*****************************/
-//const INFO_URL = "https://www.signalfusion.com:9000/api/v1.1/getinfo";
-//const GET_LATEST_URL = "https://www.signalfusion.com:9000/api/v1.1/getlatest";
-//const SENSOR_URL = "https://www.signalfusion.com:9000/api/v1.1/getlocation";
-//const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
+const INFO_URL = "https://www.signalfusion.com:9000/api/v1.1/getinfo";
+const GET_LATEST_URL = "https://www.signalfusion.com:9000/api/v1.1/getlatest";
+const SENSOR_URL = "https://www.signalfusion.com:9000/api/v1.1/getlocation";
+const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
 /****************************************************************************/
 
 /*******************For website hosted inside AUG***************************/
-const INFO_URL = "api/v1.1/getinfo";
-const GET_LATEST_URL = "api/v1.1/getlatest";
-const SENSOR_URL = "api/v1.1/getlocation";
-const POLLUTANT_URL = "api/v1.1/getpollutant";
+//const INFO_URL = "api/v1.1/getinfo";
+//const GET_LATEST_URL = "api/v1.1/getlatest";
+//const SENSOR_URL = "api/v1.1/getlocation";
+//const POLLUTANT_URL = "api/v1.1/getpollutant";
 /***************************************************************************/
 
 /***********For website hosted inside AUG (using test DB)*******************/
@@ -40,7 +40,7 @@ function checkCookie(){
         let expires = getCookie("expires");
         if(expires == ""){
             let nowTime = new Date();
-            let expireTime = moment(nowTime.getTime() + ONE_YEAR_EXPIRE).format("YYYY-MM-DD HH:mm:ss");
+            let expireTime = moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");
             document.cookie = "expires="+expireTime+';path="/"';
             //console.log("don't have cookie,",document.cookie);
             startGuide(true);
@@ -49,7 +49,7 @@ function checkCookie(){
             let expireTime = new Date(expires);
             let nowTime = new Date();
             if( nowTime.getTime() - expireTime.getTime()> 0){
-                document.cookie = "expires="+moment(nowTime.getTime() + ONE_YEAR_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path="/"';
+                document.cookie = "expires="+moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path="/"';
                 //console.log("have cookie,",document.cookie);
                 startGuide(false);
             }
@@ -62,7 +62,7 @@ function checkCookie(){
         console.error("ERROR when checkCookie: "+err);
     }
 }
-const ONE_YEAR_EXPIRE = 1000*60*60*24*365;
+const COOKIE_EXPIRE = 1000*60*60*24*365;
 /******************************************************
 * Function for getting speical proprety in the cookie.
 ******************************************************/
@@ -149,6 +149,12 @@ function startGuide(firstTimeFlag){
 }
 let tour;
 let firstLoading = true;
+/******************************************************
+* Restart guide when client click on "User Guide"
+******************************************************/
+function restartGuide(){
+    tour.restart();
+}
 /******************************************************
 * Function for loading every feature to performing the
 * website. This function is called when google map
