@@ -1391,7 +1391,7 @@ function setGeocoder(){
             trackUserLocation: true
         });
         map.addControl(geolocator);
-        geolocator.trigger();
+        setTimeout(geolocator.trigger(),1000);
     }
     catch(err){
         console.error("ERROR when setGeocoder: ",err);
