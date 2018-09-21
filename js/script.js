@@ -7,6 +7,8 @@ function onMainLoad(){
     loadingInfo();
     onResize();
 }
+
+
 /*********************************************
  * URL for access database
  *********************************************/
@@ -37,19 +39,19 @@ const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
 ******************************************************/
 function checkCookie(){
     try{
-        let expires = getCookie("expires");
-        if(expires == ""){
+        let ExpiresTime = getCookie("ExpiresTime");
+        if(ExpiresTime == ""){
             let nowTime = new Date();
             let expireTime = moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");
-            document.cookie = "expires="+expireTime+';path="/"';
+            document.cookie = "ExpiresTime="+expireTime+";Expires="+expireTime+';path=/';
             //console.log("don't have cookie,",document.cookie);
             startGuide(true);
         }
         else{
-            let expireTime = new Date(expires);
+            let expireTime = new Date(ExpiresTime);
             let nowTime = new Date();
             if( nowTime.getTime() - expireTime.getTime()> 0){
-                document.cookie = "expires="+moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path="/"';
+                document.cookie = "ExpiresTime="+expireTime+";Expires="+moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path=/';
                 //console.log("have cookie,",document.cookie);
                 startGuide(false);
             }
@@ -139,16 +141,15 @@ function startGuide(firstTimeFlag){
             tour.start();
         }
         else{
-           tour.restart();
+            tour.restart();
         }
-        
     }
     catch (exception) {
         console.error("ERROR when start guide: " + exception);
+        overlay.classList.remove('active');
     }
 }
 let tour;
-let firstLoading = true;
 /******************************************************
 * Restart guide when client click on "User Guide"
 ******************************************************/
@@ -534,7 +535,7 @@ function getJSON(url, callback){
     xhr.send();
 }
 
-function postJSON(url, callback,message=null){
+function postJSON(url,callback,message = null){
     let xhr;
     if (window.XMLHttpRequest){
         xhr= new XMLHttpRequest();
@@ -555,7 +556,7 @@ function postJSON(url, callback,message=null){
     };
     xhr.send(message);
 }
-
+/*
 function postDB(url, callback,message=null){
     let xhr;
     if (window.XMLHttpRequest){
@@ -577,7 +578,7 @@ function postDB(url, callback,message=null){
     };
     xhr.send(message);
 }
-
+*/
 
 /***********************************************
  * For changing period time to show different
