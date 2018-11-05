@@ -53,11 +53,11 @@
       let browserType = navigator.sayswho;
       if(browserType.match(/IE/))
       {
-        //console.log("IT IS IE!");
+        console.log("IT IS IE!");
         window.alert("This website does not support IE.");
       }
       else{
-        //console.log("IT IS NOT IE.");
+        console.log("IT IS NOT IE.");
       }
     </script>
   <header>
@@ -209,13 +209,16 @@
         <section class="content">
 
           <section class="parammain">
+            <button id="aqhi" onclick="changeContent(this.id)">
             <div class="circle grey" id="circle">
-
-              <span class="paramname" id="paramname">----</span>
+        
+              <span class="paramname" id="paramname">AQHI</span>
               <br/>
               <span class="paramunit" id="unit">--</span>
-
+        
             </div>
+          </button>
+        
           </section>
           <!-- End of parammain-->
 
@@ -249,9 +252,9 @@
             </ul>
             <ul>
               <li>
-                <button id="aqhi" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  AQHI<sub> </sub>
-                  <a id="aqhi-unit">--</a>
+                <button id="pm10" class="parammenu-button grey" onclick="changeContent(this.id)">
+                  PM10<sub> </sub>
+                  <a id="pm10-unit">--</a>
                 </button>
               </li>
               <li>
@@ -300,8 +303,8 @@
               </ul>
               -->
             </div>
-            <h1 id="legend" onclick="toggleColorBar()"></h1>
-            <h2 id="legend-unit" ></h2>
+            <h1 id="legend"></h1>
+            <h2 id="legend-unit"></h2>
         </section>
         <!--End of legend-->
         <section class="param-chart" >
@@ -336,6 +339,10 @@
           Fine Particulate Matter (PM<sub>2.5</sub>) is all airborne particles with a diameter of 2.5 microns or less. 
           <button onclick="onClickHere(this.id)" id="pm2_5-info-"><a href="#pm2_5-info-detail">Click Here</a></button> to learn more!
         </section>
+        <section class="information-section col-12" id="pm10-info">
+            Fine Particulate Matter (PM<sub>10</sub>) is all airborne particles with a diameter of 10 microns or less. 
+            <button onclick="onClickHere(this.id)" id="pm10-info-"><a href="#pm10-info-detail">Click Here</a></button> to learn more!
+          </section>
         <section class="information-section col-12" id="no2-info">
           Nitrogen Dioxide (NO<sub>2</sub>) us a by-product of incomplete combustion (gasoline, natural gas, coal) which can cause smog, airway irritation,
           and induce attacks in asthmatics. 
@@ -375,6 +382,23 @@
 
     <!-- End of left -->
     <section class="right">
+        <section class="detail-info" id="pm10-info-detail">
+            <div class="close-bar">
+              <button onclick="closeAllInfoBlock()" id="pm10-info-detail-close">
+                <i class="far fa-times-circle"></i>
+              </button>
+            </div>
+            <p id="pm10_p">
+              <b>Fine Particulate Matter (PM<sub>10</sub>)</b> includes any airborne particle (e.g. smoke, fumes, dust, ash, and pollen) with a diameter of 10 microns
+              or less. PM<sub>10</sub> has been associated with increased hospital visits and premature death, especially amongst children, the elderly,
+              and those with respiratory issues. PM<sub>10</sub> can have elevated concentrations near sources (e.g. barbecues, fires, construction)
+              but otherwise has concentrations that are generally similar across an urban area. The current (2015) Canadian Ambient Air
+              Quality Standards are 10 µg/m<sup>3</sup> (annual) and 28 µg/m<sup>3</sup> (24-hour) based on three-year averaging. Further details on PM<sub>10</sub> can
+              be found on the Ministry of Environment and Climate Change information page:
+              <br/>
+              <a href="http://www.airqualityontario.com/science/pollutants/particulates.php" target="_blank">http://www.airqualityontario.com/science/pollutants/particulates.php</a>
+            </p>
+          </section>
       <section class="detail-info" id="pm2_5-info-detail">
         <div class="close-bar">
           <button onclick="closeAllInfoBlock()" id="pm2_5-info-detail-close">

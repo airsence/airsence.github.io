@@ -20,7 +20,7 @@
 @midgrey: #b2b2b2;
 @darkgrey:#515151;
 @lightblack:#292F33;
-//for gradiant color
+//for gradient color
 /*
 @high:#D7191C;
 @medium_high:#FD9935;
@@ -602,6 +602,9 @@ article{
                     //padding-right:0.5*@col;
                     background-color: white;
                     .col-3;
+                    button{
+                        background: transparent;
+                    }
                     .circle{
                         float: right;
                         height: var(--circlesize);
@@ -610,6 +613,11 @@ article{
                         border-radius: var(--circleradius);
                         position: relative;
                         top:15px;
+                        cursor: pointer;
+                        &:hover{
+                            &:extend(.shadow-button);
+                        }
+
                         .paramname,.paramunit{
                             display: inline-block;
                             position: relative;
@@ -624,6 +632,9 @@ article{
                         .paramunit{
                             font-size: var(--circle-unit-font-size);
                         }                   
+                    }
+                    .active{
+                        &:extend(.shadow-button);
                     } //end of circle
                     .low{
                         border: solid @low var(--circle-width);
@@ -728,7 +739,7 @@ article{
             .period-choose{
                 position: inherit;
                 float: left;
-                background-color: white;
+                background-color: transparent;
                 display: block;
                 //border: solid;
                 ul{
@@ -852,9 +863,6 @@ article{
                     sub{
                         font-size: 16px;
                     }
-                }
-                h1{
-                    cursor: pointer;   
                 }
                 h2{
                     font-size: 14px;

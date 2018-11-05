@@ -44,7 +44,7 @@ function checkCookie(){
             let nowTime = new Date();
             let expireTime = moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");
             document.cookie = "ExpiresTime="+expireTime+";Expires="+expireTime+';path=/';
-            //console.log("don't have cookie,",document.cookie);
+            console.log("don't have cookie,",document.cookie);
             startGuide(true);
         }
         else{
@@ -52,11 +52,11 @@ function checkCookie(){
             let nowTime = new Date();
             if( nowTime.getTime() - expireTime.getTime()> 0){
                 document.cookie = "ExpiresTime="+expireTime+";Expires="+moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path=/';
-                //console.log("have cookie,",document.cookie);
+                console.log("have cookie,",document.cookie);
                 startGuide(false);
             }
             else{
-                //console.log("don't need guide",document.cookie);
+                console.log("don't need guide",document.cookie);
             }
         }
     }
@@ -271,6 +271,102 @@ function changeContent(buttonID){
     */
     lastClickPollution = buttonID;                              //store the last clicked pollution for later period button click
     //console.log("lastClickPollution in changeContent",lastClickPollution);                                  
+    // let legend = document.getElementById("legend");             //pollution name shown in the chart
+    // let legendUnit = document.getElementById("legend-unit");    //pollution unit shown in the chart                      
+    let paramButtons = document.getElementsByClassName("parammenu-button");     //array of all pollution button
+    let infoBlocks = document.getElementsByClassName("information-section");    //array of all information block below chart 
+    let infoBlock = document.getElementById(buttonID+"-info");                      //the seleted pollution information block
+    let circle = document.getElementById("circle");                             //circle for AQHI
+    let legend = document.getElementById("legend");             //pollution name shown in the chart
+    let legendUnit = document.getElementById("legend-unit");    //pollution unit shown in the chart
+
+    circle.classList.remove("active");
+    closeAllInfoBlock();
+    enablePeriodButton(3);
+    clickHereClicked = false;
+    for(let i = 0; i < paramButtons.length; i++){
+        paramButtons[i].classList.remove("active");
+    }
+    for(let i = 0; i < infoBlocks.length; i++){
+        infoBlocks[i].classList.remove("active");
+    }
+    
+    try{
+        checkEnoughPoint(buttonID);
+        updateChart(buttonID);
+    }
+    catch(exception){
+        console.error("ERROR when changeContent: " + exception);
+        window.alert("We have ERROR when we try to refresh button. Please refresh and try again.");
+    }
+
+    if(buttonID == "aqhi"){
+        let circle = document.getElementById("circle");
+        circle.classList.add("active")
+    }
+    else{
+        let selectedButton = document.getElementById(buttonID); //pollution button selected now
+        selectedButton.classList.add("active");
+    }
+    switch(buttonID)
+    {   
+        case "pm2_5":
+        legend.innerHTML="PM<sub>2.5</sub>";
+        legendUnit.innerHTML="μg/m<sup>3</sup>";
+        break;
+        case "no2":
+        legend.innerHTML="NO<sub>2</sub>";
+        legendUnit.innerHTML="ppb<sup>&nbsp;</sup>";
+        break;
+        case "no":
+        legend.innerHTML="NO<sub>&nbsp;</sub>";
+        legendUnit.innerHTML="ppb<sup>&nbsp;</sup>";
+        break;
+        case "co":
+        legend.innerHTML="CO<sub>&nbsp;</sub>";
+        legendUnit.innerHTML="ppb<sup>&nbsp;</sup>";
+        break;
+        case "o3":
+        legend.innerHTML="O<sub>3</sub>";
+        legendUnit.innerHTML="ppb<sup>&nbsp;</sup>";
+        break;
+        case "aqhi":
+        legend.innerHTML="AQHI<sub>&nbsp;</sub>";
+        legendUnit.innerHTML="&nbsp;<sup>&nbsp;</sup>";
+        break;
+        case "so2":
+        legend.innerHTML="SO<sub>2</sub>";
+        legendUnit.innerHTML="ppb<sup>&nbsp;</sup>";
+        break;
+        case "co2":
+        legend.innerHTML="CO<sub>2</sub>";
+        legendUnit.innerHTML="ppm<sup>&nbsp;</sup>";
+        break;
+        case "pm10":
+        legend.innerHTML="PM<sub>10</sub>";
+        legendUnit.innerHTML="μg/m<sup>3</sup>";
+        break;
+        default:
+        legend.innerHTML="&nbsp;<sub>&nbsp;</sub>";
+        legendUnit.innerHTML="&nbsp;<sup>&nbsp;</sup>";
+    }
+    infoBlock.classList.add("active");
+    //Change the gradient color bar level number
+    //changeLevel(buttonID);
+    showColorBar();
+}
+let lastClickPollution = "aqhi";
+let enoughPoint = true;
+
+
+function changeContent_decreapted(buttonID){
+    //console.log("enter changeContent with",let1);
+    /*
+        Get all the element that need to be change when
+        a pollution button is clicked.
+    */
+    lastClickPollution = buttonID;                              //store the last clicked pollution for later period button click
+    //console.log("lastClickPollution in changeContent",lastClickPollution);                                  
     let paramname = document.getElementById("paramname");       //pollution name shown in the circle
     let unit = document.getElementById("unit");                  //pollution unit shown in the circle
     let legend = document.getElementById("legend");             //pollution name shown in the chart
@@ -286,6 +382,8 @@ function changeContent(buttonID){
     clickHereClicked = false;
     for(let i = 0; i < paramButtons.length; i++){
         paramButtons[i].classList.remove("active");
+    }
+    for(let i = 0; i < infoBlocks.length; i++){
         infoBlocks[i].classList.remove("active");
     }
     circle.classList.add(selectedButton.className.split(" ")[1]);
@@ -369,8 +467,7 @@ function changeContent(buttonID){
     //changeLevel(buttonID);
     showColorBar();
 }
-let lastClickPollution = "aqhi";
-let enoughPoint = true;
+
 /*********************************************
  * Function to add Enter for searhing to the 
  * address search button
@@ -535,7 +632,7 @@ function getJSON(url, callback){
     xhr.send();
 }
 
-function postJSON(url,callback,message = null){
+function postJSON(url, callback, message = null){
     let xhr;
     if (window.XMLHttpRequest){
         xhr= new XMLHttpRequest();
@@ -615,10 +712,10 @@ String.prototype.splice = function(idx, rem, str) {
  ***********************************************/
 let myChart;
 let pollutantJSON = [];
-let o3_yAxes,no2_yAxes,no_yAxes,aqhi_yAxes,pm2_5_yAxes,co_yAxes,so2_yAxes,co2_yAxes;
+let o3_yAxes,no2_yAxes,no_yAxes,aqhi_yAxes,pm2_5_yAxes,co_yAxes,so2_yAxes,co2_yAxes,pm10_yAxes;
 let largeFont,smallFont;
 let o3_yAxes_half,no2_yAxes_half,no_yAxes_half,aqhi_yAxes_half;
-let pm2_5_yAxes_half,co_yAxes_half,so2_yAxes_half,co2_yAxes_half;
+let pm2_5_yAxes_half,co_yAxes_half,so2_yAxes_half,co2_yAxes_half,pm10_yAxes_half;
 /***********************************************
  * Get chart feature from json
  ***********************************************/
@@ -635,7 +732,8 @@ function getChartFeature(json) {
     co_yAxes = json.co_yAxes;
     so2_yAxes = json.so2_yAxes;
     co2_yAxes = json.co2_yAxes;
-    
+    pm10_yAxes = json.pm10_yAxes;
+
     o3_yAxes_half = json.o3_yAxes_half;
     no2_yAxes_half = json.no2_yAxes_half;
     no_yAxes_half = json.no_yAxes_half;
@@ -644,6 +742,7 @@ function getChartFeature(json) {
     co_yAxes_half = json.co_yAxes_half;
     so2_yAxes_half = json.so2_yAxes_half;
     co2_yAxes_half = json.co2_yAxes_half;
+    pm10_yAxes_half = json.pm10_yAxes_half;
 
     largeFont.ticks.callback = function (value, index, values) {
         if (index % gap == 0) {
@@ -953,6 +1052,7 @@ function updateChart(pollutant){
             //console.log(pollutantJSON,pollutantJSON.length,enoughPoint)
             window.alert("No data can be used for updating the chart");
         }
+        thresholdInfo[pollutant]['high'].high = Math.max(...value);
         if(Math.max(...value) > thresholdInfo[pollutant].medium.high){
             //Ajust yAxes according to the pollutant
             eval("myChart.options.scales.yAxes[0] = " + pollutant + "_yAxes");
@@ -995,13 +1095,14 @@ function changeGradient(pollutant,levelNum){
     let gradientBar = colorBar.createLinearGradient(0,0,0,245);
     let level = ['very_low','low','medium','medium_high','high'];
     let full = 1;
+    let difference,percentage,colorPrecentage;
     for(let i = 0; i < levelNum; i++){
-        let difference = thresholdInfo[pollutant][level[i]].high - thresholdInfo[pollutant][level[i]].low;
-        let percentage = difference / thresholdInfo[pollutant][level[levelNum-1]].high;
-        let colorPrecentage = full-percentage >= 0?full-percentage:0;
+        difference = thresholdInfo[pollutant][level[i]].high - thresholdInfo[pollutant][level[i]].low;
+        percentage = difference / thresholdInfo[pollutant][level[levelNum-1]].high;
+        colorPrecentage = full-percentage >= 0?full-percentage:0;
         gradient.addColorStop(colorPrecentage,colorMap[level[i]]);
         gradientBar.addColorStop(colorPrecentage,colorMap[level[i]]);
-        full -= percentage,colorMap[level[i]];
+        full -= percentage;
     }
     colorBar.fillStyle = gradientBar;
     colorBar.fillRect(0,0,30,245);
@@ -1290,6 +1391,8 @@ function changeButtonColor(newMarker){
             let value = singleSensorJSON[0][buttons[i].id];
             checkColor(value,buttons[i].id,threshold);
         };
+        checkColor(singleSensorJSON[0]["aqhi"],"aqhi",thresholdInfo["aqhi"]);
+    
         let temperature = document.getElementById("temperature");
         let humidity = document.getElementById("humidity");
         if(singleSensorJSON[0]['temperature'] != null && singleSensorJSON[0]['temperature'] != "NULL"){
@@ -1319,17 +1422,43 @@ function changeButtonColor(newMarker){
  ******************************************************/
 function checkColor(value,id,threshold){
     try{
-        let button = document.getElementById(id);
-        let buttonUnit = document.getElementById(id + "-unit");
         /*
             If the value is null, the button value will show as "--".
             If the value is less than the minimal sensor detectable level,
             it will show as "<(threhold)". Ohterwise, it will show as the value.
         */
-        if(id == 'aqhi'){
-            buttonUnit.innerHTML = value != null && value != "null" ?parseInt(value) : "--";
+        if(id == "aqhi"){
+            let paramUnit = document.getElementById("unit");
+            let circle = document.getElementById("circle");
+            paramUnit.innerHTML = value != null && value != "null" ?parseInt(value) : "--";
+            if(value < threshold.very_low.high){
+                circle.className = "circle very_low";
+                //console.log(id," button to green");
+            } 
+            if(threshold.low.low <= value && value < threshold.low.high){
+                circle.className = "circle low";
+                //console.log(id," button to lightgreen");        
+            }
+            if(threshold.medium.low <= value && value < threshold.medium.high){
+                circle.className = "circle medium";
+                //console.log(id," button to yellow");        
+            }
+            if(threshold.medium_high.low <= value && value < threshold.medium_high.high){
+                circle.className = "circle medium_high";
+                //console.log(id," button to orange");        
+            }
+            if(threshold.high.low <= value){
+                circle.className = "circle high";
+                //console.log(id," button to red");        
+            }
+            if(value == "null" || value == null || value == "NULL"){
+                circle.className = "circle grey";
+                //console.log(id," button to grey");
+            }
         }
         else{
+            let button = document.getElementById(id);
+            let buttonUnit = document.getElementById(id + "-unit");
             if(value != null && value != "null" ){
                 if( value >= threshold.low_limit ){
                     buttonUnit.innerHTML = parseFloat(value).toFixed(1);
@@ -1341,32 +1470,33 @@ function checkColor(value,id,threshold){
             else{
                 buttonUnit.innerHTML = "--";
             }
+            if(value < threshold.very_low.high){
+                button.className = "parammenu-button very_low";
+                //console.log(id," button to green");
+            } 
+            if(threshold.low.low <= value && value < threshold.low.high){
+                button.className = "parammenu-button low";
+                //console.log(id," button to lightgreen");        
+            }
+            if(threshold.medium.low <= value && value < threshold.medium.high){
+                button.className = "parammenu-button medium";
+                //console.log(id," button to yellow");        
+            }
+            if(threshold.medium_high.low <= value && value < threshold.medium_high.high){
+                button.className = "parammenu-button medium_high";
+                //console.log(id," button to orange");        
+            }
+            if(threshold.high.low <= value){
+                button.className = "parammenu-button high";
+                //console.log(id," button to red");        
+            }
+            if(value == "null" || value == null || value == "NULL"){
+                button.className = "parammenu-button grey";
+                //console.log(id," button to grey");
+            }
         }
         //console.log(id,' button enter with ',value);
-        if(value < threshold.very_low.high){
-            button.className = "parammenu-button very_low";
-            //console.log(id," button to green");
-        } 
-        if(threshold.low.low <= value && value < threshold.low.high){
-            button.className = "parammenu-button low";
-            //console.log(id," button to lightgreen");        
-        }
-        if(threshold.medium.low <= value && value < threshold.medium.high){
-            button.className = "parammenu-button medium";
-            //console.log(id," button to yellow");        
-        }
-        if(threshold.medium_high.low <= value && value < threshold.medium_high.high){
-            button.className = "parammenu-button medium_high";
-            //console.log(id," button to orange");        
-        }
-        if(threshold.high.low <= value){
-            button.className = "parammenu-button high";
-            //console.log(id," button to red");        
-        }
-        if(value == "null" || value == null || value == "NULL"){
-            button.className = "parammenu-button grey";
-            //console.log(id," button to grey");
-        }
+
     }
     catch(err){
         console.error("ERROR when checkColor: ",err);
@@ -1469,20 +1599,20 @@ function showColorBar(){
     let popup = document.getElementById("popup");
     popup.classList.add("show");
 }
-function toggleColorBar(){
-    let popup = document.getElementById("popup");
-    popup.classList.toggle("show");
-}
-function changeLevel(buttonID){
-    let level_2 = document.getElementById("level-2");
-    let level_3 = document.getElementById("level-3");
-    let level_4 = document.getElementById("level-4");
-    let level_5 = document.getElementById("level-5");
-    let level_6 = document.getElementById("level-6");
+// function toggleColorBar(){
+//     let popup = document.getElementById("popup");
+//     popup.classList.toggle("show");
+// }
+// function changeLevel(buttonID){
+//     let level_2 = document.getElementById("level-2");
+//     let level_3 = document.getElementById("level-3");
+//     let level_4 = document.getElementById("level-4");
+//     let level_5 = document.getElementById("level-5");
+//     let level_6 = document.getElementById("level-6");
 
-    level_2.innerHTML = thresholdInfo[buttonID].very_low.high;
-    level_3.innerHTML = thresholdInfo[buttonID].low.high;
-    level_4.innerHTML = thresholdInfo[buttonID].medium.high;
-    level_5.innerHTML = thresholdInfo[buttonID].medium_high.high;
-    level_6.innerHTML = thresholdInfo[buttonID].high.high;
-}
+//     level_2.innerHTML = thresholdInfo[buttonID].very_low.high;
+//     level_3.innerHTML = thresholdInfo[buttonID].low.high;
+//     level_4.innerHTML = thresholdInfo[buttonID].medium.high;
+//     level_5.innerHTML = thresholdInfo[buttonID].medium_high.high;
+//     level_6.innerHTML = thresholdInfo[buttonID].high.high;
+// }

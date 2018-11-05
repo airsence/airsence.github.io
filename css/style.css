@@ -545,6 +545,8 @@ header .navbar-collapse li button {
   cursor: pointer;
 }
 .shadow-button,
+article .left .data-panel .content .parammain .circle:hover,
+article .left .data-panel .content .parammain .active,
 article .left .data-panel .content .parammenu ul li .parammenu-button:hover,
 article .left .data-panel .content .parammenu ul li .active {
   font-weight: bold;
@@ -648,6 +650,9 @@ article .left .data-panel .content .parammain {
   background-color: white;
   width: 25%;
 }
+article .left .data-panel .content .parammain button {
+  background: transparent;
+}
 article .left .data-panel .content .parammain .circle {
   float: right;
   height: var(--circlesize);
@@ -656,6 +661,7 @@ article .left .data-panel .content .parammain .circle {
   border-radius: var(--circleradius);
   position: relative;
   top: 15px;
+  cursor: pointer;
 }
 article .left .data-panel .content .parammain .circle .paramname,
 article .left .data-panel .content .parammain .circle .paramunit {
@@ -767,7 +773,7 @@ article .left .chart {
 article .left .chart .period-choose {
   position: inherit;
   float: left;
-  background-color: white;
+  background-color: transparent;
   display: block;
 }
 article .left .chart .period-choose ul {
@@ -888,9 +894,6 @@ article .left .chart .legend h2 {
 article .left .chart .legend h1 sub,
 article .left .chart .legend h2 sub {
   font-size: 16px;
-}
-article .left .chart .legend h1 {
-  cursor: pointer;
 }
 article .left .chart .legend h2 {
   font-size: 14px;
