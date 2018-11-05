@@ -39,6 +39,7 @@ const POLLUTANT_URL = "https://www.signalfusion.com:9000/api/v1.1/getpollutant";
 ******************************************************/
 function checkCookie(){
     try{
+        setUpGuide();
         let ExpiresTime = getCookie("ExpiresTime");
         if(ExpiresTime == ""){
             let nowTime = new Date();
@@ -86,8 +87,8 @@ function getCookie(cname) {
 /******************************************************
 * Setup user guide for user who first use this website
 ******************************************************/
-function startGuide(firstTimeFlag){
-    try {
+function setUpGuide(){
+    try{
         let overlay = document.getElementById('guide-overlay');
         tour = new Tour({
             //debug:true,
@@ -136,6 +137,15 @@ function startGuide(firstTimeFlag){
             }
            
         }
+    }
+    catch(exception){
+        console.error("ERROR when setup guide:" + exception);
+        overlay.classList.remove('active');
+    }
+
+}
+function startGuide(firstTimeFlag){
+    try {
         if(firstTimeFlag){
             tour.init();
             tour.start();
