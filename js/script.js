@@ -46,15 +46,16 @@ function checkCookie(){
             let expireTime = moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");
             document.cookie = "ExpiresTime="+expireTime+";Expires="+expireTime+';path=/';
             console.log("don't have cookie,",document.cookie);
-            startGuide(true);
+            startGuide();
         }
         else{
             let expireTime = new Date(ExpiresTime);
             let nowTime = new Date();
             if( nowTime.getTime() - expireTime.getTime()> 0){
-                document.cookie = "ExpiresTime="+expireTime+";Expires="+moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss");+';path=/';
+                let et = moment(nowTime.getTime() + COOKIE_EXPIRE).format("YYYY-MM-DD HH:mm:ss") 
+                document.cookie = "ExpiresTime="+ et +";Expires=" + et +';path=/';
                 console.log("have cookie,",document.cookie);
-                startGuide(false);
+                startGuide();
             }
             else{
                 console.log("don't need guide",document.cookie);
@@ -66,6 +67,7 @@ function checkCookie(){
     }
 }
 const COOKIE_EXPIRE = 1000*60*60*24*365;
+//const COOKIE_EXPIRE = 1000*60;
 /******************************************************
 * Function for getting speical proprety in the cookie.
 ******************************************************/
@@ -89,14 +91,13 @@ function getCookie(cname) {
 ******************************************************/
 function setUpGuide(){
     try{
-        let overlay = document.getElementById('guide-overlay');
         tour = new Tour({
             //debug:true,
             onStart: function (tour) {
-                overlay.classList.add('active');
+                document.getElementById('guide-overlay').classList.add('active');
             },
             onEnd: function (tour) {
-                overlay.classList.remove('active');
+                document.getElementById('guide-overlay').classList.remove('active');
             }
         });
         for(let i = 0 ;i < guideStep.length;i++){
@@ -135,24 +136,23 @@ function setUpGuide(){
                     }
                 )
             }
-           
+            tour.init();
         }
     }
     catch(exception){
         console.error("ERROR when setup guide:" + exception);
-        overlay.classList.remove('active');
+        document.getElementById('guide-overlay').classList.remove('active');
     }
 
 }
-function startGuide(firstTimeFlag){
+function startGuide() {
+    let overlay = document.getElementById('guide-overlay');
     try {
-        if(firstTimeFlag){
-            tour.init();
+        if(!tour.ended())
             tour.start();
-        }
-        else{
+        else
             tour.restart();
-        }
+        //tour.restart();
     }
     catch (exception) {
         console.error("ERROR when start guide: " + exception);
@@ -186,6 +186,8 @@ function loadingInfo(){
             lastClick = json[0].lastClick;
             refreshTimeChart = json[0].refreshTimeChart;
             refreshTimeButton = json[0].refreshTimeButton;
+            //refreshTimeChart = 20 * 1000;
+            //refreshTimeButton = 30 * 1000;
             guideStep = json[0].guide_step;
             drawChart();
             autoRefreshChart();
@@ -363,7 +365,7 @@ function changeContent(buttonID){
     infoBlock.classList.add("active");
     //Change the gradient color bar level number
     //changeLevel(buttonID);
-    showColorBar();
+    //showColorBar();
 }
 let lastClickPollution = "aqhi";
 let enoughPoint = true;
@@ -475,7 +477,7 @@ function changeContent_decreapted(buttonID){
     infoBlock.classList.add("active");
     //Change the gradient color bar level number
     //changeLevel(buttonID);
-    showColorBar();
+    //showColorBar();
 }
 
 /*********************************************
@@ -496,15 +498,21 @@ function addEnterToInput(){
  * several time
  *********************************************/
 function autoRefreshChart(){
-    window.setInterval(function(){
-        for (let i = 0; i < markers.length; i++) {
-            if (markers[i].deviceID == lastClick) {
-                isAutoRefreshChart = true;
-                markers[i].markerElement.click();
-                break;  
+    window.setInterval(function () {
+        try {
+            for (let i = 0; i < markers.length; i++) {
+                if (markers[i].deviceID == lastClick) {
+                    isAutoRefreshChart = true;
+                    markers[i].markerElement.click();
+                    break;
+                }
             }
         }
-    },refreshTimeChart);
+        catch (exception) {
+            console.error("ERROR when autoRefreshChart: " + exception);
+        }
+    }, refreshTimeChart);
+    
 }
 let isAutoRefreshChart = false;
 /*********************************************
@@ -663,29 +671,6 @@ function postJSON(url, callback, message = null){
     };
     xhr.send(message);
 }
-/*
-function postDB(url, callback,message=null){
-    let xhr;
-    if (window.XMLHttpRequest){
-        xhr= new XMLHttpRequest();
-    }
-    else{
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xhr.open('POST', url, true);
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    //xhr.responseType = 'json';
-    xhr.onload = function() {
-      let status = xhr.status;
-      if (status === 200) {
-        callback(null, xhr.response);
-      } else {
-        callback(status, xhr.response);
-      }
-    };
-    xhr.send(message);
-}
-*/
 
 /***********************************************
  * For changing period time to show different
@@ -1193,14 +1178,63 @@ function drop() {
         //After drop the marker, send a 'click' trigger to the last clicked marker
         //This will only do once when the whole website is first loaded.
         if(firstDrop){
+            /*
+            geolocator.on('geolocate',function(data){
+                console.log(data.coords.latitude,);
+            })
+            */
+           var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          };
+          
+          function success(pos) {
+            var crd = pos.coords;
+          
+            console.log('Your current position is:');
+            console.log(`Latitude : ${crd.latitude}`);
+            console.log(`Longitude: ${crd.longitude}`);
+            console.log(`More or less ${crd.accuracy} meters.`);
+            let distanceArray = [];
+            let min = Infinity;
+            let minID;
+            for(let i = 0; i < sensorInfoJSON.length; i++){
+                let lat = sensorInfoJSON[i].sensor_info.lat;
+                let lng = sensorInfoJSON[i].sensor_info.lng;
+                let distance = Math.sqrt((crd.latitude-lat)^2 + (crd.longitude-lng)^2);
+                if(distance < min){
+                    min = distance;
+                    minID = sensorInfoJSON[i].sensor_info.serial_number;
+                }
+            }
+            lastClick = minID;
+            //console.log(`latsClick: ${lastClick}`);
             for (let i = 0; i < markers.length; i++) {
                 if (markers[i].deviceID == lastClick) {
                     markers[i].markerElement.click();
-                    markers[i].popup.addTo(map);
+                    //markers[i].popup.addTo(map);
                     break;
                 }
             }
             firstDrop = false;
+          }
+          
+          function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+            //console.log(`latsClick: ${lastClick}`);
+            lastClick = sensorInfoJSON[0].sensor_info.serial_number;
+            for (let i = 0; i < markers.length; i++) {
+                if (markers[i].deviceID == lastClick) {
+                    markers[i].markerElement.click();
+                    //markers[i].popup.addTo(map);
+                    break;
+                }
+            }
+            firstDrop = false;
+          }
+          
+          navigator.geolocation.getCurrentPosition(success, error, options);  
         }
     }
     catch(err){
@@ -1227,6 +1261,7 @@ function checkAQHI(aqhi) {
  ******************************************************/
 let sensorIDArray = [];
 let markerID = 0;
+let firstLoad = true;
 function addMarker(sensorInfo) {
     try {
         //console.log("enter addMarker");
@@ -1255,6 +1290,7 @@ function addMarker(sensorInfo) {
             markerElement.style.width = '25px';
             markerElement.style.height = '25px';
             markerElement.style.cursor = 'pointer';
+            markerElement.id = 'device_' + sensorInfo.sensor_info.serial_number;
             let popup = new mapboxgl.Popup({ offset: 25 })
             .setHTML('<h1>' + String(sensorInfo.sensor_info.station_name) + '</h1>')
             .setLngLat([sensorInfo.sensor_info.lng, sensorInfo.sensor_info.lat]);
@@ -1363,7 +1399,10 @@ function addMarker(sensorInfo) {
                         }
                         document.getElementById("article-left").classList.remove("non-active");
                         loadingOverlay.classList.remove("active");
-                        checkCookie();
+                        if(firstLoad){
+                            firstLoad = false;
+                            checkCookie();
+                        }
                     }
                     else {
                         console.error(err);
@@ -1373,7 +1412,7 @@ function addMarker(sensorInfo) {
                     }
                 }, messagePollutant);
             });
-
+            
             //    We push the new marker object into a array
             markers.push(newMarker);
         }
@@ -1529,6 +1568,9 @@ function setGeocoder(){
             positionOptions: {
                 enableHighAccuracy: true
             },
+            fitBoundsOptions:{
+              maxZoom:12  
+            },
             trackUserLocation: true
         });
         map.addControl(geolocator);
@@ -1605,10 +1647,10 @@ function notLatestSensor(){
 /******************************************************
  * Function for showing gradient color bar
  ******************************************************/
-function showColorBar(){
-    let popup = document.getElementById("popup");
-    popup.classList.add("show");
-}
+// function showColorBar(){
+//     let popup = document.getElementById("popup");
+//     popup.classList.add("show");
+// }
 // function toggleColorBar(){
 //     let popup = document.getElementById("popup");
 //     popup.classList.toggle("show");
