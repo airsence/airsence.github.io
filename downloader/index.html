@@ -285,12 +285,10 @@
                   $(function () {
                     $('#datetimepicker1').datetimepicker({
                       format: "YYYY-MM-DD HH:mm:ss",
-                      maxDate: Date.now(),
                       useCurrent: false
                     });
                     $('#datetimepicker2').datetimepicker({
                       format: "YYYY-MM-DD HH:mm:ss",
-                      maxDate: Date.now(),
                       useCurrent: false//Important! See issue #1075
                     });
                     $("#datetimepicker1").on("dp.change", function (e) {
