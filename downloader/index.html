@@ -45,15 +45,17 @@
         let deviceID = document.getElementById("id_device_id").value;
         let startdate = document.getElementById("id_startdate").value;
         let enddate = document.getElementById("id_enddate").value;
+        let utc_startdate = moment(new Date(startdate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
+        let utc_enddate = moment(new Date(enddate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
         let message = encodeURI(
           "id=" +
             apikey +
             "&device_id=" +
             deviceID +
             "&startdate='" +
-            startdate +
+            utc_startdate +
             "'&enddate='" +
-            enddate +
+            utc_enddate +
             "'"
         );
         // console.log(message);
@@ -81,9 +83,9 @@
               let filename =
                 deviceID +
                 "_" +
-                startdate.replace(" ", "_").replace(":", "_") +
+                utc_startdate.replace(" ", "_").replace(":", "_") +
                 "_" +
-                enddate.replace(" ", "_").replace(":", "_") +
+                utc_enddate.replace(" ", "_").replace(":", "_") +
                 "." +
                 returnFormat;
               download_link.download = filename;
@@ -127,10 +129,14 @@
           progressBar.innerHTML = progressBar.value + "%";
           myTimer = window.setInterval(function() {
             let progressBar = document.getElementById("progress_bar");
-            progressBar.value += 1;
-            progressBar.style.width = progressBar.value + 5 + "%";
+            if (progressBar.value + 1 <= 99)
+              progressBar.value += 1;
+            if (progressBar.value + 1 <= 94)
+              progressBar.style.width = progressBar.value + 5 + "%";
+            else
+              progressBar.style.width = progressBar.value + "%";
             progressBar.innerHTML = progressBar.value + "%";
-          }, 500);
+          }, 1000);
         };
         xhr.onloadend = function(event) {
           //console.log("onloadend");
@@ -285,10 +291,12 @@
                   $(function () {
                     $('#datetimepicker1').datetimepicker({
                       format: "YYYY-MM-DD HH:mm:ss",
+                      maxDate: new Date(Date.now()),
                       useCurrent: false
                     });
                     $('#datetimepicker2').datetimepicker({
                       format: "YYYY-MM-DD HH:mm:ss",
+                      maxDate: new Date(Date.now()),
                       useCurrent: false//Important! See issue #1075
                     });
                     $("#datetimepicker1").on("dp.change", function (e) {
@@ -296,6 +304,7 @@
                     });
                     $("#datetimepicker2").on("dp.change", function (e) {
                       $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+                      $('#datetimepicker2').data("DateTimePicker").maxDate(new Date(Date.now()));
                     });
                   });
                 </script>

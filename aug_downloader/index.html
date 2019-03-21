@@ -20,254 +20,263 @@
       //"https://www.signalfusion.com:9000/apis/v1.3/getpollutantlistcsv";
     "http://192.168.1.230:9001/apis/v1.3/getpollutantlistcsv";
     function downloadData(event) {
-      event.preventDefault();
-      //document.getElementById("download_panel").style.display = "none";
-      document.getElementById("div_download_link").style.display = "none";
-      let apikey = document.getElementById("id_apikey").value;
-      let returnFormat;
-      let returnFormatList = document.getElementsByName("select");
+        event.preventDefault();
+        //document.getElementById("download_panel").style.display = "none";
+        document.getElementById("div_download_link").style.display = "none";
+        let apikey = document.getElementById("id_apikey").value;
+        let returnFormat;
+        let returnFormatList = document.getElementsByName("select");
 
-      for (let i = 0; i < returnFormatList.length; i++) {
-        if (returnFormatList[i].checked) {
-          returnFormat = returnFormatList[i].value;
-          break;
-        }
-      }
-      let deviceID = document.getElementById("id_device_id").value;
-      let startdate = document.getElementById("id_startdate").value;
-      let enddate = document.getElementById("id_enddate").value;
-      let message = encodeURI(
-        "id=" +
-        apikey +
-        "&device_id=" +
-        deviceID +
-        "&startdate='" +
-        startdate +
-        "'&enddate='" +
-        enddate +
-        "'"
-      );
-      // console.log(message);
-      // console.log(returnFormat);
-      let requestUrl = POLLUTANT_LIST_CSV_URL;
-      if (returnFormat == "json") {
-        requestUrl = POLLUTANT_LIST_URL;
-      }
-      postRequest(
-        requestUrl,
-        returnFormat,
-        function (err, xhr) {
-          if (err == null) {
-            let blob = new Blob([xhr.response], {
-              type: "text/" + returnFormat
-            });
-            //let link = document.createElement("a");
-            let download_link_div = document.getElementById("div_download_link");
-            download_link_div.style.display = "block";
-            let download_link = document.getElementById("download_link");
-            //link.style = "display:none";
-            //document.body.appendChild(link);
-            let url = window.URL.createObjectURL(blob);
-            download_link.href = url;
-            let filename =
-              deviceID +
-              "_" +
-              startdate.replace(" ", "_").replace(":", "_") +
-              "_" +
-              enddate.replace(" ", "_").replace(":", "_") +
-              "." +
-              returnFormat;
-            download_link.download = filename;
-            //link.click();
-            //window.URL.revokeObjectURL(url);
-          } else {
-            let errMsg = JSON.parse(xhr.response);
-            alert("ERROR " + err + ": " + errMsg.message);
+        for (let i = 0; i < returnFormatList.length; i++) {
+          if (returnFormatList[i].checked) {
+            returnFormat = returnFormatList[i].value;
+            break;
           }
-        },
-        message
-      );
-    }
-    function postRequest(url, responseType, callback, message = null) {
-      let xhr = new XMLHttpRequest();
-      xhr.open("POST", url, true);
-      xhr.setRequestHeader(
-        "Content-type",
-        "application/x-www-form-urlencoded"
-      );
-      // xhr.onprogress = function(event) {
-      //   console.log("onprogress");
-      //   let progressBar = document.getElementById("progress_bar");
-      //   let precentComplete = event.loaded / event.total;
-      //   console.log("precentComplete: " + precentComplete);
-      //   console.log("event.loaded: " + event.loaded);
-      //   console.log("event.total: " + event.total);
-      //   progressBar.value = precentComplete;
-      //   progressBar.style.width = precentComplete;
-      //   progressBar.innerHTML =
-      // };
-      let myTimer;
-      xhr.onloadstart = function (event) {
-        //console.log("onloadstart");
-        let progressBar = document.getElementById("progress_bar");
-        document.getElementById("download_panel").style.display = "block";
-
-        progressBar.style.display = "block";
-        progressBar.value = 0;
-        progressBar.style.width = "5%";
-        progressBar.innerHTML = progressBar.value + "%";
-        myTimer = window.setInterval(function () {
-          let progressBar = document.getElementById("progress_bar");
-          progressBar.value += 1;
-          progressBar.style.width = progressBar.value + 5 + "%";
-          progressBar.innerHTML = progressBar.value + "%";
-        }, 500);
-      };
-      xhr.onloadend = function (event) {
-        //console.log("onloadend");
-        let progressBar = document.getElementById("progress_bar");
-        clearInterval(myTimer);
-        progressBar.value = 100;
-        progressBar.style.width = "100%";
-        progressBar.innerHTML = "100%";
-      };
-      // xhr.responseType = "blob";
-      xhr.onload = function () {
-        console.log("onload");
-        let status = xhr.status;
-        if (status === 200) {
-          callback(null, xhr);
-        } else {
-          callback(status, xhr);
         }
-      };
-      xhr.send(message);
-    }
-  </script>
-  <!------ Include the above in your HEAD tag ---------->
-</head>
+        let deviceID = document.getElementById("id_device_id").value;
+        let startdate = document.getElementById("id_startdate").value;
+        let enddate = document.getElementById("id_enddate").value;
+        let utc_startdate = moment(new Date(startdate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
+        let utc_enddate = moment(new Date(enddate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
+        let message = encodeURI(
+          "id=" +
+          apikey +
+          "&device_id=" +
+          deviceID +
+          "&startdate='" +
+          utc_startdate +
+          "'&enddate='" +
+          utc_enddate +
+          "'"
+        );
+        // console.log(message);
+        // console.log(returnFormat);
+        let requestUrl = POLLUTANT_LIST_CSV_URL;
+        if (returnFormat == "json") {
+          requestUrl = POLLUTANT_LIST_URL;
+        }
+        postRequest(
+          requestUrl,
+          returnFormat,
+          function (err, xhr) {
+            if (err == null) {
+              let blob = new Blob([xhr.response], {
+                type: "text/" + returnFormat
+              });
+              //let link = document.createElement("a");
+              let download_link_div = document.getElementById("div_download_link");
+              download_link_div.style.display = "block";
+              let download_link = document.getElementById("download_link");
+              //link.style = "display:none";
+              //document.body.appendChild(link);
+              let url = window.URL.createObjectURL(blob);
+              download_link.href = url;
+              let filename =
+                deviceID +
+                "_" +
+                utc_startdate.replace(" ", "_").replace(":", "_") +
+                "_" +
+                utc_enddate.replace(" ", "_").replace(":", "_") +
+                "." +
+                returnFormat;
+              download_link.download = filename;
+              //link.click();
+              //window.URL.revokeObjectURL(url);
+            } else {
+              let errMsg = JSON.parse(xhr.response);
+              alert("ERROR " + err + ": " + errMsg.message);
+            }
+          },
+          message
+        );
+      }
+      function postRequest(url, responseType, callback, message = null) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        // xhr.onprogress = function(event) {
+        //   console.log("onprogress");
+        //   let progressBar = document.getElementById("progress_bar");
+        //   let precentComplete = event.loaded / event.total;
+        //   console.log("precentComplete: " + precentComplete);
+        //   console.log("event.loaded: " + event.loaded);
+        //   console.log("event.total: " + event.total);
+        //   progressBar.value = precentComplete;
+        //   progressBar.style.width = precentComplete;
+        //   progressBar.innerHTML =
+        // };
+        let myTimer;
+        xhr.onloadstart = function (event) {
+          //console.log("onloadstart");
+          let progressBar = document.getElementById("progress_bar");
+          document.getElementById("download_panel").style.display = "block";
 
-<body>
-  <div class="container">
-    <div id="signupbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-      <div class="panel panel-info">
-        <div class="panel-heading">
-          <div class="panel-title">AirSENCE&trade; Data Download</div>
-          <div style="float:right; font-size: 85%; position: relative; top:-10px"></div>
-        </div>
-        <div class="panel-body">
-          <form method="post" onsubmit="downloadData(event)">
-            <input type="hidden" name="csrfmiddlewaretoken" value="XFe2rTYl9WOpV8U6X5CfbIuOZOELJ97S" />
-            <div id="div_id_select" class="form-group required">
-              <label for="id_select" class="control-label  requiredField">
-                Return Format<span class="asteriskField">*</span>
-              </label>
-              <div class="controls  " style="margin-bottom: 10px">
-                <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="json"
-                    style="margin-bottom: 10px" />JSON</label>
-                <label class="radio-inline">
-                  <input type="radio" name="select" id="id_select_2" value="csv" style="margin-bottom: 10px" />CSV
-                </label>
-              </div>
+          progressBar.style.display = "block";
+          progressBar.value = 0;
+          progressBar.style.width = "5%";
+          progressBar.innerHTML = progressBar.value + "%";
+          myTimer = window.setInterval(function () {
+            let progressBar = document.getElementById("progress_bar");
+            if (progressBar.value + 1 <= 99)
+              progressBar.value += 1;
+            if (progressBar.value + 1 <= 94)
+              progressBar.style.width = progressBar.value + 5 + "%";
+            else
+              progressBar.style.width = progressBar.value + "%";
+            progressBar.innerHTML = progressBar.value + "%";
+          }, 1000);
+        };
+        xhr.onloadend = function (event) {
+          //console.log("onloadend");
+          let progressBar = document.getElementById("progress_bar");
+          clearInterval(myTimer);
+          progressBar.value = 100;
+          progressBar.style.width = "100%";
+          progressBar.innerHTML = "100%";
+        };
+        // xhr.responseType = "blob";
+        xhr.onload = function () {
+          console.log("onload");
+          let status = xhr.status;
+          if (status === 200) {
+            callback(null, xhr);
+          } else {
+            callback(status, xhr);
+          }
+        };
+        xhr.send(message);
+      }
+    </script>
+    <!------ Include the above in your HEAD tag ---------->
+    </head>
+    
+    <body>
+      <div class="container">
+        <div id="signupbox" style=" margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <div class="panel-title">AirSENCE&trade; Data Download</div>
+              <div style="float:right; font-size: 85%; position: relative; top:-10px"></div>
             </div>
-            <div id="div_id_apikey" class="form-group required">
-              <label for="id_apikey" class="control-label requiredField">
-                API Key<span class="asteriskField">*</span>
-              </label>
-              <input class="input-md  textinput textInput form-control" id="id_apikey" maxlength="32" name="apikey"
-                placeholder="Enter your API Key" style="margin-bottom: 10px" type="text" required />
-            </div>
-            <div id="div_id_device_id" class="form-group required">
-              <label for="id_device_id" class="control-label requiredField">
-                Device ID<span class="asteriskField">*</span> (5 digits)
-              </label>
-              <input class="input-md emailinput form-control" id="id_device_id" name="device_id" placeholder="Device ID you want to query"
-                style="margin-bottom: 10px" type="text" required pattern="[0-9]{5}" />
-            </div>
-            <div id="div_id_startdate" class="form-group required">
-              <label for="id_startdate" class="control-label  requiredField">Start Date<span class="asteriskField">*</span>
-              </label>
-              <div class="input-group date" id="datetimepicker1">
-                <input type="text" class="form-control" id="id_startdate" required />
-                <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-                </span>
-              </div>
-              <!-- <script type="text/javascript">
-                  $(function() {
-                    $("#datetimepicker1").datetimepicker({
-                      format: "YYYY-MM-DD HH:mm:ss",
-                      maxDate: Date.now()
+            <div class="panel-body">
+              <form method="post" onsubmit="downloadData(event)">
+                <input type="hidden" name="csrfmiddlewaretoken" value="XFe2rTYl9WOpV8U6X5CfbIuOZOELJ97S" />
+                <div id="div_id_select" class="form-group required">
+                  <label for="id_select" class="control-label  requiredField">
+                    Return Format<span class="asteriskField">*</span>
+                  </label>
+                  <div class="controls  " style="margin-bottom: 10px">
+                    <label class="radio-inline"><input type="radio" checked="checked" name="select" id="id_select_1" value="json"
+                        style="margin-bottom: 10px" />JSON</label>
+                    <label class="radio-inline">
+                      <input type="radio" name="select" id="id_select_2" value="csv" style="margin-bottom: 10px" />CSV
+                    </label>
+                  </div>
+                </div>
+                <div id="div_id_apikey" class="form-group required">
+                  <label for="id_apikey" class="control-label requiredField">
+                    API Key<span class="asteriskField">*</span>
+                  </label>
+                  <input class="input-md  textinput textInput form-control" id="id_apikey" maxlength="32" name="apikey"
+                    placeholder="Enter your API Key" style="margin-bottom: 10px" type="text" required />
+                </div>
+                <div id="div_id_device_id" class="form-group required">
+                  <label for="id_device_id" class="control-label requiredField">
+                    Device ID<span class="asteriskField">*</span> (5 digits)
+                  </label>
+                  <input class="input-md emailinput form-control" id="id_device_id" name="device_id" placeholder="Device ID you want to query"
+                    style="margin-bottom: 10px" type="text" required pattern="[0-9]{5}" />
+                </div>
+                <div id="div_id_startdate" class="form-group required">
+                  <label for="id_startdate" class="control-label  requiredField">Start Date<span class="asteriskField">*</span>
+                  </label>
+                  <div class="input-group date" id="datetimepicker1">
+                    <input type="text" class="form-control" id="id_startdate" required />
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+                  <!-- <script type="text/javascript">
+                      $(function() {
+                        $("#datetimepicker1").datetimepicker({
+                          format: "YYYY-MM-DD HH:mm:ss",
+                          maxDate: Date.now()
+                        });
+                      });
+                    </script> -->
+                </div>
+                <div id="div_id_enddate" class="form-group required">
+                  <label for="id_enddate" class="control-label  requiredField">
+                    End Date<span class="asteriskField">*</span>
+                  </label>
+    
+                  <div class="input-group date" id="datetimepicker2">
+                    <input type="text" class="form-control" id="id_enddate" required />
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+                  <!-- <script type="text/javascript">
+                      $(function() {
+                        $("#datetimepicker2").datetimepicker({
+                          format: "YYYY-MM-DD HH:mm:ss",
+                          maxDate: Date.now()
+                        });
+                      });
+                    </script> -->
+                  <script type="text/javascript">
+                    $(function () {
+                      $('#datetimepicker1').datetimepicker({
+                        format: "YYYY-MM-DD HH:mm:ss",
+                        maxDate: new Date(Date.now()),
+                        useCurrent: false
+                      });
+                      $('#datetimepicker2').datetimepicker({
+                        format: "YYYY-MM-DD HH:mm:ss",
+                        maxDate: new Date(Date.now()),
+                        useCurrent: false//Important! See issue #1075
+                      });
+                      $("#datetimepicker1").on("dp.change", function (e) {
+                        $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+                      });
+                      $("#datetimepicker2").on("dp.change", function (e) {
+                        $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+                        $('#datetimepicker2').data("DateTimePicker").maxDate(new Date(Date.now()));
+                      });
                     });
-                  });
-                </script> -->
+                  </script>
+                </div>
+                <div class="form-group">
+                  <div class="aab controls col-md-5"></div>
+                  <div class="controls">
+                    <input type="submit" name="Submit" value="Submit" class="btn btn-primary btn btn-info" id="submit-id-download" />
+    
+                  </div>
+                </div>
             </div>
-            <div id="div_id_enddate" class="form-group required">
-              <label for="id_enddate" class="control-label  requiredField">
-                End Date<span class="asteriskField">*</span>
-              </label>
-
-              <div class="input-group date" id="datetimepicker2">
-                <input type="text" class="form-control" id="id_enddate" required />
-                <span class="input-group-addon">
-                  <span class="glyphicon glyphicon-calendar"></span>
-                </span>
+            </form>
+          </div>
+          <div class="panel panel-info" style="display:none;" id="download_panel">
+            <div class="panel-body">
+              <div class="progress" id="div_progress_bar">
+                <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0"
+                  aria-valuemax="100" style="width: 2%; display: none;">
+                  2%
+                </div>
               </div>
-              <!-- <script type="text/javascript">
-                  $(function() {
-                    $("#datetimepicker2").datetimepicker({
-                      format: "YYYY-MM-DD HH:mm:ss",
-                      maxDate: Date.now()
-                    });
-                  });
-                </script> -->
-              <script type="text/javascript">
-                $(function () {
-                  $('#datetimepicker1').datetimepicker({
-                    format: "YYYY-MM-DD HH:mm:ss",
-                    useCurrent: false
-                  });
-                  $('#datetimepicker2').datetimepicker({
-                    format: "YYYY-MM-DD HH:mm:ss",
-                    useCurrent: false//Important! See issue #1075
-                  });
-                  $("#datetimepicker1").on("dp.change", function (e) {
-                    $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
-                  });
-                  $("#datetimepicker2").on("dp.change", function (e) {
-                    $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
-                  });
-                });
-              </script>
-            </div>
-            <div class="form-group">
-              <div class="aab controls col-md-5"></div>
-              <div class="controls">
-                <input type="submit" name="Submit" value="Submit" class="btn btn-primary btn btn-info" id="submit-id-download" />
-
+              <div id="div_download_link" style="display:none;">
+                <p><label>Your file is ready</label></p>
+                <div class="aab controls col-md-5"></div>
+                <a href="#" id="download_link" class="btn btn-primary btn btn-info">Download</a>
               </div>
-            </div>
-        </div>
-        </form>
-      </div>
-      <div class="panel panel-info" style="display:none;" id="download_panel">
-        <div class="panel-body">
-          <div class="progress" id="div_progress_bar">
-            <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0"
-              aria-valuemax="100" style="width: 2%; display: none;">
-              2%
             </div>
           </div>
-          <div id="div_download_link" style="display:none;">
-            <p><label>Your file is ready</label></p>
-            <div class="aab controls col-md-5"></div>
-            <a href="#" id="download_link" class="btn btn-primary btn btn-info">Download</a>
-          </div>
         </div>
       </div>
-    </div>
-  </div>
-  </div>
-</body>
-
-</html>
+      </div>
+    </body>
+    
+    </html>
