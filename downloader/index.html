@@ -71,8 +71,9 @@
                 type: "text/" + returnFormat
               });
               //let link = document.createElement("a");
-              let download_link = document.getElementById("div_download_link");
-              download_link.style.display = "block";
+              let download_link_div = document.getElementById("div_download_link");
+              download_link_div.style.display = "block";
+              let download_link = document.getElementById("download_link");
               //link.style = "display:none";
               //document.body.appendChild(link);
               let url = window.URL.createObjectURL(blob);
