@@ -1013,7 +1013,9 @@ function checkEnoughPoint(pollutant) {
 function updateChart(pollutant) {
   //console.log("enter updateChart with " + pollutant);
   let date = [];
-  let value = [];
+  // let value = [];
+  let value = new Array(numPoint).fill(-100);
+  let dict = {};
   let multiple = numPoint == 49 ? 1 : 2;
   try {
     if (pollutantJSON != null && pollutantJSON.length > 0 && enoughPoint) {
@@ -1028,46 +1030,59 @@ function updateChart(pollutant) {
           .format("YYYY-MM-DD HH:mm:ss");
         date.push(nowTime);
       }
-      let numPointIndex, pollutantJSONIndex;
-      for (
-        numPointIndex = 0, pollutantJSONIndex = 0;
-        numPointIndex < numPoint;
-        numPointIndex++
-      ) {
-        let nextPollutantJsonPointNum = pollutantJSONIndex * multiple;
-        if (nextPollutantJsonPointNum >= pollutantJSON.length) {
-          nextPollutantJsonPointNum = pollutantJSON.length - 1;
-        }
-        let stillUtc = moment
-          .utc(pollutantJSON[nextPollutantJsonPointNum].timestamp)
-          .toDate();
+      for (let i = 0; i < pollutantJSON.length; i++) {
+        let stillUtc = moment.utc(pollutantJSON[i].timestamp).toDate();
         let local = moment(stillUtc)
           .local()
           .format("YYYY-MM-DD HH:mm:ss");
+        dict[local] = pollutantJSON[i][pollutant];
+      }
 
-        nextPollutantJsonPointNum = pollutantJSONIndex * multiple + 1;
-        if (nextPollutantJsonPointNum >= pollutantJSON.length) {
-          nextPollutantJsonPointNum = pollutantJSON.length - 1;
-        }
-        let stillUtcPlus = moment
-          .utc(pollutantJSON[nextPollutantJsonPointNum].timestamp)
-          .toDate();
-        let localPlus = moment(stillUtcPlus)
-          .local()
-          .format("YYYY-MM-DD HH:mm:ss");
-        //console.log(local,localPlus,date[numPointIndex]);
-        if (local == date[numPointIndex]) {
-          value.push(pollutantJSON[pollutantJSONIndex * multiple][pollutant]);
-          pollutantJSONIndex++;
-        } else if (localPlus == date[numPointIndex]) {
-          value.push(
-            pollutantJSON[pollutantJSONIndex * multiple + 1][pollutant]
-          );
-          pollutantJSONIndex++;
-        } else {
-          value.push(-100);
+      for (let i = 0; i < numPoint; i++) {
+        if (dict[date[i]]) {
+          value[i] = dict[date[i]];
         }
       }
+      // let numPointIndex, pollutantJSONIndex;
+      // for (
+      //   numPointIndex = 0, pollutantJSONIndex = 0;
+      //   numPointIndex < numPoint;
+      //   numPointIndex++
+      // ) {
+      //   let nextPollutantJsonPointNum = pollutantJSONIndex * multiple;
+      //   if (nextPollutantJsonPointNum >= pollutantJSON.length) {
+      //     nextPollutantJsonPointNum = pollutantJSON.length - 1;
+      //   }
+      //   let stillUtc = moment
+      //     .utc(pollutantJSON[nextPollutantJsonPointNum].timestamp)
+      //     .toDate();
+      //   let local = moment(stillUtc)
+      //     .local()
+      //     .format("YYYY-MM-DD HH:mm:ss");
+
+      //   nextPollutantJsonPointNum = pollutantJSONIndex * multiple + 1;
+      //   if (nextPollutantJsonPointNum >= pollutantJSON.length) {
+      //     nextPollutantJsonPointNum = pollutantJSON.length - 1;
+      //   }
+      //   let stillUtcPlus = moment
+      //     .utc(pollutantJSON[nextPollutantJsonPointNum].timestamp)
+      //     .toDate();
+      //   let localPlus = moment(stillUtcPlus)
+      //     .local()
+      //     .format("YYYY-MM-DD HH:mm:ss");
+      //   //console.log(local,localPlus,date[numPointIndex]);
+      //   if (local == date[numPointIndex]) {
+      //     value.push(pollutantJSON[pollutantJSONIndex * multiple][pollutant]);
+      //     pollutantJSONIndex++;
+      //   } else if (localPlus == date[numPointIndex]) {
+      //     value.push(
+      //       pollutantJSON[pollutantJSONIndex * multiple + 1][pollutant]
+      //     );
+      //     pollutantJSONIndex++;
+      //   } else {
+      //     value.push(-100);
+      //   }
+      // }
       //console.log("pollutantJSON:",pollutantJSON);
       //console.log("date:",date);
     } else {
