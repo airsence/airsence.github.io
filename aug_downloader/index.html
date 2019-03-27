@@ -15,10 +15,10 @@
   <script>
     const POLLUTANT_LIST_URL =
       //"https://www.signalfusion.com:9000/api/v1.3/getpollutantlist";
-    "http://192.168.1.230:9001/apis/v1.3/getpollutantlist";
+    "https://192.168.1.230:9000/apis/v1.3/getpollutantlist";
     const POLLUTANT_LIST_CSV_URL =
       //"https://www.signalfusion.com:9000/apis/v1.3/getpollutantlistcsv";
-    "http://192.168.1.230:9001/apis/v1.3/getpollutantlistcsv";
+    "https://192.168.1.230:9000/apis/v1.3/getpollutantlistcsv";
     function downloadData(event) {
         event.preventDefault();
         //document.getElementById("download_panel").style.display = "none";
@@ -261,6 +261,7 @@
           </div>
           <div class="panel panel-info" style="display:none;" id="download_panel">
             <div class="panel-body">
+              <p><label>Timestamp in the file will be UTC time.</label></p>
               <div class="progress" id="div_progress_bar">
                 <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0"
                   aria-valuemax="100" style="width: 2%; display: none;">
