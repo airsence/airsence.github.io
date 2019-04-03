@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AirSENCE - Breathe Safe, Breathe Easy</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+      rel="stylesheet"
+    />
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <!-- link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" crossorigin="anonymous" / -->
+    <script src="/js/script.js"></script>
+
+    <script>
+      const LOGIN_URL = "https://www.signalfusion.com:9000/api/v1.3/login"; //TO BE FILLED IN
+      //"http://192.168.1.230:9001/apis/v1.3/login";
+
+      String.prototype.hashCode = function() {
+        var hash = 0,
+          i,
+          chr;
+        if (this.length === 0) return hash;
+        for (i = 0; i < this.length; i++) {
+          chr = this.charCodeAt(i);
+          hash = (hash << 5) - hash + chr;
+          hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+      };
+      let temp_uid = "4F09FC2FFE674AA9A568A2BD23C95CB9";
+      function submitLogin(event) {
+        event.preventDefault();
+
+        let username = document.getElementById("id_username").value;
+        let password = document.getElementById("id_password").value.hashCode();
+
+        //alert("Hash: " + password);
+
+        let message = encodeURI(
+          "id=" + temp_uid + "&username=" + username + "&password=" + password
+        );
+
+        postRequest(
+          LOGIN_URL,
+          function(err, xhr) {
+            if (err == null) {
+              //login is successful, TO BE FILLED IN
+              if (typeof Storage !== "undefined") {
+                window.sessionStorage.setItem("api_key", xhr.response.api_key);
+                window.sessionStorage.setItem(
+                  "device_id",
+                  xhr.response.device_id
+                );
+                //let user_api_key = sessionStorage.getItem("api_key");
+                //let user_device_id = sessionStorage.getItem("device_id");
+                //alert("user_api_key:" + user_api_key + "\nuser_device_id:" + user_device_id);
+                window.location.href("/portal");
+              } else {
+                alert("ERROR: please get the most recent browser");
+              }
+            } else {
+              let errMsg = xhr.response;
+              //alert("ERROR " + err + ": " + errMsg.message);
+              alert("ERROR: Invaild username or password. ");
+            }
+          },
+          message
+        );
+
+        /*
+			document.getElementById("div_download_link").style.display = "none";
+			let apikey = document.getElementById("id_apikey").value;
+			let returnFormat;
+			let returnFormatList = document.getElementsByName("select");
+
+			for (let i = 0; i < returnFormatList.length; i++) {
+			  if (returnFormatList[i].checked) {
+				returnFormat = returnFormatList[i].value;
+				break;
+			  }
+			}
+			let deviceID = document.getElementById("id_device_id").value;
+			let startdate = document.getElementById("id_startdate").value;
+			let enddate = document.getElementById("id_enddate").value;
+			let utc_startdate = moment(new Date(startdate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
+			let utc_enddate = moment(new Date(enddate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
+			let message = encodeURI(
+			  "id=" +
+			  apikey +
+			  "&device_id=" +
+			  deviceID +
+			  "&startdate='" +
+			  utc_startdate +
+			  "'&enddate='" +
+			  utc_enddate +
+			  "'"
+			);
+			// console.log(message);
+			// console.log(returnFormat);
+			let requestUrl = POLLUTANT_LIST_CSV_URL;
+			if (returnFormat == "json") {
+			  requestUrl = POLLUTANT_LIST_URL;
+			}
+
+			postRequest(
+			  requestUrl,
+			  //returnFormat,
+			  function (err, xhr) {
+				if (err == null) {
+				  let blob = new Blob([xhr.response], {
+					type: "text/" + returnFormat
+				  });
+				  //let link = document.createElement("a");
+				  let download_link_div = document.getElementById("div_download_link");
+				  download_link_div.style.display = "block";
+				  let download_link = document.getElementById("download_link");
+				  let url = window.URL.createObjectURL(blob);
+				  download_link.href = url;
+				  let filename =
+					deviceID +
+					"_" +
+					utc_startdate.replace(" ", "_").replace(":", "_") +
+					"_" +
+					utc_enddate.replace(" ", "_").replace(":", "_") +
+					"." +
+					returnFormat;
+				  download_link.download = filename;
+				} else {
+				  let errMsg = JSON.parse(xhr.response);
+				  alert("ERROR " + err + ": " + errMsg.message);
+				}
+			  },
+			  message
+			);
+			*/
+      }
+
+      function postRequest(url, /*responseType,*/ callback, message = null) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        xhr.responseType = "json";
+        /*
+			let myTimer;
+			xhr.onloadstart = function (event) {
+			  //console.log("onloadstart");
+			  let progressBar = document.getElementById("progress_bar");
+			  document.getElementById("download_panel").style.display = "block";
+
+			  progressBar.style.display = "block";
+			  progressBar.value = 0;
+			  progressBar.style.width = "5%";
+			  progressBar.innerHTML = progressBar.value + "%";
+			  myTimer = window.setInterval(function () {
+				let progressBar = document.getElementById("progress_bar");
+				if (progressBar.value < 99)
+				  progressBar.value += 1;
+				if (progressBar.value <= 94)
+				  progressBar.style.width = progressBar.value + 5 + "%";
+				else
+				  progressBar.style.width = progressBar.value + "%";
+				progressBar.innerHTML = progressBar.value + "%";
+			  }, 1000);
+			};
+			xhr.onloadend = function (event) {
+			  //console.log("onloadend");
+			  let progressBar = document.getElementById("progress_bar");
+			  clearInterval(myTimer);
+			  progressBar.value = 100;
+			  progressBar.style.width = "100%";
+			  progressBar.innerHTML = "100%";
+			};
+			// xhr.responseType = "blob";
+			xhr.onload = function () {
+			  console.log("onload");
+			  let status = xhr.status;
+			  if (status === 200) {
+				callback(null, xhr);
+			  } else {
+				callback(status, xhr);
+			  }
+			};
+			*/
+        xhr.onload = function() {
+          //console.log("onload");
+          let status = xhr.status;
+          if (status === 200) {
+            callback(null, xhr);
+          } else {
+            callback(status, xhr);
+          }
+        };
+        xhr.send(message);
+      }
+    </script>
+  </head>
+
+  <body onresize="onResize()">
+    <header>
+      <section class="row">
+        <section class="left" id="desktop-left">
+          <div class="menu-button" onclick="onMenuClick()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+          <section class="logo">
+            <a href="/">
+              <img src="/images/logo.png" />
+            </a>
+          </section>
+          <section class="slogen">
+            <h2>BREATHE SAFE</h2>
+            <h2>BREATHE EASY</h2>
+          </section>
+        </section>
+        <nav class="navbar-collapse col-4" id="navbar-collapse">
+          <li>
+            <a href="/">
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="/resources">
+              Resources
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://twitter.com/theairsence"
+              class="icon"
+              target="_blank"
+            >
+              <img src="/images/twitter.png" />
+            </a>
+            <a
+              href="http://augsignals.com/contact-us/"
+              class="icon"
+              target="_blank"
+            >
+              <img src="/images/envelope.png" />
+            </a>
+          </li>
+          <li>
+            <a href="http://airsence.augsignals.com/" target="_blank">
+              Learn More
+            </a>
+          </li>
+        </nav>
+        <!--end of navbar-->
+        <section class="right" id="desktop-right">
+          <nav class="navbar col-12">
+            <ul>
+              <li>
+                <a href="/">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="/resources">
+                  Resources
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://twitter.com/theairsence"
+                  class="icon"
+                  target="_blank"
+                >
+                  <img src="/images/twitter.png" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="http://augsignals.com/contact-us/"
+                  class="icon"
+                  target="_blank"
+                >
+                  <img src="/images/envelope.png" />
+                </a>
+              </li>
+              <li>
+                <a href="http://airsence.augsignals.com/" target="_blank">
+                  Learn More
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!--end of navbar-->
+        </section>
+        <!--end of right-->
+      </section>
+      <!-- end of row-->
+    </header>
+    <article class="col-12">
+      <section class="video-section">
+        <section class="bar">
+          <h1></h1>
+        </section>
+      </section>
+      <!--end of video-section -->
+
+      <section class="tweets-section">
+        <section class="bar">
+          <h1>LOGIN</h1>
+        </section>
+        <section class="content">
+          <div class="container">
+            <div
+              class="row justify-content-center align-items-center"
+              style="height:50vh"
+            >
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <form method="post" onsubmit="submitLogin(event)">
+                      <!-- action="" autocomplete="off" -->
+                      <label for="username" class="control-label requiredField">
+                        Username<span class="asteriskField">*</span>
+                      </label>
+                      <div class="form-group">
+                        <!-- input type="text" class="form-control" name="username" -->
+                        <input
+                          class="input-md  textinput textInput form-control"
+                          name="username"
+                          style="margin-bottom: 10px"
+                          type="text"
+                          id="id_username"
+                          required
+                        />
+                      </div>
+
+                      <label for="password" class="control-label requiredField">
+                        Password<span class="asteriskField">*</span>
+                      </label>
+                      <div class="form-group">
+                        <!--input type="password" class="form-control" name="password" -->
+                        <input
+                          class="input-md  textinput textInput form-control"
+                          name="password"
+                          style="margin-bottom: 10px"
+                          type="password"
+                          id="id_password"
+                          required
+                        />
+                      </div>
+                      <!--button type="button" id="sendlogin" class="btn btn-primary">login</button -->
+                      <div class="form-group">
+                        <div class="aab controls col-md-5"></div>
+                        <div class="controls">
+                          <input
+                            type="submit"
+                            name="Login"
+                            value="Login"
+                            class="btn btn-primary btn btn-info"
+                            id="id_submitLogin"
+                          />
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <!-- end of tweets-section -->
+      <section class="article-section">
+        <section class="bar">
+          <h1></h1>
+        </section>
+        <!-- end of content section-->
+      </section>
+      <!--end of article section -->
+    </article>
+  </body>
+</html>

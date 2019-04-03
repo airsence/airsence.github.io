@@ -6,174 +6,164 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="css/style.css" rel="stylesheet" type="text/css" />
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet" type='text/css'>
+  <link href="/css/bootstrap-tour-standalone.min.css" rel="stylesheet" type="text/css">
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css" type="text/css" />
+
+  <script type="text/javascript" src="/js/jquery-3.3.1.min.js" ></script>
+  <script type="text/javascript" src="/js/bootstrap-tour-standalone.min.js" ></script>
+  <script type="text/javascript" src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js' ></script>
+  <script type="text/javascript" src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js" ></script>
+
+  <script type="text/javascript" src="/js/Chart.bundle.min.js" ></script>
+  <script type="text/javascript" src="/js/moment.min.js" ></script>
+  <script type="text/javascript" src="/js/chartjs-plugin-annotation.min.js" ></script>
 
   <script type="text/javascript" src="js/script.js" charset="utf-8"></script>
-
-  <link href="css/bootstrap-tour-standalone.min.css" rel="stylesheet" type='text/css'>
-  <script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
-  <script type="text/javascript" src="js/bootstrap-tour-standalone.min.js" ></script>
-
-
-  <script type="text/javascript" src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js' ></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' type='text/css'/>
-  <script type="text/javascript" src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js' ></script>
-  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
-
-  <script type="text/javascript" src="js/Chart.bundle.min.js" ></script>
-  <script type="text/javascript" src="js/moment.min.js" ></script>
-  <script type="text/javascript" src="js/chartjs-plugin-annotation.min.js" ></script>
-  
 
 </head>
 
 <body onload="onMainLoad()" onresize="onResize()">
     <script type="text/javascript">
-      navigator.sayswho= (function(){
-          var ua= navigator.userAgent, tem, 
-          M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-          if(/trident/i.test(M[1])){
-              tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
-              return 'IE '+(tem[1] || '');
-          }
-          if(M[1]=== 'Chrome'){
-              tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
-              if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-          }
-          M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
-          if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
-          return M.join(' ');
-      })();
-      let browserType = navigator.sayswho;
-      if(browserType.match(/IE/))
-      {
-        console.log("IT IS IE!");
-        window.alert("This website does not support IE.");
-      }
-      else{
-        console.log("IT IS NOT IE.");
-      }
+		navigator.sayswho= (function(){
+			var ua= navigator.userAgent, tem, 
+			M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+			if (/trident/i.test(M[1])){
+			  tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+			  return 'IE '+(tem[1] || '');
+			}
+			if(M[1]=== 'Chrome'){
+			  tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
+			  if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+			}
+			M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+			if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+			return M.join(' ');
+		})();
+
+		let browserType = navigator.sayswho;
+
+		if (browserType.match(/IE/))
+		{
+			//console.log("IT IS IE!");
+			window.alert("This website does not support IE.");
+		}
+		else{
+			//console.log("IT IS NOT IE.");
+		}
     </script>
-  <header>
-    <section class="row">
-      <section class="left" id="desktop-left">
-        <div class="menu-button" onclick="onMenuClick()">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-        </div>
-        <section class="logo" id="logo">
-          <a href="/">
-            <img src="images/logo.png">
-          </a>
-        </section>
-        <section class="slogen">
-          <h2>BREATHE SAFE</h2>
-          <h2>BREATHE EASY</h2>
-        </section>
-      </section>
-      <nav class="navbar-collapse col-4" id="navbar-collapse">
-        <li>
-          <button onclick="onClickHere(this.id)" id="about-info-">
-            <a href="#about-info-detail">About</a>
-          </button>
-        </li>
-        <li>
-          <button onclick="restartGuide()" id="how-to-use-info-">
-            <a href="#user-guide-info-detail">User Guide</a>
-          </button>
-        </li>
-        <li>
-          <a href="/resources">
-            Resources
-          </a>
-        </li>
-        <li>
-          <a href="https://twitter.com/theairsence" class="icon" target="_blank">
-            <img src="images/twitter.png">
-          </a>
-          <a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
-            <img src="images/envelope.png">
-          </a>
-        </li>
-        <li>
-          <a href="/login">
-            Login
-          </a>
-        </li>
-      </nav>
-      <!--end of navbar collapse-->
-      <section class="right" id="desktop-right">
-        <nav class="navbar col-12">
-          <ul>
-            <li>
-              <button onclick="onClickHere(this.id)" id="about-info-">
-                About
-              </button>
-            </li>
-            <li>
-              <button onclick="restartGuide()" id="how-to-use-info-">
-                User Guide
-              </button>
-            </li>
-            <li>
-              <a href="/resources">
-                Resources
-              </a>
-            </li>
-            <li>
-              <a href="https://twitter.com/theairsence" class="icon" target="_blank">
-                <img src="images/twitter.png">
-              </a>
-            </li>
-            <li>
-              <a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
-                <img src="images/envelope.png">
-              </a>
-            </li>
-            <li>
-              <a href="/login">
-                Login
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <!--end of navbar-->
+	
+	<header>
+		<section class="row">
+			<section class="left" id="desktop-left">
+				<div class="menu-button" onclick="onMenuClick()">
+					<div class="bar"></div>
+					<div class="bar"></div>
+					<div class="bar"></div>
+				</div>
+				<section class="logo" id="logo">
+					<a href="/portal/">
+						<img src="/images/logo.png">
+					</a>
+				</section>
+				<section class="slogen">
+					<h2>BREATHE SAFE</h2>
+					<h2>BREATHE EASY</h2>
+				</section>
+			</section>
+			<!--End of left-->
 
+			<nav class="navbar-collapse col-4" id="navbar-collapse">
+				<li>
+					<button onclick="onClickHere(this.id)" id="about-info-">
+						<a href="#about-info-detail">About</a>
+					</button>
+				</li>
+				<li>
+					<button onclick="restartGuide()" id="how-to-use-info-">
+						<a href="#user-guide-info-detail">User Guide</a>
+					</button>
+				</li>
+				<!--
+				<li>
+					<a href="/resources">Resources</a>
+				</li>
+				-->
+				<li>
+					<!--
+					<a href="https://twitter.com/theairsence" class="icon" target="_blank">
+						<img src="/images/twitter.png">
+					</a>
+					-->
+					<a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
+						<img src="/images/envelope.png">
+					</a>
+				</li>
+				<li>
+					<a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
+				</li>
+			</nav>
+			<!--end of navbar collapse-->
+			
+			<section class="right" id="desktop-right">
+				<nav class="navbar col-12">
+					<ul>
+						<li>
+							<button onclick="onClickHere(this.id)" id="about-info-">About</button>
+						</li>
+						<li>
+							<button onclick="restartGuide()" id="how-to-use-info-">User Guide</button>
+						</li>
+						<!--
+						<li>
+							<a href="/resources">Resources</a>
+						</li>
+						-->
+						<!--
+						<li>
+							<a href="https://twitter.com/theairsence" class="icon" target="_blank">
+								<img src="/images/twitter.png">
+							</a>
+						</li>
+						-->
+						<li>
+							<a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
+								<img src="/images/envelope.png">
+							</a>
+						</li>
+						<li>
+							<a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
+						</li>
+					</ul>
+				</nav>
+				<!--end of navbar-->
+			</section>
+			<!--end of right-->
 
+		</section>
+		<!-- end of row-->
 
-      </section>
-      <!--end of right-->
-    </section>
-    <!-- end of row-->
-    <section class="search-bar col-12">
-      <section class="left col-5">
-        <h1>HOW CLEAN IS YOUR AIR?</h1>
-      </section>
-      
-      <section class="right col-6">
-        <section class="search-container autocomplete">
-          <!--
-          <input name="address" id='address' type="text" placeholder="Enter your address" autocomplete="off">
-          <button type="button"  id="search-button">
-            <i class="fa fa-search"></i>
-          </button>
-          <button type="button" onclick="getUserLocation()">
-            <i class="fas fa-map-marker-alt"></i>
-          </button> 
-          <button type="button" onclick="getUserLocation()">
-              <i class="fas fa-map-marker-alt"></i>
-          </button>        
-          -->
-          <div id = 'address' class = 'address'></div>
-        </section>
-      </section>
-    </section>
-  
-    <!-- end of search-bar -->
-  </header>
+		<section class="search-bar col-12">
+			<section class="left col-5">
+				<h1>HOW CLEAN IS YOUR AIR?</h1>
+			</section>
+
+			<section class="right col-6">
+				<section class="search-container autocomplete">
+					<div id="download" style="padding-left:40%; font-family:Roboto; font-size:2em; letter-spacing:0.1em;">
+						<a id="download_link" class="btn btn-default" style="font-weight:900;" href="download/">Download Data</a>
+					</div>
+				</section>
+			</section>
+		
+		</section>
+		<!-- end of search-bar -->
+		
+	</header>
+
   <article class="col-12">
     <div id="loading" class="loading-overlay">
       <div class="loader"></div>
