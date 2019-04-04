@@ -1297,7 +1297,7 @@ function drop() {
             minID = sensorInfoJSON[i].sensor_info.serial_number;
           }
         }
-        lastClick = minID;
+        //lastClick = minID;
         //console.log(`latsClick: ${lastClick}`);
         for (let i = 0; i < markers.length; i++) {
           if (markers[i].deviceID == lastClick) {
