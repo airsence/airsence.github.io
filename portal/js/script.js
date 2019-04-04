@@ -1270,62 +1270,65 @@ function drop() {
                 console.log(data.coords.latitude,);
             })
             */
-      var options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-      };
+      // var options = {
+      //   enableHighAccuracy: true,
+      //   timeout: 5000,
+      //   maximumAge: 0
+      // };
 
-      function success(pos) {
-        var crd = pos.coords;
+      // function success(pos) {
+      //   var crd = pos.coords;
 
-        console.log("Your current position is:");
-        console.log(`Latitude : ${crd.latitude}`);
-        console.log(`Longitude: ${crd.longitude}`);
-        console.log(`Within ${crd.accuracy} meters.`);
-        let distanceArray = [];
-        let min = Infinity;
-        let minID;
-        for (let i = 0; i < sensorInfoJSON.length; i++) {
-          let lat = sensorInfoJSON[i].sensor_info.lat;
-          let lng = sensorInfoJSON[i].sensor_info.lng;
-          let distance = Math.sqrt(
-            (crd.latitude - lat) ^ (2 + (crd.longitude - lng)) ^ 2
-          );
-          if (distance < min) {
-            min = distance;
-            minID = sensorInfoJSON[i].sensor_info.serial_number;
-          }
-        }
-        //lastClick = minID;
-        //console.log(`latsClick: ${lastClick}`);
-        for (let i = 0; i < markers.length; i++) {
-          if (markers[i].deviceID == lastClick) {
-            markers[i].markerElement.click();
-            map.setCenter(markers[i].marker.getLngLat());
-            //markers[i].popup.addTo(map);
-            break;
-          }
-        }
-        firstDrop = false;
-      }
+      //   console.log("Your current position is:");
+      //   console.log(`Latitude : ${crd.latitude}`);
+      //   console.log(`Longitude: ${crd.longitude}`);
+      //   console.log(`Within ${crd.accuracy} meters.`);
+      //   let distanceArray = [];
+      //   let min = Infinity;
+      //   let minID;
+      //   for (let i = 0; i < sensorInfoJSON.length; i++) {
+      //     let lat = sensorInfoJSON[i].sensor_info.lat;
+      //     let lng = sensorInfoJSON[i].sensor_info.lng;
+      //     let distance = Math.sqrt(
+      //       (crd.latitude - lat) ^ (2 + (crd.longitude - lng)) ^ 2
+      //     );
+      //     if (distance < min) {
+      //       min = distance;
+      //       minID = sensorInfoJSON[i].sensor_info.serial_number;
+      //     }
+      //   }
+      //   //lastClick = minID;
+      //   //console.log(`latsClick: ${lastClick}`);
+      //   for (let i = 0; i < markers.length; i++) {
+      //     if (markers[i].deviceID == lastClick) {
+      //       markers[i].markerElement.click();
+      //       map.setCenter(markers[i].marker.getLngLat());
+      //       //markers[i].popup.addTo(map);
+      //       break;
+      //     }
+      //   }
+      //   firstDrop = false;
+      // }
 
-      function error(err) {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-        //console.log(`latsClick: ${lastClick}`);
-        lastClick = sensorInfoJSON[0].sensor_info.serial_number;
-        for (let i = 0; i < markers.length; i++) {
-          if (markers[i].deviceID == lastClick) {
-            markers[i].markerElement.click();
-            map.setCenter(markers[i].marker.getLngLat());
-            //markers[i].popup.addTo(map);
-            break;
-          }
-        }
-        firstDrop = false;
-      }
+      // function error(err) {
+      //   console.warn(`ERROR(${err.code}): ${err.message}`);
+      //   //console.log(`latsClick: ${lastClick}`);
+      //   lastClick = sensorInfoJSON[0].sensor_info.serial_number;
+      //   for (let i = 0; i < markers.length; i++) {
+      //     if (markers[i].deviceID == lastClick) {
+      //       markers[i].markerElement.click();
+      //       map.setCenter(markers[i].marker.getLngLat());
+      //       //markers[i].popup.addTo(map);
+      //       break;
+      //     }
+      //   }
+      //   firstDrop = false;
+      // }
 
-      navigator.geolocation.getCurrentPosition(success, error, options);
+      // navigator.geolocation.getCurrentPosition(success, error, options);
+      markers[0].markerElement.click();
+      map.setCenter(markers[0].marker.getLngLat());
+      firstDrop = false;
     }
   } catch (err) {
     window.alert(
