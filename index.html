@@ -1,569 +1,139 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>AirSENCE - Breathe Safe, Breathe Easy</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+      rel="stylesheet"
+    />
+    <script src="js/script.js"></script>
+  </head>
 
-<head>
-  <title>AirSENCE - Breathe Safe, Breathe Easy</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link href="css/style.css" rel="stylesheet" type="text/css" />
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-  <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet" type='text/css'>
-
-  <script type="text/javascript" src="js/script.js" charset="utf-8"></script>
-
-  <link href="css/bootstrap-tour-standalone.min.css" rel="stylesheet" type='text/css'>
-  <script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
-  <script type="text/javascript" src="js/bootstrap-tour-standalone.min.js" ></script>
-
-
-  <script type="text/javascript" src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js' ></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' type='text/css'/>
-  <script type="text/javascript" src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js' ></script>
-  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
-
-  <script type="text/javascript" src="js/Chart.bundle.min.js" ></script>
-  <script type="text/javascript" src="js/moment.min.js" ></script>
-  <script type="text/javascript" src="js/chartjs-plugin-annotation.min.js" ></script>
-  
-
-</head>
-
-<body onload="onMainLoad()" onresize="onResize()">
-    <script type="text/javascript">
-      navigator.sayswho= (function(){
-          var ua= navigator.userAgent, tem, 
-          M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-          if(/trident/i.test(M[1])){
-              tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
-              return 'IE '+(tem[1] || '');
-          }
-          if(M[1]=== 'Chrome'){
-              tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
-              if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-          }
-          M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
-          if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
-          return M.join(' ');
-      })();
-      let browserType = navigator.sayswho;
-      if(browserType.match(/IE/))
-      {
-        console.log("IT IS IE!");
-        window.alert("This website does not support IE.");
-      }
-      else{
-        console.log("IT IS NOT IE.");
-      }
-    </script>
-  <header>
-    <section class="search-bar col-12" style="font-size:1.5em;">
-      We plan to do a server maintenance today (April 10th) at 3:00PM - 6:00PM(EDT) . The
-      website will be not available during that time. We apologize for any
-      inconvenience.
-    </section>
-    <section class="row">
-      <section class="left" id="desktop-left">
-        <div class="menu-button" onclick="onMenuClick()">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-        </div>
-        <section class="logo" id="logo">
-          <a href="/">
-            <img src="images/logo.png">
-          </a>
+  <body>
+    <header>
+      <section class="row">
+        <section class="left" id="desktop-left">
+          <div class="menu-button" onclick="onMenuClick()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+          <section class="logo">
+            <a href="index.html">
+              <img src="images/logo.png" />
+            </a>
+          </section>
+          <section class="slogen">
+            <h2>BREATHE SAFE</h2>
+            <h2>BREATHE EASY</h2>
+          </section>
         </section>
-        <section class="slogen">
-          <h2>BREATHE SAFE</h2>
-          <h2>BREATHE EASY</h2>
-        </section>
-      </section>
-      <nav class="navbar-collapse col-4" id="navbar-collapse">
-        <li>
-          <button onclick="onClickHere(this.id)" id="about-info-">
-            <a href="#about-info-detail">About</a>
-          </button>
-        </li>
-        <li>
-          <button onclick="restartGuide()" id="how-to-use-info-">
-            <a href="#user-guide-info-detail">User Guide</a>
-          </button>
-        </li>
-        <li>
-          <a href="/resources">
-            Resources
-          </a>
-        </li>
-        <li>
-          <a href="https://twitter.com/theairsence" class="icon" target="_blank">
-            <img src="images/twitter.png">
-          </a>
-          <a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
-            <img src="images/envelope.png">
-          </a>
-        </li>
-        <li>
-          <a href="/login">
-            Login
-          </a>
-        </li>
-      </nav>
-      <!--end of navbar collapse-->
-      <section class="right" id="desktop-right">
-        <nav class="navbar col-12">
-          <ul>
-            <li>
-              <button onclick="onClickHere(this.id)" id="about-info-">
-                About
-              </button>
-            </li>
-            <li>
-              <button onclick="restartGuide()" id="how-to-use-info-">
-                User Guide
-              </button>
-            </li>
-            <li>
-              <a href="/resources">
-                Resources
-              </a>
-            </li>
-            <li>
-              <a href="https://twitter.com/theairsence" class="icon" target="_blank">
-                <img src="images/twitter.png">
-              </a>
-            </li>
-            <li>
-              <a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
-                <img src="images/envelope.png">
-              </a>
-            </li>
-            <li>
-              <a href="/login">
-                Login
-              </a>
-            </li>
-          </ul>
+        <nav class="navbar-collapse col-4" id="navbar-collapse">
+          <li>
+            <a href="index.html">
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="resources.html">
+              Resources
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://twitter.com/theairsence"
+              class="icon"
+              target="_blank"
+            >
+              <img src="images/twitter.png" />
+            </a>
+            <a
+              href="http://augsignals.com/contact-us/"
+              class="icon"
+              target="_blank"
+            >
+              <img src="images/envelope.png" />
+            </a>
+          </li>
+          <li>
+            <a href="http://airsence.augsignals.com/" target="_blank">
+              Learn More
+            </a>
+          </li>
         </nav>
         <!--end of navbar-->
-
-
-
-      </section>
-      <!--end of right-->
-    </section>
-    <!-- end of row-->
-    <section class="search-bar col-12">
-      <section class="left col-5">
-        <h1>HOW CLEAN IS YOUR AIR?</h1>
-      </section>
-      
-      <section class="right col-6">
-        <section class="search-container autocomplete">
-          <!--
-          <input name="address" id='address' type="text" placeholder="Enter your address" autocomplete="off">
-          <button type="button"  id="search-button">
-            <i class="fa fa-search"></i>
-          </button>
-          <button type="button" onclick="getUserLocation()">
-            <i class="fas fa-map-marker-alt"></i>
-          </button> 
-          <button type="button" onclick="getUserLocation()">
-              <i class="fas fa-map-marker-alt"></i>
-          </button>        
-          -->
-          <div id = 'address' class = 'address'></div>
-        </section>
-      </section>
-    </section>
-  
-    <!-- end of search-bar -->
-  </header>
-  <article class="col-12">
-    <div id="loading" class="loading-overlay">
-      <div class="loader"></div>
-    </div>
-    <div id="guide-overlay" class="loading-overlay">
-    </div>
-    <section id="article-left" class="left non-active">
-
-      <section class="data-panel col-12" id="data-panel">
-
-        <h1 id="sensor-address" class="col-12">----</h1>
-        <h2 class="col-12">
-          <button disabled = "true" style="display: none;">
-            <i class="fas fa-thermometer-half" ></i>
-          </button>
-          <span id="temperature" style="display: none;">--&deg;C</span>&nbsp;
-          <button disabled = "true" style="display: none;">
-            <i class="fas fa-tint"></i>
-          </button>
-          <span id="humidity" style="display: none;">--%</span>&nbsp;
-          <!--
-          <button>
-            <i class="fas fa-volume-up"></i>
-          </button>
-          <span>96dB</span>&nbsp;
-          -->
-        </h2>
-
-        <section class="content">
-
-          <section class="parammain">
-            <button id="aqhi" onclick="changeContent(this.id)">
-            <div class="circle grey" id="circle">
-        
-              <span class="paramname" id="paramname">AQHI</span>
-              <br/>
-              <span class="paramunit" id="unit">--</span>
-        
-            </div>
-          </button>
-        
-          </section>
-          <!-- End of parammain-->
-
-          <section class="parammenu">
+        <section class="right" id="desktop-right">
+          <nav class="navbar col-12">
             <ul>
               <li>
-                  <button id="co2" class="parammenu-button grey" onclick="changeContent(this.id)">
-                    CO<sub>2</sub>
-                    <a id="co2-unit">--</a>
-                  </button>
-                </li>
-              <li>
-                <button id="no2" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  NO<sub>2</sub>
-                  <a id="no2-unit">--</a>
-                </button>
+                <a href="index.html">
+                  Home
+                </a>
               </li>
               <li>
-                <button id="no" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  NO<sub> </sub>
-                  <a id="no-unit">--</a>
-                </button>
+                <a href="resources.html">
+                  Resources
+                </a>
               </li>
               <li>
-                <button id="pm2_5" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  PM<sub>2.5</sub>
-                  <a id="pm2_5-unit">--</a>
-                </button>
-              </li>
-
-            </ul>
-            <ul>
-              <li>
-                <button id="pm10" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  PM<sub>10</sub>
-                  <a id="pm10-unit">--</a>
-                </button>
+                <a
+                  href="https://twitter.com/theairsence"
+                  class="icon"
+                  target="_blank"
+                >
+                  <img src="images/twitter.png" />
+                </a>
               </li>
               <li>
-                <button id="co" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  CO<sub> </sub>
-                  <a id="co-unit">--</a>
-                </button>
+                <a
+                  href="http://augsignals.com/contact-us/"
+                  class="icon"
+                  target="_blank"
+                >
+                  <img src="images/envelope.png" />
+                </a>
               </li>
               <li>
-                <button id="o3" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  O<sub>3</sub>
-                  <a id="o3-unit">--</a>
-                </button>
-              </li>
-              <li>
-                <button id="so2" class="parammenu-button grey" onclick="changeContent(this.id)">
-                  SO<sub>2</sub>
-                  <a id="so2-unit">--</a>
-                </button>
+                <a href="http://airsence.augsignals.com/" target="_blank">
+                  Learn More
+                </a>
               </li>
             </ul>
-          </section>
-          <!-- End of parammenu -->
-
+          </nav>
+          <!--end of navbar-->
         </section>
-        <!-- End of content -->
-        <h2 class="col-12">
-          <span id="time">No Data Available</span>
-        </h2>
+        <!--end of right-->
       </section>
-      <!-- End of data-panel -->
-      <section  class="chart col-12" id="chart">
-        <section class="legend">
-            
-            <div class="popup-container" id="popup">
-              <!--<i class="fas fa-times" onclick="showColorBar()"></i>-->
-              <canvas id="color-bar" class="color-bar" height="245" width="30"></canvas>
-              <!--
-              <ul>
-                <li class="legend-value" id="level-6">100</li>
-                <li class="legend-value" id="level-5">80</li>
-                <li class="legend-value" id="level-4">60</li>
-                <li class="legend-value" id="level-3">40</li>
-                <li class="legend-value" id="level-2">20</li>
-                <li class="legend-value" id="level-1">0</li>
-              </ul>
-              -->
-            </div>
-            <h1 id="legend"></h1>
-            <h2 id="legend-unit"></h2>
-        </section>
-        <!--End of legend-->
-        <section class="param-chart" >
-          <canvas id="myChart" height="300" width="700"></canvas>
-        </section>
-        <section class="period-choose col-12" id="period">
-          <ul>
-            <li>
-              <button type="button" class="period_button" id="past_day" onclick="onPeriodClicked(1,this.id)">
-                Past Day
-              </button>
-            </li>
-
-            <li>
-              <button type="button" class="period_button" id="past_week" onclick="onPeriodClicked(7,this.id)">
-                Past Week
-              </button>
-            </li>
-
-            <li>
-              <button type="button" class="period_button" id="past_2_weeks" onclick="onPeriodClicked(14,this.id)">
-                Past 2 Weeks
-              </button>
-            </li>
-          </ul>
-        </section>
-        <!--End of period-choose-->
-      </section>
-      <!--End of chart-->
-      <section id = "info-section">
-        <section class="information-section col-12" id="pm2_5-info">
-          Fine Particulate Matter (PM<sub>2.5</sub>) is all airborne particles with a diameter of 2.5 microns or less. 
-          <button onclick="onClickHere(this.id)" id="pm2_5-info-"><a href="#pm2_5-info-detail">Click Here</a></button> to learn more!
-        </section>
-        <section class="information-section col-12" id="pm10-info">
-            Fine Particulate Matter (PM<sub>10</sub>) is all airborne particles with a diameter of 10 microns or less. 
-            <button onclick="onClickHere(this.id)" id="pm10-info-"><a href="#pm10-info-detail">Click Here</a></button> to learn more!
-          </section>
-        <section class="information-section col-12" id="no2-info">
-          Nitrogen Dioxide (NO<sub>2</sub>) us a by-product of incomplete combustion (gasoline, natural gas, coal) which can cause smog, airway irritation,
-          and induce attacks in asthmatics. 
-          <button onclick="onClickHere(this.id)" id="no2-info-"><a href="#no2-info-detail">Click Here</a></button> to learn more!
-        </section>
-        <section class="information-section col-12" id="no-info">
-          Nitrogen Oxide (NO) is a strong indicator of diesel vehicle emissions but can also come from other combustion processes. 
-          <button onclick="onClickHere(this.id)" id="no-info-"><a href="#no-info-detail">Click Here</a></button> to learn more!
-        </section>
-        <section class="information-section col-12" id="co-info">
-          Carbon Monoxide (CO) is produced by incomplete combustion from vehicles. Colourless and odourless, it can reduce oxygen delivery
-          within the human body.
-          <br> 
-          <button onclick="onClickHere(this.id)" id="co-info-"><a href="#co-info-detail">Click Here</a></button> to learn more!
-        </section>
-        <section class="information-section col-12" id="o3-info">
-          Ozone (O<sub>3</sub>) is an irritant and a major component of smog. It typically has similar concentrations across a city. 
-          <button onclick="onClickHere(this.id)" id="o3-info-"><a href="#o3-info-detail">Click Here</a></button> to learn more!
-        </section>
-        <section class="information-section col-12" id="aqhi-info">
-          The Air Quality Health Index (AQHI) is an air quality scale from 1-10+ that can help you make decisions so as to reduce health
-          risks arising from your exposure to air pollution. 
-          <button onclick="onClickHere(this.id)" id="aqhi-info-"><a href="#aqhi-info-detail">Click Here</a></button> to learn more!
-        </section>
-        <section class="information-section col-12" id="so2-info">
-          Sulfur dioxide(SO<sub>2</sub>) is an invisible gas with a sharp, pungent odour. It reacts easily with other substances to form harmful compounds, such
-          as sulfuric acid, sulfurous acid and sulfate particles.
-          <button onclick="onClickHere(this.id)" id="so2-info-"><a href="#so2-info-detail">Click Here</a></button> to learn more!
-        </section>
-        <section class="information-section col-12" id="co2-info">
-          Carbon dioxide(CO<sub>2</sub>) is the main product of combustion and respiration processes and typically occurs at concentrations near 400 ppb.
-          <button onclick="onClickHere(this.id)" id="co2-info-"><a href="#co2-info-detail">Click Here</a></button> to learn more!
+      <!-- end of row-->
+    </header>
+    <article class="col-12">
+      <section class="left">
+        <section class="error-logo">
+          <a href="index.html">
+            <img src="images/logo.png" />
+          </a>
         </section>
       </section>
-      <!--End of info-section-->
-    </section>
-
-    <!-- End of left -->
-    <section class="right">
-        <section class="detail-info" id="pm10-info-detail">
-            <div class="close-bar">
-              <button onclick="closeAllInfoBlock()" id="pm10-info-detail-close">
-                <i class="far fa-times-circle"></i>
-              </button>
-            </div>
-            <p id="pm10_p">
-              <b>Fine Particulate Matter (PM<sub>10</sub>)</b> includes any airborne particle (e.g. smoke, fumes, dust, ash, and pollen) with a diameter of 10 microns
-              or less. PM<sub>10</sub> has been associated with increased hospital visits and premature death, especially amongst children, the elderly,
-              and those with respiratory issues. PM<sub>10</sub> can have elevated concentrations near sources (e.g. barbecues, fires, construction)
-              but otherwise has concentrations that are generally similar across an urban area. The current (2015) Canadian Ambient Air
-              Quality Standards are 10 µg/m<sup>3</sup> (annual) and 28 µg/m<sup>3</sup> (24-hour) based on three-year averaging. Further details on PM<sub>10</sub> can
-              be found on the Ministry of Environment and Climate Change information page:
-              <br/>
-              <a href="http://www.airqualityontario.com/science/pollutants/particulates.php" target="_blank">http://www.airqualityontario.com/science/pollutants/particulates.php</a>
-            </p>
-          </section>
-      <section class="detail-info" id="pm2_5-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="pm2_5-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="pm2_5_p">
-          <b>Fine Particulate Matter (PM<sub>2.5</sub>)</b> includes any airborne particle (e.g. smoke, fumes, dust, ash, and pollen) with a diameter of 2.5 microns
-          or less. PM<sub>2.5</sub> has been associated with increased hospital visits and premature death, especially amongst children, the elderly,
-          and those with respiratory issues. PM<sub>2.5</sub> can have elevated concentrations near sources (e.g. barbecues, fires, construction)
-          but otherwise has concentrations that are generally similar across an urban area. The current (2015) Canadian Ambient Air
-          Quality Standards are 10 µg/m<sup>3</sup> (annual) and 28 µg/m<sup>3</sup> (24-hour) based on three-year averaging. Further details on PM<sub>2.5</sub> can
-          be found on the Ministry of Environment and Climate Change information page:
-          <br/>
-          <a href="http://www.airqualityontario.com/science/pollutants/particulates.php" target="_blank">http://www.airqualityontario.com/science/pollutants/particulates.php</a>
-        </p>
+      <section class="right">
+        <section class="error-msg">
+          <!-- <h1>Server Maintenance</h1> -->
+          <!-- <br />
+          <br /> -->
+          <h1>
+            Sorry, the website is not available now due to server
+            maintenance.<br />
+            Maintenance time: April 10th, 2:00PM - 6:00PM (EDT).
+          </h1>
+          <!-- <h1><a href="index.html">Click Here</a> back to homepage.</h1> -->
+        </section>
       </section>
-      <section class="detail-info" id="no2-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="no2-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="no2_p">
-          <b>Nitrogen Dioxide (NO<sub>2</sub>)</b> is a by-product of incomplete combustion (diesel, gasoline, natural gas, coal). It is a major component in
-          smog formation and a useful indicator of vehicle emissions. Concentrations of NO<sub>2</sub> vary across cities and tend to be higher
-          near major roads with greater numbers of heavy-duty diesel vehicles. Nitrogen oxide (NO) is converted to NO<sub>2</sub> by reaction
-          with ozone (O<sub>3</sub>), causing the ratio of these two pollutants to change rapidly near emission sources. The proposed Canadian
-          Ambient Air Quality Standards for 2020 are 17 ppb (annual average of 1-hour values) and 60 ppb (3-year average of annual
-          98th percentile of daily 1-hour maximum values). Further details on NO<sub>2</sub> can be found on the Ministry of Environment and Climate
-          Change information page:<br/>
-          <a href="http://www.airqualityontario.com/science/pollutants/nitrogen.php" target="_blank">http://www.airqualityontario.com/science/pollutants/nitrogen.php</a>
-        </p>
-      </section>
-      <section class="detail-info" id="no-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="no-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="no_p">
-          <b>Nitrogen Oxide (NO)</b> is a strong indicator of diesel vehicle emissions but can also come from other combustion processes.
-          Concentrations across cities can be highly variable with greater concentrations found near primary sources (e.g. highways,
-          loading docks). Nitrogen oxide can irritate the throat and promote asthma attacks in susceptible individuals. This pollutant
-          can be a useful indicator of traffic density and composition.
-        </p>
-      </section>
-      <section class="detail-info" id="co-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="co-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="co_p">
-          <b>Carbon Monoxide (CO)</b> is produced by incomplete combustion. CO is an odourless, tasteless, and poisonous gas, though it does not usually exist
-          at high enough concentrations to cause acute damage (typically ~100 ppb). CO is an indicator of traffic pollution as the
-          vast majority of CO is produced by vehicular emissions, often by cars that are poorly maintained or have defective catalytic
-          converters in their exhaust systems. Further details on CO can be found on the Ministry of Environment and Climate Change
-          information page:
-          <br/>
-          <a href="http://www.airqualityontario.com/science/pollutants/carbon.php" target="_blank">http://www.airqualityontario.com/science/pollutants/carbon.php</a>
-        </p>
-      </section>
-      <section class="detail-info" id="o3-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="o3-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="o3_p">
-          <b>Ozone (O<sub>3</sub>)</b> is a colourless gas created through a reaction of sunlight and emissions from incomplete combustion
-          (NO<sub>x</sub> and volatile organic carbon compounds). Ozone is a major component of smog and has been linked to increased
-          hospital emissions and premature death. Ozone can also irritate the respiratory tract and eyes. Concentrations of
-          ozone tend to be similar across a city and the concentrations may be lower in locations with high traffic. While
-          ozone in the upper atmosphere is protective, exposure to ozone at ground level can impact health. The current Canadian
-          Ambient Air Quality Standard (2015) is 63 ppb (3-year average of the annual 4th highest daily 8-hour averaged concentration).
-          Further details on O<sub>3</sub> can be found on the Ministry of Environment and Climate Change information page:
-          <br/>
-          <a href="http://www.airqualityontario.com/science/pollutants/ozone.php" target="_blank">http://www.airqualityontario.com/science/pollutants/ozone.php</a>
-        </p>  
-      </section>
-      <section class="detail-info" id="aqhi-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="aqhi-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="aqhi_p">
-          <b>The Air Quality Health Index (AQHI)</b> is an overall air quality indicator that signifies its potential risk to your health 
-          on a scale from 1 to 10, with 1 being
-          low health risk and 10 being a very high health risk. The index provides a simple scale to allow people to tailor their activities
-          according to outdoor air quality. The index takes into account nitrogen dioxide, ozone, and fine particulate matter levels
-          for its calculation. Further details on AQHI can be found on the Ministry of Environment and Climate Change information page:
-          <br/>
-          <a href="http://www.airqualityontario.com/science/aqhi_description.php" target="_blank">http://www.airqualityontario.com/science/aqhi_description.php</a>
-        </p>
-      </section>
-      <section class="detail-info" id="so2-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="so2-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="so2_p">
-          <b>Sulfur dioxide(SO<sub>2</sub>)</b> is a colourless gas which is responsible for the smell of burnt matches. At higher concentrations, the odour becomes sharp,
-          pungent, and choking. It can be oxidized to sulphur trioxide, which in the presence of water vapour is readily transformed
-          to sulphuric acid mist. SO<sub>2</sub> is a major contributor to acid rain, although steps undertaken in the last 50 years or so to
-          clean up industrial emissions have greatly reduced its concentrations in Europe and North America. It is a precursor to sulphates,
-          which are one of the main components of respirable particles in the atmosphere. Further details on SO<sub>2</sub> can be found on the
-          Ministry of Environment and Climate Change information page:
-          <br/>
-          <a href="http://www.airqualityontario.com/science/pollutants/sulphur.php" target="_blank">http://www.airqualityontario.com/science/pollutants/sulphur.php</a>
-        </p>
-      </section>
-      <section class="detail-info" id="co2-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="co2-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="co2_p">
-          <b>Carbon dioxide(CO<sub>2</sub>)</b> is a naturally occurring molecule that forms as a result of respiration processes. CO<sub>2</sub>
-          is a greenhouse gas (GHG) due to its ability to trap heat from the sun within Earth's atmosphere, which keeps the
-          world at a livable temperature. Ambient concentration of CO<sub>2</sub> has risen from pre-industrial levels of ~280 ppm to the current
-          average of ~410 ppm, most likely due to human activity. This increased abundance of CO<sub>2</sub> traps extra energy and heat from
-          the sun, which is believed to be detrimental to climate stability. Further details on CO<sub>2</sub> can be found on the Global CCS
-          Institute information page:<br/>
-          <a href="https://hub.globalccsinstitute.com/publications/what-happens-when-co2-stored-underground-qa-ieaghg-weyburn-midale-co2-monitoring-and-storage-project/1-what-carbon-dioxide-co2" target="_blank">
-            https://hub.globalccsinstitute.com/publications/what-happens-when-co2-stored-underground-qa-ieaghg-weyburn-midale-co2-monitoring-and-storage-project/1-what-carbon-dioxide-co2</a>
-        </p>
-      </section>
-      <section class="detail-info" id="about-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="about-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="about_p">
-        <b>The AirSENCE system</b> accurately monitors the Air Quality Health Index (AQHI) as well as five other harmful pollutants in the
-        air we breathe and provides observable data on each in real time. Learn more here:<br/>
-        <a href="http://airsence.augsignals.com/" target="_blank">
-          http://airsence.augsignals.com/</a>
-        </p>
-      </section>
-      <section class="detail-info" id="how-to-use-info-detail">
-        <div class="close-bar">
-          <button onclick="closeAllInfoBlock()" id="how-to-use-info-detail-close">
-            <i class="far fa-times-circle"></i>
-          </button>
-        </div>
-        <p id="user_guide_p">
-        <b>User Guide</b>
-        Select one of the eight variables on the left to view more details including data, history, and a brief description of the
-        pollution.
-        <br/>
-        <br/> Using the map on the right, you can select one of our monitoring stations or use the search bar to find the location nearest
-        you.
-        </p>
-      </section>
-      <div id="map"></div>
-    </section>
-  </article>
-
-
-</body>
-
+    </article>
+  </body>
 </html>

@@ -1754,8 +1754,13 @@ function notLatestSensor() {
     document.getElementById("humidity").innerHTML = "--" + "%";
     document.getElementById("circle").className = "circle grey";
     for (let i = 0; i < unitArray.length; i++) {
+      if (unitArray[i] == "aqhi") {
+        continue;
+      }
       let unitNum = document.getElementById(unitArray[i] + "-unit");
-      unitNum.innerHTML = "--";
+      if (unitNum) {
+        unitNum.innerHTML = "--";
+      }
       let buttonColor = document.getElementById(unitArray[i]);
       buttonColor.className = "parammenu-button grey";
     }
