@@ -191,36 +191,55 @@ function restartGuide() {
 
 function loadingInfo() {
   //console.log("Enter loadingInfo");
-  postJSON(
-    INFO_URL,
-    function(err, json) {
-      if (err == null) {
-        initMap(json[0].map_feature, json[0].mapCenter);
-        getChartFeature(json[0].chart_feature);
-        thresholdInfo = json[0].threshold;
-        colorMap = json[0].colorMap;
-        unitArray = json[0].unitArray;
-        checkDays = json[0].checkDays;
-        pastDue = json[0].pastDue;
-        lastClick = json[0].lastClick;
-        refreshTimeChart = json[0].refreshTimeChart;
-        refreshTimeButton = json[0].refreshTimeButton;
-        //refreshTimeChart = 20 * 1000;
-        //refreshTimeButton = 30 * 1000;
-        guideStep = json[0].guide_step;
-        drawChart();
-        autoRefreshChart();
-        autoRefreshButton();
-        //setGeocoder();
-      } else {
-        console.error("ERROR when loadingInfo: " + err);
-        window.alert(
-          "We have ERROR when we try to initial the web page. Please refresh and try again."
-        );
-      }
-    },
-    encodeURI("id=" + UID)
-  );
+  // postJSON(
+  //   INFO_URL,
+  //   function(err, json) {
+  //     if (err == null) {
+  //       initMap(json[0].map_feature, json[0].mapCenter);
+  //       getChartFeature(json[0].chart_feature);
+  //       thresholdInfo = json[0].threshold;
+  //       colorMap = json[0].colorMap;
+  //       unitArray = json[0].unitArray;
+  //       checkDays = json[0].checkDays;
+  //       pastDue = json[0].pastDue;
+  //       lastClick = json[0].lastClick;
+  //       refreshTimeChart = json[0].refreshTimeChart;
+  //       refreshTimeButton = json[0].refreshTimeButton;
+  //       //refreshTimeChart = 20 * 1000;
+  //       //refreshTimeButton = 30 * 1000;
+  //       guideStep = json[0].guide_step;
+  //       drawChart();
+  //       autoRefreshChart();
+  //       autoRefreshButton();
+  //       //setGeocoder();
+  //     } else {
+  //       console.error("ERROR when loadingInfo: " + err);
+  //       window.alert(
+  //         "We have ERROR when we try to initial the web page. Please refresh and try again."
+  //       );
+  //     }
+  //   },
+  //   encodeURI("id=" + UID)
+  // );
+  let json = infoJSON;
+  initMap(json[0].map_feature, json[0].mapCenter);
+  getChartFeature(json[0].chart_feature);
+  thresholdInfo = json[0].threshold;
+  colorMap = json[0].colorMap;
+  unitArray = json[0].unitArray;
+  checkDays = json[0].checkDays;
+  pastDue = json[0].pastDue;
+  lastClick = json[0].lastClick;
+  refreshTimeChart = json[0].refreshTimeChart;
+  refreshTimeButton = json[0].refreshTimeButton;
+  ppbConversion = json[0].ppbConversion;
+  //refreshTimeChart = 20 * 1000;
+  //refreshTimeButton = 30 * 1000;
+  guideStep = json[0].guide_step;
+  drawChart();
+  autoRefreshChart();
+  autoRefreshButton();
+  setGeocoder();
 }
 const UID = "4F09FC2FFE674AA9A568A2BD23C95CB9";
 let thresholdInfo,
@@ -230,7 +249,8 @@ let thresholdInfo,
   refreshTimeChart,
   refreshTimeButton,
   checkDays,
-  guideStep;
+  guideStep,
+  ppbConversion;
 
 /*********************************************
  * Function to set period button to disable
@@ -555,17 +575,20 @@ function autoRefreshButton() {
             GET_LATEST_URL,
             function(err, json) {
               if (err == null) {
-                if (json != null && json.length > 0)
+                if (json != null && json.length > 0) {
                   markers[i].pollutant_data = json[0]["pollutant_data"];
-                //Change the timestamp to local time
-                let stillUtc = moment.utc(json[0]["timestamp"]).toDate();
-                let local = moment(stillUtc)
-                  .local()
-                  .format("YYYY-MM-DD HH:mm:ss");
-                markers[i].updateTime = local;
-                if (checkTime(markers[i].updateTime)) {
-                  changeButtonColor(markers[i]);
-                  changeTime(markers[i].updateTime);
+                  //Change the timestamp to local time
+                  let stillUtc = moment.utc(json[0]["timestamp"]).toDate();
+                  let local = moment(stillUtc)
+                    .local()
+                    .format("YYYY-MM-DD HH:mm:ss");
+                  markers[i].updateTime = local;
+                  if (checkTime(markers[i].updateTime)) {
+                    changeButtonColor(markers[i]);
+                    changeTime(markers[i].updateTime);
+                  } else {
+                    notLatestSensor();
+                  }
                 } else {
                   notLatestSensor();
                 }
