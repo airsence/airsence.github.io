@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AirSENCE - Breathe Safe, Breathe Easy</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8" />
+
+    <link rel="stylesheet" href="/css/style.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
+    />
+    <script
+      src="https://code.jquery.com/jquery-1.11.1.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/timezones.full.min.js"></script>
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <!-- <script src="static/bootstrap-datetimepicker.min.js"></script> -->
+    <script src="/js/script.js"></script>
+
+    <script>
+      // const LOGIN_URL = "http://api.airsence.com:9000/login";
+      //const LOGIN_URL = "http://localhost:5000/login";
+
+      String.prototype.hashCode = function() {
+        var hash = 0,
+          i,
+          chr;
+        if (this.length === 0) return hash;
+        for (i = 0; i < this.length; i++) {
+          chr = this.charCodeAt(i);
+          hash = (hash << 5) - hash + chr;
+          hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+      };
+      //   let temp_uid = "4F09FC2FFE674AA9A568A2BD23C95CB9";
+      function submitUpdate(event) {
+        event.preventDefault();
+        let user_api_key = window.sessionStorage.getItem("api_key");
+        // let username = document.getElementById("id_username").value;
+        let password = document
+          .getElementById("id_current_password")
+          .value.hashCode();
+        let newPassword = document
+          .getElementById("id_new_password")
+          .value.hashCode();
+        let comfirmNewPassword = document
+          .getElementById("id_comfirm_new_password")
+          .value.hashCode();
+        if (newPassword !== comfirmNewPassword) {
+          window.alert("Those password didn't match. Try again.");
+          return;
+        }
+        let email = document.getElementById("id_email").value;
+        let timezoneElement = document.getElementById("id_timezone_select");
+        let timezone =
+          timezoneElement.options[timezoneElement.selectedIndex].value;
+        let dailyreport = document.getElementById("id_daily_report").checked;
+        let dailysummary = document.getElementById("id_daily_summary").checked;
+        let unitElement = document.getElementById("id_unit_select");
+        let unit = unitElement.options[unitElement.selectedIndex].value;
+        let message;
+        if (newPassword == 0) {
+          message = encodeURI(
+            `id=${user_api_key}&password=${password}&email=${email}&timezone=${timezone}&dailyreport=${dailyreport}&dailysummary=${dailysummary}&unit=${unit}`
+          );
+        } else {
+          message = encodeURI(
+            `id=${user_api_key}&password=${password}&newpassword=${newPassword}&email=${email}&timezone=${timezone}&dailyreport=${dailyreport}&dailysummary=${dailysummary}&unit=${unit}`
+          );
+        }
+        // console.log(message);
+        // console.log(
+        //   "email:" +
+        //     email +
+        //     "\ntimezone:" +
+        //     timezone +
+        //     "\ndailyreport:" +
+        //     dailyReport
+        // );
+        // let timevalue = new Array();
+        // let timeoption = Array.from(timezoneElement.options);
+        // timeoption.forEach(element => {
+        //   let timezone = element.getAttribute("data-offset");
+        //   timezone =
+        //     parseFloat(timezone.slice(0, 3)) +
+        //     parseFloat(timezone.slice(0, 1) + timezone.slice(4)) / 60;
+        //   timevalue.push({ name: element.value, value: timezone });
+        // });
+        // console.log(timevalue);
+        postRequest(
+          UPDATE_URL,
+          function(err, xhr) {
+            if (err == null) {
+              window.alert("You successfully update your profile.");
+            } else {
+              let errMsg = xhr.response;
+              alert("ERROR: Invaild password.");
+            }
+          },
+          message
+        );
+      }
+
+      function postRequest(url, callback, message = null, responseType = null) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        xhr.withCredentials = true;
+        if (responseType) {
+          xhr.responseType = responseType;
+        }
+        xhr.onload = function() {
+          //console.log("onload");
+          let status = xhr.status;
+          if (status === 200) {
+            callback(null, xhr);
+          } else {
+            callback(status, xhr);
+          }
+        };
+        xhr.send(message);
+      }
+      function loadProfile() {
+        let user_api_key = window.sessionStorage.getItem("api_key");
+        // console.log(user_api_key);
+        let message = encodeURI("id=" + user_api_key);
+        postRequest(
+          PROFILE_URL,
+          function(err, xhr) {
+            if (err == null) {
+              document.getElementById("id_email").value = xhr.response.email;
+              let timezoneElement = document.getElementById(
+                "id_timezone_select"
+              );
+              for (let i = 0; i < timezoneElement.options.length; i++) {
+                if (timezoneElement.options[i].value == xhr.response.timezone) {
+                  timezoneElement.selectedIndex = i;
+                  break;
+                }
+              }
+              document.getElementById("id_daily_report").checked =
+                xhr.response.dailyreport;
+              document.getElementById("id_daily_summary").checked =
+                xhr.response.dailysummary;
+              let unitElement = document.getElementById("id_unit_select");
+              if (xhr.response.unit == "ugm3") {
+                unitElement.selectedIndex = 1;
+              } else {
+                unitElement.selectedIndex = 0;
+              }
+            } else {
+              let errMsg = xhr.response;
+              console.error(errMsg);
+              alert("ERROR: Please login first.");
+              window.location.replace("/login");
+            }
+          },
+          message,
+          "json"
+        );
+      }
+    </script>
+
+    <style>
+      h2 {
+        margin: 2px;
+        padding: 1px;
+      }
+    </style>
+  </head>
+
+  <body onresize="onResize()" onload="loadProfile()">
+    <header>
+      <section class="row">
+        <section class="left" id="desktop-left">
+          <div class="menu-button" onclick="onMenuClick()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+          <section class="logo">
+            <a href="/portal/">
+              <img src="/images/logo.png" />
+            </a>
+          </section>
+          <section class="slogen">
+            <h2>BREATHE SAFE</h2>
+            <h2>BREATHE EASY</h2>
+          </section>
+        </section>
+        <!--end of left-->
+
+        <nav class="navbar-collapse col-4" id="navbar-collapse">
+          <li>
+            <a href="/portal/">Home</a>
+          </li>
+          <!--
+				<li>
+					<a href="/resources">Resources</a>
+				</li>
+				-->
+          <li>
+            <!--
+					<a href="https://twitter.com/theairsence" class="icon" target="_blank">
+						<img src="/images/twitter.png">
+					</a>
+					-->
+            <a
+              href="http://augsignals.com/contact-us/"
+              class="icon"
+              target="_blank"
+            >
+              <img src="/images/envelope.png" />
+            </a>
+          </li>
+          <li>
+            <a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
+          </li>
+        </nav>
+        <!--end of navbar-->
+
+        <section class="right" id="desktop-right">
+          <nav class="navbar col-12">
+            <ul>
+              <li>
+                <a href="/portal/">Home</a>
+              </li>
+              <!--
+						<li>
+							<a href="/resources">Resources</a>
+						</li>
+						-->
+              <!--
+						<li>
+							<a href="https://twitter.com/theairsence" class="icon" target="_blank">
+								<img src="/images/twitter.png">
+							</a>
+						</li>
+						-->
+              <li>
+                <a
+                  href="http://augsignals.com/contact-us/"
+                  class="icon"
+                  target="_blank"
+                >
+                  <img src="/images/envelope.png" />
+                </a>
+              </li>
+              <li>
+                <a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
+              </li>
+            </ul>
+          </nav>
+          <!--end of navbar-->
+        </section>
+        <!--end of right-->
+      </section>
+      <!-- end of row-->
+
+      <!-- <section class="search-bar col-12">
+        <section class="col-6" style="margin-left:25%;">
+          <h1 style="padding-top:1%;">UPDATE PROFILE</h1>
+        </section>
+      </section> -->
+    </header>
+
+    <article class="col-12">
+      <section class="profile-section col-3">
+        <section class="bar">
+          <h1></h1>
+        </section>
+      </section>
+      <!--end of video-section -->
+
+      <section class="profile-section col-6">
+        <section class="bar">
+          <h1>UPDATE PROFILE</h1>
+        </section>
+        <section class="content">
+          <div class="container">
+            <div
+              class="row justify-content-center align-items-center"
+              style="height:50vh"
+            >
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <form method="post" onsubmit="submitUpdate(event)">
+                      <!-- action="" autocomplete="off" -->
+                      <!-- <label for="username" class="control-label requiredField">
+															Username<span class="asteriskField">*</span>
+														</label>
+														<div class="form-group"> -->
+                      <!-- input type="text" class="form-control" name="username" -->
+                      <!-- <input class="input-md  textinput textInput form-control" name="username" style="margin-bottom: 10px" type="text"
+															 id="id_username" required />
+                            </div> -->
+                      <div class="p-3 mb-5 bg-white rounded border">
+                        <label for="id_email" class="control-label">
+                          Email Address
+                        </label>
+                        <div class="form-group">
+                          <!--input type="password" class="form-control" name="password" -->
+                          <input
+                            class="input-md  textinput textInput form-control"
+                            name="email"
+                            style="margin-bottom: 10px"
+                            type="email"
+                            id="id_email"
+                          />
+                        </div>
+                        <label for="id_timezone_select" class="control-label">
+                          Timezone
+                        </label>
+                        <div class="form-group">
+                          <select
+                            class="custom-select"
+                            id="id_timezone_select"
+                          ></select>
+                          <script>
+                            $("#id_timezone_select").timezones();
+                          </script>
+                        </div>
+                      </div>
+
+                      <div class="p-3 mb-5 bg-white rounded border">
+                        <!-- <div class="aab controls col-md-5"></div> -->
+                        <div class="form-group">
+                          <div class="form-check">
+                            <input
+                              type="checkbox"
+                              id="id_daily_report"
+                              class="form-check-input"
+                            />
+                            <label
+                              for="id_daily_report"
+                              class="form-check-label"
+                            >
+                              Daily Email Report
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="form-check">
+                            <input
+                              type="checkbox"
+                              id="id_daily_summary"
+                              class="form-check-input"
+                            />
+                            <label
+                              for="id_daily_summary"
+                              class="form-check-label"
+                            >
+                              Daily Email Summary
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="id_unit_select">
+                            Unit For Pollutant
+                          </label>
+                          <select id="id_unit_select" class="custom-select">
+                            <option value="ppb">ppb</option>
+                            <option value="ugm3">μg/m&sup3;</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="p-3 mb-5 bg-white rounded border">
+                        <label
+                          for="id_current_password"
+                          class="control-label requiredField"
+                        >
+                          Current Password<span class="asteriskField">*</span>
+                        </label>
+                        <div class="form-group">
+                          <!--input type="password" class="form-control" name="password" -->
+                          <input
+                            class="input-md  textinput textInput form-control"
+                            name="old_password"
+                            style="margin-bottom: 10px"
+                            type="password"
+                            id="id_current_password"
+                            required
+                          />
+                        </div>
+                        <label for="id_new_password" class="control-label">
+                          New Password
+                        </label>
+                        <div class="form-group">
+                          <!--input type="password" class="form-control" name="password" -->
+                          <input
+                            class="input-md  textinput textInput form-control"
+                            name="new_password"
+                            style="margin-bottom: 10px"
+                            type="password"
+                            id="id_new_password"
+                          />
+                        </div>
+                        <label
+                          for="id_comfirm_new_password"
+                          class="control-label"
+                        >
+                          Comfirm New Password
+                        </label>
+                        <div class="form-group">
+                          <!--input type="password" class="form-control" name="password" -->
+                          <input
+                            class="input-md  textinput textInput form-control"
+                            name="comfirm_new_password"
+                            style="margin-bottom: 10px"
+                            type="password"
+                            id="id_comfirm_new_password"
+                          />
+                        </div>
+                        <!--button type="button" id="sendlogin" class="btn btn-primary">login</button -->
+                      </div>
+                      <div class="form-group">
+                        <div class="aab controls col-md-5"></div>
+                        <div class="controls">
+                          <input
+                            type="submit"
+                            name="Update"
+                            value="Update"
+                            class="btn btn-primary btn btn-info"
+                            id="id_submit"
+                          />
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <!-- end of tweets-section -->
+      <section class="profile-section col-3">
+        <section class="bar">
+          <h1></h1>
+        </section>
+        <!-- end of content section-->
+      </section>
+      <!--end of article section -->
+    </article>
+    <!--end of article-->
+  </body>
+</html>

@@ -1,10 +1,10 @@
 @font-face {
   font-family: Giorgio;
-  src: url('../font/Giorgio.ttf');
+  src: url("../font/Giorgio.ttf");
 }
 @font-face {
   font-family: Giorgio;
-  src: url('../font/Giorgio-Thin.ttf');
+  src: url("../font/Giorgio-Thin.ttf");
   font-weight: 300;
 }
 /*
@@ -28,6 +28,7 @@
   --header-search-bar-font-size: 30px;
   --header-search-bar-input-font-size: 16pt;
   --header-search-bar-margin: 5px;
+  --header-search-bar-input-height: 40px;
   --header-search-bar-input-margin: 3px;
   --header-search-bar-input-width: 66.64%;
   --header-search-bar-button-width: 4.165%;
@@ -102,12 +103,13 @@
     --header-row-height: 80px;
     --header-slogen-font-size: 16px;
     --header-slogen-padding-top: 25px;
-    --header-search-bar-height: 30px;
+    --header-search-bar-height: 40px;
     --header-search-bar-margin: 2px;
     --header-search-bar-input-margin: 3px;
     --header-search-bar-font-size: 21px;
     --header-search-bar-input-font-size: 22px;
     --header-search-bar-input-width: 70.805%;
+    --header-search-bar-input-height: 35px;
     --header-search-bar-button-width: 8.33%;
     --header-search-bar-button-padding: 0;
     --header-resource-bar-height: 30px;
@@ -149,6 +151,7 @@
     --header-search-bar-margin: 7px;
     --header-search-bar-font-size: 16px;
     --header-search-bar-input-font-size: 18px;
+    --header-search-bar-input-height: 30px;
     --header-search-bar-input-width: 83.3%;
     --header-search-bar-right: 58.31%;
     --header-search-bar-left: 41.65%;
@@ -198,9 +201,10 @@
 @media only screen and (max-width: 480px) {
   :root {
     --header-search-bar-input-font-size: 13px;
-    --header-search-bar-font-size: 9px;
-    --header-search-bar-height: 25px;
+    --header-search-bar-font-size: 10px;
+    --header-search-bar-height: 35px;
     --header-search-bar-input-margin: 2px;
+    --header-search-bar-input-height: 30px;
     --header-search-bar-margin: 7px;
     --header-slogen-font-size: 15px;
     --header-slogen-padding-top: 25px;
@@ -288,16 +292,38 @@ body {
 a,
 header .navbar-collapse li a,
 header .navbar-collapse li button,
-header .navbar li a,
-header .navbar li button,
+header .right .navbar li a,
+header .right .navbar li button,
 article .right .detail-info a,
 article .right .error-msg a,
-article .article-section .content .new-block .summary a,
-header .navbar-collapse li a,
-header .navbar-collapse li button,
-header .navbar-collapse li button {
+article .article-section .content .new-block .summary a {
   color: #54a4db;
   text-decoration: none;
+}
+.button-generator,
+header .navbar-collapse li button,
+header #language-box button,
+header .right .navbar li button,
+article .left .data-panel .content .parammenu ul li .parammenu-button,
+article .left .data-panel .unit-btn-block button,
+article .left .chart .period-choose ul li button,
+article .left .information-section button,
+article .right .detail-info .close-bar button {
+  text-decoration: none;
+  display: inline-block;
+  color: #54a4db;
+  text-align: center;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+.shadow-button,
+article .left .data-panel .content .parammain .circle:hover,
+article .left .data-panel .content .parammain .active,
+article .left .data-panel .content .parammenu ul li .parammenu-button:hover,
+article .left .data-panel .content .parammenu ul li .active {
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 header {
   font-family: "Giorgio", sans-serif;
@@ -309,6 +335,7 @@ header .search-bar,
 article .resource-bar,
 article .video-section .bar,
 article .tweets-section .bar,
+article .profile-section .bar,
 article .article-section .bar {
   height: var(--header-search-bar-height);
   background-color: #54a4db;
@@ -318,6 +345,7 @@ header .search-bar h1,
 article .resource-bar h1,
 article .video-section .bar h1,
 article .tweets-section .bar h1,
+article .profile-section .bar h1,
 article .article-section .bar h1 {
   font-size: var(--header-search-bar-font-size);
   text-align: center;
@@ -342,7 +370,7 @@ header .search-container {
   height: inherit;
   position: relative;
 }
-header .search-container button[type=button],
+header .search-container button[type="button"],
 header .search-container .address {
   float: right;
   position: relative;
@@ -362,13 +390,13 @@ header .search-container .address {
   background-color: white;
   z-index: 3;
 }
-header .search-container .address input[type=text],
+header .search-container .address input[type="text"],
 header .search-container .address li {
   font-family: Arial, sans-serif;
   font-size: var(--header-search-bar-input-font-size);
   z-index: 3;
 }
-header .search-container button[type=button] {
+header .search-container button[type="button"] {
   background: transparent;
   opacity: 0.5;
   border: none;
@@ -376,13 +404,21 @@ header .search-container button[type=button] {
   width: var(--header-search-bar-button-width);
   right: var(--header-search-bar-button-padding);
   cursor: pointer;
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
-header .search-container button[type=button]:hover {
+header .search-container button[type="button"]:hover {
   opacity: 0.8;
 }
 header .search-container .mapboxgl-ctrl-geocoder {
+  height: var(--header-search-bar-input-height);
   min-width: 100%;
+  font-size: var(--header-search-bar-input-font-size);
+}
+header .search-container .mapboxgl-ctrl-geocoder input {
+  height: inherit;
+}
+header .search-container .mapboxgl-ctrl-geocoder .geocoder-icon-search {
+  top: 24%;
 }
 header .logo {
   height: inherit;
@@ -452,70 +488,58 @@ header .navbar-collapse li a,
 header .navbar-collapse li button {
   font-size: var(--navbar-font-size);
 }
+header .navbar-collapse li button {
+  font-size: var(--navbar-font-size);
+  font-family: "Giorgio", sans-serif;
+}
+header .navbar-collapse li button a {
+  padding: 0;
+}
+header .navbar-collapse li img {
+  height: var(--navbar-icon-size);
+  width: var(--navbar-icon-size);
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+header .navbar-collapse li img:hover {
+  opacity: 0.7;
+}
 header .active {
   display: block;
 }
 header .non-active {
-  display: none;
+  visibility: hidden;
 }
 header .icon {
-  padding: 0 .1em 0 .1em;
+  padding: 0 0.1em 0 0.1em;
   position: relative;
   top: 3px;
 }
-header .navbar {
-  height: inherit;
-  padding-top: var(--navbar-padding-top);
-  display: var(--collapse);
-}
-header .navbar ul {
-  list-style-type: none;
-  overflow: hidden;
+header #language-box {
   position: relative;
-  float: right;
-  right: 16.66%;
-}
-header .navbar li {
   display: inline-block;
-  font-size: var(--navbar-font-size);
+  padding-top: var(--navbar-padding-top);
 }
-header .navbar li a,
-header .navbar li button,
-header .navbar-collapse li a,
-header .navbar-collapse li button,
-header .navbar-collapse li button {
+header #language-box #language-list {
+  position: absolute;
+  display: block;
+  opacity: 0.75;
+  z-index: 5;
+}
+header #language-box button {
+  top: 10%;
   letter-spacing: 1px;
-  padding: var(--navbar-menu-padding);
   transition: text-shadow 0.5s;
-}
-header .navbar li a:hover,
-header .navbar li button:hover,
-header .navbar-collapse li a:hover,
-header .navbar-collapse li button:hover,
-header .navbar-collapse li button:hover {
-  text-shadow: 1px 0 0 currentColor;
-}
-header .navbar li a img,
-header .navbar li button img,
-header .navbar-collapse li a img,
-header .navbar-collapse li button img,
-header .navbar-collapse li button img {
-  height: var(--navbar-icon-size);
-  width: var(--navbar-icon-size);
-  opacity: 1;
-  transition: opacity .5s;
-}
-header .navbar li a img:hover,
-header .navbar li button img:hover,
-header .navbar-collapse li a img:hover,
-header .navbar-collapse li button img:hover,
-header .navbar-collapse li button img:hover {
-  opacity: 0.7;
-}
-header .navbar li button,
-header .navbar-collapse li button {
   font-size: var(--navbar-font-size);
   font-family: "Giorgio", sans-serif;
+  position: relative;
+  display: inline-block;
+  clear: both;
+  min-width: 150px;
+  text-align: right;
+}
+header #language-box button:hover {
+  text-shadow: 1px 0 0 currentColor;
 }
 header .left {
   height: inherit;
@@ -529,28 +553,54 @@ header .right {
   float: right;
   width: var(--header-right);
 }
-.button-generator,
-header .navbar li button,
-article .left .data-panel .content .parammenu ul li .parammenu-button,
-article .left .chart .period-choose ul li button,
-article .left .information-section button,
-article .right .detail-info .close-bar button,
-header .navbar-collapse li button {
-  text-decoration: none;
+header .right .navbar {
+  height: inherit;
+  padding-top: var(--navbar-padding-top);
+  display: var(--collapse);
+}
+header .right .navbar ul {
+  list-style-type: none;
+  overflow: hidden;
+  position: relative;
+  float: right;
+  right: 16.66%;
+}
+header .right .navbar li {
   display: inline-block;
-  color: #54a4db;
-  text-align: center;
-  background-color: white;
-  border: none;
+  font-size: var(--navbar-font-size);
+}
+header .right .navbar li a,
+header .right .navbar li button {
+  letter-spacing: 1px;
+  padding: var(--navbar-menu-padding);
+  transition: text-shadow 0.5s;
   cursor: pointer;
 }
-.shadow-button,
-article .left .data-panel .content .parammain .circle:hover,
-article .left .data-panel .content .parammain .active,
-article .left .data-panel .content .parammenu ul li .parammenu-button:hover,
-article .left .data-panel .content .parammenu ul li .active {
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+header .right .navbar li a:hover,
+header .right .navbar li button:hover {
+  text-shadow: 1px 0 0 currentColor;
+}
+header .right .navbar li a img,
+header .right .navbar li button img,
+header .right .navbar li a i,
+header .right .navbar li button i {
+  height: var(--navbar-icon-size);
+  width: var(--navbar-icon-size);
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+header .right .navbar li a img:hover,
+header .right .navbar li button img:hover,
+header .right .navbar li a i:hover,
+header .right .navbar li button i:hover {
+  opacity: 0.7;
+}
+header .right .navbar li button {
+  font-size: var(--navbar-font-size);
+  font-family: "Giorgio", sans-serif;
+}
+header .right .navbar li button a {
+  padding: 0;
 }
 article {
   -webkit-overflow-scrolling: touch;
@@ -596,7 +646,7 @@ article .active {
   display: block;
 }
 article .non-active {
-  display: none;
+  visibility: hidden;
 }
 article .left {
   float: left;
@@ -641,6 +691,7 @@ article .left .data-panel h2 button {
 article .left .data-panel h2 button {
   background-color: white;
   border: none;
+  cursor: pointer;
 }
 article .left .data-panel .content {
   position: relative;
@@ -756,6 +807,35 @@ article .left .data-panel .content .parammenu ul li .very_low {
 article .left .data-panel .content .parammenu ul li .grey {
   border-bottom: solid #dad9d9 5px;
 }
+article .left .data-panel h2 {
+  width: 66.66666667%;
+  position: relative;
+  display: inline-block;
+  padding-right: 16.66%;
+}
+article .left .data-panel .unit-btn-block {
+  width: 33.33333333%;
+  position: relative;
+  display: inline-block;
+}
+article .left .data-panel .unit-btn-block button {
+  font-size: 14px;
+  transition: color 0.5s;
+  padding: 0 7%;
+}
+article .left .data-panel .unit-btn-block button:hover {
+  color: #37759e;
+}
+article .left .data-panel .unit-btn-block .active {
+  color: #37759e;
+  font-weight: bold;
+}
+article .left .data-panel .unit-btn-block .disabled {
+  color: #b2b2b2;
+}
+article .left .data-panel .unit-btn-block .disabled:hover {
+  color: #b2b2b2;
+}
 article .left .chart {
   height: 360px;
   border: solid #b9b9b9 1.5px;
@@ -771,8 +851,8 @@ article .left .chart {
             */
 }
 article .left .chart .period-choose {
+  float: right;
   position: inherit;
-  float: left;
   background-color: transparent;
   display: block;
 }
@@ -788,7 +868,7 @@ article .left .chart .period-choose ul li {
 article .left .chart .period-choose ul li button {
   font-size: var(--period-choice-font-size);
   font-weight: bold;
-  transition: color .5s;
+  transition: color 0.5s;
 }
 article .left .chart .period-choose ul li button:hover {
   color: #37759e;
@@ -882,7 +962,7 @@ article .left .chart .show {
 article .left .chart .legend {
   float: left;
   height: 300px;
-  width: 8.33%;
+  width: 12.495%;
 }
 article .left .chart .legend h1,
 article .left .chart .legend h2 {
@@ -908,11 +988,14 @@ article .left .information-section {
   font-size: var(--information-section-font-size);
   display: none;
 }
+article .left .information-section p {
+  display: inline;
+}
 article .left .information-section button {
   font-size: var(--information-section-font-size);
   font-weight: bold;
   background-color: white;
-  transition: color .5s;
+  transition: color 0.5s;
 }
 article .left .information-section button:hover {
   color: #37759e;
@@ -1010,6 +1093,7 @@ article .right .error-msg a:hover {
 article .resource-bar,
 article .video-section .bar,
 article .tweets-section .bar,
+article .profile-section .bar,
 article .article-section .bar {
   font-family: "Giorgio", Arial, sans-serif;
   height: var(--header-resource-bar-height);
@@ -1017,6 +1101,7 @@ article .article-section .bar {
 article .resource-bar h1,
 article .video-section .bar h1,
 article .tweets-section .bar h1,
+article .profile-section .bar h1,
 article .article-section .bar h1 {
   width: 100%;
   position: relative;
@@ -1054,7 +1139,7 @@ article .video-section .content .video-block h1 {
   margin-top: 4.165%;
   font-size: 25px;
   font-weight: normal;
-  color: #292F33;
+  color: #292f33;
 }
 article .video-section .content .video-block iframe {
   position: relative;
@@ -1068,6 +1153,17 @@ article .tweets-section {
   float: left;
 }
 article .tweets-section .content {
+  height: var(--resource-block-height);
+  overflow-y: auto;
+  width: 100%;
+  float: left;
+  padding: 0 var(--resource-padding);
+}
+article .profile-section {
+  float: left;
+  padding: 0;
+}
+article .profile-section .content {
   height: var(--resource-block-height);
   overflow-y: auto;
   width: 100%;
@@ -1099,7 +1195,7 @@ article .article-section .content .new-block:last-child {
   border-bottom: 1px solid #dad9d9;
 }
 article .article-section .content .new-block h1 {
-  color: #292F33;
+  color: #292f33;
   font-size: 27px;
   font-weight: normal;
 }

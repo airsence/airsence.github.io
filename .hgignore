@@ -1,0 +1,7 @@
+#ignore .hgignore
+.hgignore
+syntax: glob
+#
+*.png
+timezones.full.min.js
+.vscode

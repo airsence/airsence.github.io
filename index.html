@@ -5,6 +5,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    
+
     <link href="css/style.css" rel="stylesheet" type="text/css" />
     <link
       href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
@@ -57,7 +59,7 @@
     ></script>
   </head>
 
-  <body onload="onMainLoad()" onresize="onResize()">
+  <body onload="onMainLoad('main')" onresize="onResize()">
     <script type="text/javascript">
       navigator.sayswho = (function() {
         var ua = navigator.userAgent,
@@ -116,6 +118,7 @@
           </section>
         </section>
         <nav class="navbar-collapse col-4" id="navbar-collapse">
+          JSON
           <li>
             <button onclick="onClickHere(this.id)" id="about-info-">
               <a href="#about-info-detail">About</a>
@@ -216,10 +219,10 @@
           </button>
           <button type="button" onclick="getUserLocation()">
             <i class="fas fa-map-marker-alt"></i>
-          </button> 
+          </button>
           <button type="button" onclick="getUserLocation()">
               <i class="fas fa-map-marker-alt"></i>
-          </button>        
+          </button>
           -->
             <div id="address" class="address"></div>
           </section>
@@ -353,6 +356,18 @@
             <!-- End of parammenu -->
           </section>
           <!-- End of content -->
+          <section class="unit-btn-block" id="unit-btn-block-id">
+            <button
+              id="unit-btn-left-id"
+              class="active"
+              onclick="onUnitChange(this.id)"
+            >
+              ppb</button
+            >|
+            <button id="unit-btn-right-id" onclick="onUnitChange(this.id)">
+              μg/m<sup>3</sup>
+            </button>
+          </section>
           <h2 class="col-12">
             <span id="time">No Data Available</span>
           </h2>

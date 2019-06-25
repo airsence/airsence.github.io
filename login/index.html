@@ -22,8 +22,8 @@
     <script src="/js/script.js"></script>
 
     <script>
-      const LOGIN_URL = "https://www.signalfusion.com:9000/api/v1.3/login"; //TO BE FILLED IN
-      //"http://192.168.1.230:9001/apis/v1.3/login";
+      // const LOGIN_URL = "http://api.airsence.com:9000/login";
+      //const LOGIN_URL = "http://localhost:5000/login";
 
       String.prototype.hashCode = function() {
         var hash = 0,
@@ -76,73 +76,6 @@
           },
           message
         );
-
-        /*
-			document.getElementById("div_download_link").style.display = "none";
-			let apikey = document.getElementById("id_apikey").value;
-			let returnFormat;
-			let returnFormatList = document.getElementsByName("select");
-
-			for (let i = 0; i < returnFormatList.length; i++) {
-			  if (returnFormatList[i].checked) {
-				returnFormat = returnFormatList[i].value;
-				break;
-			  }
-			}
-			let deviceID = document.getElementById("id_device_id").value;
-			let startdate = document.getElementById("id_startdate").value;
-			let enddate = document.getElementById("id_enddate").value;
-			let utc_startdate = moment(new Date(startdate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
-			let utc_enddate = moment(new Date(enddate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
-			let message = encodeURI(
-			  "id=" +
-			  apikey +
-			  "&device_id=" +
-			  deviceID +
-			  "&startdate='" +
-			  utc_startdate +
-			  "'&enddate='" +
-			  utc_enddate +
-			  "'"
-			);
-			// console.log(message);
-			// console.log(returnFormat);
-			let requestUrl = POLLUTANT_LIST_CSV_URL;
-			if (returnFormat == "json") {
-			  requestUrl = POLLUTANT_LIST_URL;
-			}
-
-			postRequest(
-			  requestUrl,
-			  //returnFormat,
-			  function (err, xhr) {
-				if (err == null) {
-				  let blob = new Blob([xhr.response], {
-					type: "text/" + returnFormat
-				  });
-				  //let link = document.createElement("a");
-				  let download_link_div = document.getElementById("div_download_link");
-				  download_link_div.style.display = "block";
-				  let download_link = document.getElementById("download_link");
-				  let url = window.URL.createObjectURL(blob);
-				  download_link.href = url;
-				  let filename =
-					deviceID +
-					"_" +
-					utc_startdate.replace(" ", "_").replace(":", "_") +
-					"_" +
-					utc_enddate.replace(" ", "_").replace(":", "_") +
-					"." +
-					returnFormat;
-				  download_link.download = filename;
-				} else {
-				  let errMsg = JSON.parse(xhr.response);
-				  alert("ERROR " + err + ": " + errMsg.message);
-				}
-			  },
-			  message
-			);
-			*/
       }
 
       function postRequest(url, /*responseType,*/ callback, message = null) {
@@ -152,48 +85,8 @@
           "Content-type",
           "application/x-www-form-urlencoded"
         );
+        xhr.withCredentials = true;
         xhr.responseType = "json";
-        /*
-			let myTimer;
-			xhr.onloadstart = function (event) {
-			  //console.log("onloadstart");
-			  let progressBar = document.getElementById("progress_bar");
-			  document.getElementById("download_panel").style.display = "block";
-
-			  progressBar.style.display = "block";
-			  progressBar.value = 0;
-			  progressBar.style.width = "5%";
-			  progressBar.innerHTML = progressBar.value + "%";
-			  myTimer = window.setInterval(function () {
-				let progressBar = document.getElementById("progress_bar");
-				if (progressBar.value < 99)
-				  progressBar.value += 1;
-				if (progressBar.value <= 94)
-				  progressBar.style.width = progressBar.value + 5 + "%";
-				else
-				  progressBar.style.width = progressBar.value + "%";
-				progressBar.innerHTML = progressBar.value + "%";
-			  }, 1000);
-			};
-			xhr.onloadend = function (event) {
-			  //console.log("onloadend");
-			  let progressBar = document.getElementById("progress_bar");
-			  clearInterval(myTimer);
-			  progressBar.value = 100;
-			  progressBar.style.width = "100%";
-			  progressBar.innerHTML = "100%";
-			};
-			// xhr.responseType = "blob";
-			xhr.onload = function () {
-			  console.log("onload");
-			  let status = xhr.status;
-			  if (status === 200) {
-				callback(null, xhr);
-			  } else {
-				callback(status, xhr);
-			  }
-			};
-			*/
         xhr.onload = function() {
           //console.log("onload");
           let status = xhr.status;

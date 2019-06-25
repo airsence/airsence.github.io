@@ -2,396 +2,532 @@
 <html>
 
 <head>
-	<title>AirSENCE - Breathe Safe, Breathe Easy</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8">
+  <title>AirSENCE - Breathe Safe, Breathe Easy</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8" />
 
-	<link rel="stylesheet" href="/css/style.css" type="text/css">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    crossorigin="anonymous" />
+  <!-- <link rel="stylesheet" href="static/bootstrap-datetimepicker.min.css"> -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+  <!-- <script src="https://code.jquery.com/jquery-1.11.1.min.js" crossorigin="anonymous" ></script> -->
+  <!-- <script src="static/moment.min.js" ></script> -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <!-- <script src="static/bootstrap-datetimepicker.min.js" ></script> -->
+  <script src="/js/script.js"></script>
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" crossorigin="anonymous">
-	<link rel="stylesheet" href="static/bootstrap-datetimepicker.min.css">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
 
-	<script src="https://code.jquery.com/jquery-1.11.1.min.js" crossorigin="anonymous" ></script>
-	<script src="static/moment.min.js" ></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js" crossorigin="anonymous" ></script>
-	<script src="static/bootstrap-datetimepicker.min.js" ></script>
-	<script src="../js/script.js" ></script>
+  <script>
+    // const POLLUTANT_LIST_URL =
+    //   "http://api.airsence.com:9000/getpollutantlogin";
+    // const POLLUTANT_LIST_CSV_URL =
+    //   "http://api.airsence.com:9000/getpollutantlistcsvlogin";
+    //const LOGOUT_URL =
+    //	"http://api.airsence.com:9000/logout";
 
-	<script>
-		const POLLUTANT_LIST_URL =
-			"https://www.signalfusion.com:9000/api/v1.3/getpollutantlistlogin";
-			//"http://192.168.1.230:9001/api/v1.3/getpollutantlistlogin";
-		const POLLUTANT_LIST_CSV_URL =
-			"https://www.signalfusion.com:9000/api/v1.3/getpollutantlistcsvlogin";
-			//"http://192.168.1.230:9001/api/v1.3/getpollutantlistcsvlogin";
-		const LOGOUT_URL =
-			"https://www.signalfusion.com:9000/api/v1.3/logout";
-			//"http://192.168.1.230:9001/api/v1.3/logout";
+    function downloadData(event) {
+      event.preventDefault();
+      //document.getElementById("download_panel").style.display = "none";
+      document.getElementById("div_download_link").style.visibility = "hidden";
+      let apikey = document.getElementById("id_apikey").value;
+      let returnFormat = "csv";
+      // let returnFormatList = document.getElementsByName("select");
 
-		function downloadData(event) {
-			event.preventDefault();
-			//document.getElementById("download_panel").style.display = "none";
-			document.getElementById("div_download_link").style.display = "none";
-			let apikey = document.getElementById("id_apikey").value;
-			let returnFormat;
-			let returnFormatList = document.getElementsByName("select");
+      // for (let i = 0; i < returnFormatList.length; i++) {
+      // 	if (returnFormatList[i].checked) {
+      // 		returnFormat = returnFormatList[i].value;
+      // 		break;
+      // 	}
+      // }
+      let deviceIDElement = document.getElementById("id_device_id");
+      let deviceID = parseInt(
+        deviceIDElement.options[deviceIDElement.selectedIndex].value
+      );
+      let startdate = document.getElementById("id_startdate").value;
+      let enddate = document.getElementById("id_enddate").value;
+      let utc_startdate = moment(new Date(startdate).toISOString())
+        .utc()
+        .format("YYYY-MM-DD HH:mm:ss");
+      let utc_enddate = moment(new Date(enddate).toISOString())
+        .utc()
+        .format("YYYY-MM-DD HH:mm:ss");
+      startdate = moment(new Date(startdate).toISOString())
+        .format("YYYY-MM-DD HH:mm:ss");
+      enddate = moment(new Date(enddate).toISOString())
+        .format("YYYY-MM-DD HH:mm:ss");
+      let intervalElement = document.getElementById("id_interval");
+      let interval = intervalElement.options[intervalElement.selectedIndex].value;
+      let unitElement = document.getElementById("id_unit");
+      let unit = unitElement.options[unitElement.selectedIndex].value;
+      let download_request = `id=${apikey}&device_id=${deviceID}&startdate='${utc_startdate}'&enddate='${utc_enddate}'&interval=${interval}&unit=${unit}`;
+      let message = encodeURI(download_request);
+      // console.log(download_request);
+      // console.log(returnFormat);
+      let requestUrl = POLLUTANT_LIST_CSV_URL;
+      // if (returnFormat == "json") {
+      // 	requestUrl = POLLUTANT_LIST_URL;
+      // }
+      postRequest(
+        requestUrl,
+        function (err, xhr) {
+          if (err == null) {
+            let blob = new Blob([xhr.response], {
+              type: "text/" + returnFormat
+            });
+            //let link = document.createElement("a");
+            let download_link_div = document.getElementById(
+              "div_download_link"
+            );
+            download_link_div.style.visibility = "visible";
+            let download_link = document.getElementById("download_link");
+            //link.style = "display:none";
+            //document.body.appendChild(link);
+            let url = window.URL.createObjectURL(blob);
+            download_link.href = url;
+            // let filename =
+            //   deviceID +
+            //   "_" +
+            //   utc_startdate.replace(" ", "_").replace(":", "_") +
+            //   "_" +
+            //   utc_enddate.replace(" ", "_").replace(":", "_") +
+            //   "." +
+            //   returnFormat;
+            let filename = `${deviceID}_${startdate.replace(" ", "_").replace(":", "_")}_${enddate.replace(" ", "_").replace(":", "_")}.${returnFormat}`
+            download_link.download = filename;
+            //link.click();
+            //window.URL.revokeObjectURL(url);
+          } else {
+            let errMsg = JSON.parse(xhr.response);
+            alert("ERROR " + err + ": " + errMsg.message);
+          }
+        },
+        message,
+        showProgressBar,
+        finishDownload
+      );
+    }
 
-			for (let i = 0; i < returnFormatList.length; i++) {
-				if (returnFormatList[i].checked) {
-					returnFormat = returnFormatList[i].value;
-					break;
-				}
-			}
-			let deviceID = document.getElementById("id_device_id").value;
-			let startdate = document.getElementById("id_startdate").value;
-			let enddate = document.getElementById("id_enddate").value;
-			let utc_startdate = moment(new Date(startdate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
-			let utc_enddate = moment(new Date(enddate).toISOString()).utc().format("YYYY-MM-DD HH:mm:ss");
-			let message = encodeURI(
-				"id=" +
-				apikey +
-				"&device_id=" +
-				deviceID +
-				"&startdate='" +
-				utc_startdate +
-				"'&enddate='" +
-				utc_enddate +
-				"'"
-			);
-			// console.log(message);
-			// console.log(returnFormat);
-			let requestUrl = POLLUTANT_LIST_CSV_URL;
-			if (returnFormat == "json") {
-				requestUrl = POLLUTANT_LIST_URL;
-			}
-			postRequest(
-				requestUrl,
-				returnFormat,
-				function (err, xhr) {
-					if (err == null) {
-						let blob = new Blob([xhr.response], {
-							type: "text/" + returnFormat
-						});
-						//let link = document.createElement("a");
-						let download_link_div = document.getElementById("div_download_link");
-						download_link_div.style.display = "block";
-						let download_link = document.getElementById("download_link");
-						//link.style = "display:none";
-						//document.body.appendChild(link);
-						let url = window.URL.createObjectURL(blob);
-						download_link.href = url;
-						let filename =
-							deviceID +
-							"_" +
-							utc_startdate.replace(" ", "_").replace(":", "_") +
-							"_" +
-							utc_enddate.replace(" ", "_").replace(":", "_") +
-							"." +
-							returnFormat;
-						download_link.download = filename;
-						//link.click();
-						//window.URL.revokeObjectURL(url);
-					} else {
-						let errMsg = JSON.parse(xhr.response);
-						alert("ERROR " + err + ": " + errMsg.message);
-					}
-				},
-				message
-			);
-		}
+    function postRequest(url, callback,  message = null, onLoadStart = null, onLoadEnd = null,) {
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader(
+        "Content-type",
+        "application/x-www-form-urlencoded"
+      );
+      xhr.withCredentials = true;
+      let myTimer;
+      if(onLoadStart){
+        xhr.onloadstart = onLoadStart;
+      }
+      if(onLoadEnd){
+        xhr.onloadend = onLoadEnd;
+      }
+      // xhr.responseType = "blob";
+      xhr.onload = function () {
+        //console.log("onload");
+        let status = xhr.status;
+        if (status === 200) {
+          callback(null, xhr);
+        } else {
+          callback(status, xhr);
+        }
+      };
+      xhr.send(message);
+    }
 
-		function postRequest(url, responseType, callback, message = null) {
-			let xhr = new XMLHttpRequest();
-			xhr.open("POST", url, true);
-			xhr.setRequestHeader(
-				"Content-type",
-				"application/x-www-form-urlencoded"
-			);
+    function onLoad() {
+      let user_api_key = window.sessionStorage.getItem("api_key");
 
-			let myTimer;
-			xhr.onloadstart = function (event) {
-				//console.log("onloadstart");
-				let progressBar = document.getElementById("progress_bar");
-				document.getElementById("download_panel").style.display = "block";
+      if (user_api_key == null) {
+        location.href = "/login";
+      }
 
-				progressBar.style.display = "block";
-				progressBar.value = 0;
-				progressBar.style.width = "5%";
-				progressBar.innerHTML = progressBar.value + "%";
-				myTimer = window.setInterval(function () {
-					let progressBar = document.getElementById("progress_bar");
-					if (progressBar.value < 99)
-						progressBar.value += 1;
-					if (progressBar.value <= 94)
-						progressBar.style.width = progressBar.value + 5 + "%";
-					else
-						progressBar.style.width = progressBar.value + "%";
-					progressBar.innerHTML = progressBar.value + "%";
-				}, 1000);
-			};
-			xhr.onloadend = function (event) {
-				//console.log("onloadend");
-				let progressBar = document.getElementById("progress_bar");
-				clearInterval(myTimer);
-				progressBar.value = 100;
-				progressBar.style.width = "100%";
-				progressBar.innerHTML = "100%";
-			};
-			// xhr.responseType = "blob";
-			xhr.onload = function () {
-				//console.log("onload");
-				let status = xhr.status;
-				if (status === 200) {
-					callback(null, xhr);
-				} else {
-					callback(status, xhr);
-				}
-			};
-			xhr.send(message);
-		}
+      let user_device_id = window.sessionStorage
+        .getItem("device_id")
+        .split(",");
+      let div_device_id = document.getElementById("id_device_id");
+      // console.log(div_device_id);
+      user_device_id.forEach(function (device_id) {
+        let option = document.createElement("option");
+        option.text = device_id;
+        option.value = parseInt(device_id);
+        div_device_id.appendChild(option);
+      });
 
-		function onLoad() {
-			let user_api_key = window.sessionStorage.getItem("api_key");
+      //console.log("API Key: " + user_api_key);
+      //console.log("Device S/N: " + user_device_id);
 
-			if (user_api_key == null) {
-				location.href = "/login";
-			}
+      document.getElementById("id_apikey").value = user_api_key;
+      let message = encodeURI(`id=${user_api_key}`);
+      postRequest(
+        PROFILE_URL,
+        function(err,xhr){
+          if(err==null){
+            let unitElement = document.getElementById("id_unit");
+            let response = JSON.parse(xhr.response);
+            if (response.unit == "ugm3") {
+              unitElement.selectedIndex = 1;
+            } else {
+              unitElement.selectedIndex = 0;
+            }
+          }
+        },
+        message
+      )
+      document.getElementById("id_device_id").value = user_device_id;
+    }
+    let showProgressBar = function ShowProgressBar() {
+        //console.log("onloadstart");
+        let progressBar = document.getElementById("progress_bar");
+        document.getElementById("download_panel").style.visibility = "visible";
 
-			let user_device_id = parseInt(window.sessionStorage.getItem("device_id").split(",")[0]);
+        progressBar.style.display = "block";
+        progressBar.value = 0;
+        progressBar.style.width = "5%";
+        progressBar.innerHTML = progressBar.value + "%";
+        myTimer = window.setInterval(function () {
+          let progressBar = document.getElementById("progress_bar");
+          if (progressBar.value < 99) progressBar.value += 1;
+          if (progressBar.value <= 94)
+            progressBar.style.width = progressBar.value + 5 + "%";
+          else progressBar.style.width = progressBar.value + "%";
+          progressBar.innerHTML = progressBar.value + "%";
+        }, 1000);
+      }
+    let finishDownload = function FinishDownload() {
+        //console.log("onloadend");
+        let progressBar = document.getElementById("progress_bar");
+        clearInterval(myTimer);
+        progressBar.value = 100;
+        progressBar.style.width = "100%";
+        progressBar.innerHTML = "100%";
+      }
+  </script>
 
-			//console.log("API Key: " + user_api_key);
-			//console.log("Device S/N: " + user_device_id);
-
-			document.getElementById("id_apikey").value = user_api_key;
-			document.getElementById("id_device_id").value = user_device_id;
-		}
-	</script>
-
-	<style>
-		h2 {
-			margin: 2px;
-			padding: 1px;
-		}
-	</style>
+  <style>
+    h2 {
+      margin: 2px;
+      padding: 1px;
+    }
+  </style>
 </head>
 
 <body onload="onLoad()" onresize="onResize()">
-	<header>
-		<section class="row">
-			<section class="left" id="desktop-left">
-				<div class="menu-button" onclick="onMenuClick()">
-					<div class="bar"></div>
-					<div class="bar"></div>
-					<div class="bar"></div>
-				</div>
-				<section class="logo">
-					<a href="/portal/">
-						<img src="/images/logo.png">
-					</a>
-				</section>
-				<section class="slogen">
-					<h2>BREATHE SAFE</h2>
-					<h2>BREATHE EASY</h2>
-				</section>
-			</section>
-			<!--end of left-->
+  <header>
+    <section class="row">
+      <section class="left" id="desktop-left">
+        <div class="menu-button" onclick="onMenuClick()">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <section class="logo">
+          <a href="/portal/">
+            <img src="/images/logo.png" />
+          </a>
+        </section>
+        <section class="slogen">
+          <h2>BREATHE SAFE</h2>
+          <h2>BREATHE EASY</h2>
+        </section>
+      </section>
+      <!--end of left-->
 
-			<nav class="navbar-collapse col-4" id="navbar-collapse">
-				<li>
-					<a href="/portal/">Home</a>
-				</li>
-				<!--
+      <nav class="navbar-collapse col-4" id="navbar-collapse">
+        <li>
+          <a href="/portal/">Home</a>
+        </li>
+        <!--
 				<li>
 					<a href="/resources">Resources</a>
 				</li>
 				-->
-				<li>
-					<!--
+        <li>
+          <!--
 					<a href="https://twitter.com/theairsence" class="icon" target="_blank">
 						<img src="/images/twitter.png">
 					</a>
 					-->
-					<a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
-						<img src="/images/envelope.png">
-					</a>
-				</li>
-				<li>
-					<a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
-				</li>
-			</nav>
-			<!--end of navbar-->
+          <a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
+            <img src="/images/envelope.png" />
+          </a>
+        </li>
+        <li>
+          <a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
+        </li>
+      </nav>
+      <!--end of navbar-->
 
-			<section class="right" id="desktop-right">
-				<nav class="navbar col-12">
-					<ul>
-						<li>
-							<a href="/portal/">Home</a>
-						</li>
-						<!--
+      <section class="right" id="desktop-right">
+        <nav class="navbar col-12">
+          <ul>
+            <li>
+              <a href="/portal/">Home</a>
+            </li>
+            <!--
 						<li>
 							<a href="/resources">Resources</a>
 						</li>
 						-->
-						<!--
+            <!--
 						<li>
 							<a href="https://twitter.com/theairsence" class="icon" target="_blank">
 								<img src="/images/twitter.png">
 							</a>
 						</li>
 						-->
-						<li>
-							<a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
-								<img src="/images/envelope.png">
-							</a>
-						</li>
-						<li>
-							<a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
-						</li>
-					</ul>
-				</nav>
-				<!--end of navbar-->
-			</section>
-			<!--end of right-->
+            <li>
+              <a href="http://augsignals.com/contact-us/" class="icon" target="_blank">
+                <img src="/images/envelope.png" />
+              </a>
+            </li>
+            <li>
+              <a href="/logout/" onclick="OnLogoutClicked()">Logout</a>
+            </li>
+          </ul>
+        </nav>
+        <!--end of navbar-->
+      </section>
+      <!--end of right-->
+    </section>
+    <!-- end of row-->
 
-		</section>
-		<!-- end of row-->
+    <section class="search-bar col-12">
+      <section class="col-6" style="margin-left:25%;">
+        <h1 style="padding-top:1%;">DOWNLOAD DATA</h1>
+      </section>
+    </section>
+  </header>
 
-		<section class="search-bar col-12">
-			<section class="col-6" style="margin-left:25%;">
-				<h1 style="padding-top:1%;">DOWNLOAD DATA</h1>
-			</section>
-		</section>
-	</header>
+  <article class="col-12">
+    <section class="content">
+      <div class="container">
+        <div id="signupbox" style="padding-top:10px" class="mainbox row justify-content-center ">
+          <div class="panel panel-info col-6 border""
+            >
+              <div class=" col-12">
+            <!-- <h1 class="panel-title">AirSENCE&trade; Data Download</h1>
+				<div style="float:right; font-size: 85%; position: relative; top:-10px" /> -->
+            &nbsp;
+          </div>
+          <div class="panel-body">
+            <form method="post" onsubmit="downloadData(event)">
+              <!-- <input
+                    type="hidden"
+                    name="csrfmiddlewaretoken"
+                    value="XFe2rTYl9WOpV8U6X5CfbIuOZOELJ97S"
+                  />
+                  <div id="div_id_select" class="form-group required">
+                    <label
+                      for="id_select"
+                      class="control-label  requiredField"
+                      style="display:none"
+                    >
+                      Return Format<span class="asteriskField">*</span>
+                    </label>
+                    <div class="controls" style="margin-bottom: 10px">
+                      <label class="radio-inline" style="display:none">
+                        <input
+                          type="radio"
+                          name="select"
+                          id="id_select_1"
+                          value="json"
+                          style="margin-bottom: 10px;display:none;"
+                        />JSON</label
+                      >
+                      <label class="radio-inline" style="visibility:hidden;">
+                        <input
+                          type="radio"
+                          checked="checked"
+                          name="select"
+                          id="id_select_2"
+                          value="csv"
+                          style="margin-bottom: 10px;visibility:hidden;"
+                        />CSV
+                      </label>
+                    </div>
+                  </div> -->
 
-	<article class="col-12">
-		<section class="content">
-			<div class="container">
-				<div id="signupbox" style="padding-top:50px"
-					class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-					<div class="panel panel-info">
-						<div class="panel-heading">
-							<div class="panel-title">AirSENCE&trade; Data Download</div>
-							<div style="float:right; font-size: 85%; position: relative; top:-10px" />
-						</div>
-						<div class="panel-body">
-							<form method="post" onsubmit="downloadData(event)">
-								<input type="hidden" name="csrfmiddlewaretoken"
-									value="XFe2rTYl9WOpV8U6X5CfbIuOZOELJ97S" />
-								<div id="div_id_select" class="form-group required">
-									<label for="id_select" class="control-label  requiredField">
-										Return Format<span class="asteriskField">*</span>
-									</label>
-									<div class="controls" style="margin-bottom: 10px">
-										<label class="radio-inline">
-											<input type="radio" checked="checked" name="select" id="id_select_1"
-												value="json" style="margin-bottom: 10px" />JSON</label>
-										<label class="radio-inline">
-											<input type="radio" name="select" id="id_select_2" value="csv"
-												style="margin-bottom: 10px" />CSV
-										</label>
-									</div>
-								</div>
+              <!-- TODO: Set value of API key on page load -->
+              <input type="hidden" id="id_apikey" name="apikey" value="" />
 
-								<!-- TODO: Set value of API key on page load -->
-								<input type="hidden" id="id_apikey" name="apikey" value="" />
-
-								<!-- TODO: Set value of Device ID on page load -->
-								<input type="hidden" id="id_device_id" name="device_id" value="" />
-
-								<div id="div_id_startdate" class="form-group required">
-									<label for="id_startdate" class="control-label  requiredField">
-										Start Date<span class="asteriskField">*</span>
-									</label>
-									<div class="input-group date" id="datetimepicker1">
+              <!-- TODO: Set value of Device ID on page load -->
+              <!-- <input type="hidden" id="id_device_id" name="device_id" value="" /> -->
+              <div id="div_id_device_id" class="form-group">
+                <label for="id_select" class="control-label  requiredField">
+                  Device ID<span class="asteriskField">*</span>
+                </label>
+                <select id="id_device_id" class="custom-select" required> </select>
+              </div>
+              <div id="id_div_interval" class="form-group">
+                <label for="id_interval" class="control-label requiredField">
+                  Interval<span class="asteriskField">*</span>
+                </label>
+                <select id="id_interval" class="custom-select" required>
+                  <option value="2_mins">2 minutes</option>
+                  <option value="15_mins">15 mintues</option>
+                  <option value="1_hours">1 hour</option>
+                  <option value="24_hours">24 hours</option>
+                </select> 
+              </div>
+              <div id="id_div_unit" class="form-group">
+                <label for="id_unit" class="control-label requiredField">
+                  Unit<span class="asteriskField">*</span>
+                </label>
+                <select id="id_unit" class="custom-select" required>
+                  <option value="ppb">ppb</option>
+                  <option value="ugm3">μg/m&sup3;</option>
+                </select>
+              </div>
+              <div id="div_id_startdate" class="form-group required">
+                <label for="id_startdate" class="control-label  requiredField">
+                  Start Date<span class="asteriskField">*</span>
+                </label>
+                <!-- <div class="input-group date" id="datetimepicker1">
 										<input type="text" class="form-control" id="id_startdate" required />
 										<span class="input-group-addon">
 											<span class="glyphicon glyphicon-calendar" />
 										</span>
-									</div>
-								</div>
+									</div> -->
+                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                  <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"
+                    id="id_startdate" required/>
+                  <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-								<div id="div_id_enddate" class="form-group required">
-									<label for="id_enddate" class="control-label  requiredField">
-										End Date<span class="asteriskField">*</span>
-									</label>
+              <div id="div_id_enddate" class="form-group required">
+                <label for="id_enddate" class="control-label  requiredField">
+                  End Date<span class="asteriskField">*</span>
+                </label>
 
-									<div class="input-group date" id="datetimepicker2">
+                <!-- <div class="input-group date" id="datetimepicker2">
 										<input type="text" class="form-control" id="id_enddate" required />
 										<span class="input-group-addon">
 											<span class="glyphicon glyphicon-calendar" />
 										</span>
-									</div>
-								</div>
+									</div> -->
+                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                  <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2"
+                    id="id_enddate" required/>
+                  <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-								<script type="text/javascript">
-									$(function () {
-										$("#datetimepicker1").datetimepicker({
-											format: "YYYY-MM-DD HH:mm:ss",
-											maxDate: new Date(Date.now()),
-											useCurrent: false //Important! See issue #1075
-										});
+              <script type="text/javascript">
+                $(function () {
+                  $("#datetimepicker1").datetimepicker({
+                    format: "YYYY-MM-DD HH:mm:ss",
+                    maxDate: new Date(Date.now()),
+                    useCurrent: false, //Important! See issue #1075
+                    icons: {
+                      time: "far fa-clock"
+                    }
+                  });
 
-										$("#datetimepicker2").datetimepicker({
-											format: "YYYY-MM-DD HH:mm:ss",
-											maxDate: new Date(Date.now()),
-											useCurrent: false //Important! See issue #1075
-										});
+                  $("#datetimepicker2").datetimepicker({
+                    format: "YYYY-MM-DD HH:mm:ss",
+                    maxDate: new Date(Date.now()),
+                    useCurrent: false, //Important! See issue #1075
+                    icons: {
+                      time: "far fa-clock"
+                    }
+                  });
 
-										$("#datetimepicker1").on("dp.change", function (e) {
-											$('#datetimepicker2').data("DateTimePicker").minDate(e.date);
-										});
+                  // $("#datetimepicker1").on("dp.change", function (e) {
+                  // 	$('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+                  // });
+                  $("#datetimepicker1").on(
+                    "change.datetimepicker",
+                    function (e) {
+                      $("#datetimepicker2").datetimepicker(
+                        "minDate",
+                        e.date
+                      );
+                    }
+                  );
 
-										$("#datetimepicker2").on("dp.change", function (e) {
-											$('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
-											$('#datetimepicker2').data("DateTimePicker").maxDate(new Date(Date.now()));
-										});
-									});
-								</script>
-								
-								<div class="form-group">
-									<div class="aab controls col-md-5" />
-									<div class="controls">
-										<input type="submit" name="Submit" value="Submit"
-											class="btn btn-primary btn btn-info" id="submit-id-download" />
-									</div>
-								</div>
-								<!--</div>-->
-								<!-- AM: 2019-04-02 commented dangling div tag -->
-							</form>
-						</div>
-					</div>
-					<!-- AM: 2019-04-02 added closing div tag -->
+                  // $("#datetimepicker2").on("dp.change", function (e) {
+                  // 	$('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+                  // 	$('#datetimepicker2').data("DateTimePicker").maxDate(new Date(Date.now()));
+                  // });
+                  $("#datetimepicker2").on(
+                    "change.datetimepicker",
+                    function (e) {
+                      $("#datetimepicker1").datetimepicker(
+                        "maxDate",
+                        e.date
+                      );
+                      $("#datetimepicker2").datetimepicker(
+                        "maxDate",
+                        new Date(Date.now())
+                      );
+                    }
+                  );
+                });
+              </script>
 
-					<!--The following section is displayed once file is requested for download-->
-					<div class="panel panel-info" style="display:none;" id="download_panel">
-						<div class="panel-body">
-							<p>
-								<label>Timestamp in the file will be UTC time.</label>
-							</p>
-							<div class="progress" id="div_progress_bar">
-								<div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="2"
-									aria-valuemin="0" aria-valuemax="100" style="width: 2%; display: none;">
-									2%
-								</div>
-							</div>
-							<div id="div_download_link" style="display:none;">
-								<p>
-									<label>Your file is ready</label>
-								</p>
-								<div class="aab controls col-md-5" />
-								<a href="#" id="download_link" class="btn btn-primary btn btn-info">Download</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!--end of section content-->
-	</article>
-	<!--end of article-->
+              <div class="form-group">
+                <div class="aab controls col-md-5">
+                  <div class="controls">
+                    <input type="submit" name="Submit" value="Submit" class="btn btn-primary btn btn-info"
+                      id="submit-id-download" />
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- AM: 2019-04-02 added closing div tag -->
+
+
+      </div>
+      <div class="row justify-content-center pt-3" style="visibility: hidden;" id="download_panel">
+        <!--The following section is displayed once file is requested for download-->
+        <div class="panel panel-info col-6 border pt-3 pb-3">
+          <div class="panel-body">
+            <p>
+              <label>Timestamp in the file will be UTC time.</label>
+            </p>
+            <div class="progress" id="div_progress_bar">
+              <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0"
+                aria-valuemax="100" style="width: 2%; display: none;">
+                2%
+              </div>
+            </div>
+            <div id="div_download_link" style="visibility: hidden;" class="pt-3">
+              <p>
+                <label>Your file is ready</label>
+              </p>
+              <div class="aab controls col-md-5">
+                <a href="#" id="download_link" class="btn btn-primary btn btn-info">Download</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+    <!--end of section content-->
+  </article>
+  <!--end of article-->
 </body>
 
 </html>

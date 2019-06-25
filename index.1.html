@@ -5,9 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="/css/style.css" rel="stylesheet" type="text/css" />
+    <!-- <meta http-equiv="refresh" content="0;url=/login" /> -->
+
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
     <link
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
       rel="stylesheet"
     />
     <link
@@ -15,48 +17,49 @@
       rel="stylesheet"
       type="text/css"
     />
+
+    <script type="text/javascript" src="js/info.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/script.js" charset="utf-8"></script>
+
     <link
-      href="/css/bootstrap-tour-standalone.min.css"
+      href="css/bootstrap-tour-standalone.min.css"
       rel="stylesheet"
       type="text/css"
     />
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script
+      type="text/javascript"
+      src="js/bootstrap-tour-standalone.min.js"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js"
+    ></script>
     <link
       href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css"
       rel="stylesheet"
       type="text/css"
     />
+    <script
+      type="text/javascript"
+      src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js"
+    ></script>
     <link
       rel="stylesheet"
       href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css"
       type="text/css"
     />
 
-    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/Chart.bundle.min.js"></script>
+    <script type="text/javascript" src="js/moment.min.js"></script>
     <script
       type="text/javascript"
-      src="/js/bootstrap-tour-standalone.min.js"
+      src="js/chartjs-plugin-annotation.min.js"
     ></script>
-    <script
-      type="text/javascript"
-      src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js"
-    ></script>
-
-    <script type="text/javascript" src="/js/Chart.bundle.min.js"></script>
-    <script type="text/javascript" src="/js/moment.min.js"></script>
-    <script
-      type="text/javascript"
-      src="/js/chartjs-plugin-annotation.min.js"
-    ></script>
-
-    <script type="text/javascript" src="/js/info.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/js/script.js" charset="utf-8"></script>
   </head>
 
-  <body onload="onMainLoad('portal')" onresize="onResize()">
+  <body onload="onMainLoad('main')" onresize="onResize()">
     <script type="text/javascript">
       navigator.sayswho = (function() {
         var ua = navigator.userAgent,
@@ -83,18 +86,20 @@
         if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
         return M.join(" ");
       })();
-
       let browserType = navigator.sayswho;
-
       if (browserType.match(/IE/)) {
-        //console.log("IT IS IE!");
+        console.log("IT IS IE!");
         window.alert("This website does not support IE.");
       } else {
-        //console.log("IT IS NOT IE.");
+        console.log("IT IS NOT IE.");
       }
     </script>
-
     <header>
+      <!-- <section class="search-bar col-12" style="font-size:1.5em;">
+      We plan to do a server maintenance today (April 10th) at 3:00PM - 6:00PM(EDT) . The
+      website will be not available during that time. We apologize for any
+      inconvenience.
+    </section> -->
       <section class="row">
         <section class="left" id="desktop-left">
           <div class="menu-button" onclick="onMenuClick()">
@@ -103,8 +108,8 @@
             <div class="bar"></div>
           </div>
           <section class="logo" id="logo">
-            <a href="/portal/">
-              <img src="/images/logo.png" />
+            <a href="/">
+              <img src="images/logo.png" />
             </a>
           </section>
           <section class="slogen">
@@ -112,9 +117,8 @@
             <h2>BREATHE EASY</h2>
           </section>
         </section>
-        <!--End of left-->
-
         <nav class="navbar-collapse col-4" id="navbar-collapse">
+          JSON
           <li>
             <button onclick="onClickHere(this.id)" id="about-info-">
               <a href="#about-info-detail">About</a>
@@ -125,34 +129,34 @@
               <a href="#user-guide-info-detail">User Guide</a>
             </button>
           </li>
-          <!--
-				<li>
-					<a href="/resources">Resources</a>
-				</li>
-				-->
           <li>
-            <!--
-					<a href="https://twitter.com/theairsence" class="icon" target="_blank">
-						<img src="/images/twitter.png">
-					</a>
-					-->
+            <a href="/resources">
+              Resources
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://twitter.com/theairsence"
+              class="icon"
+              target="_blank"
+            >
+              <img src="images/twitter.png" />
+            </a>
             <a
               href="http://augsignals.com/contact-us/"
               class="icon"
               target="_blank"
             >
-              <img src="/images/envelope.png" />
-            </a>
-            <a href="/portal/profile/">
-              <i class="fas fa-user-circle"></i>
+              <img src="images/envelope.png" />
             </a>
           </li>
           <li>
-            <button onclick="OnLogoutClicked()">Logout</button>
+            <a href="/login">
+              Login
+            </a>
           </li>
         </nav>
         <!--end of navbar collapse-->
-
         <section class="right" id="desktop-right">
           <nav class="navbar col-12">
             <ul>
@@ -166,32 +170,33 @@
                   User Guide
                 </button>
               </li>
-              <!--
-						<li>
-							<a href="/resources">Resources</a>
-						</li>
-						-->
-              <!--
-						<li>
-							<a href="https://twitter.com/theairsence" class="icon" target="_blank">
-								<img src="/images/twitter.png">
-							</a>
-						</li>
-						-->
+              <li>
+                <a href="/resources">
+                  Resources
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://twitter.com/theairsence"
+                  class="icon"
+                  target="_blank"
+                >
+                  <img src="images/twitter.png" />
+                </a>
+              </li>
               <li>
                 <a
                   href="http://augsignals.com/contact-us/"
                   class="icon"
                   target="_blank"
                 >
-                  <img src="/images/envelope.png" />
-                </a>
-                <a href="/portal/profile/">
-                  <i class="fas fa-user-circle"></i>
+                  <img src="images/envelope.png" />
                 </a>
               </li>
               <li>
-                <button onclick="OnLogoutClicked()">Logout</button>
+                <a href="/login">
+                  Login
+                </a>
               </li>
             </ul>
           </nav>
@@ -200,7 +205,6 @@
         <!--end of right-->
       </section>
       <!-- end of row-->
-
       <section class="search-bar col-12">
         <section class="left col-5">
           <h1>HOW CLEAN IS YOUR AIR?</h1>
@@ -208,24 +212,25 @@
 
         <section class="right col-6">
           <section class="search-container autocomplete">
-            <div
-              id="download"
-              style="padding-left:40%; font-family:Roboto; font-size:2em; letter-spacing:0.1em;"
-            >
-              <a
-                id="download_link"
-                class="btn btn-default"
-                style="font-weight:900;"
-                href="/portal/download/"
-                >Download Data</a
-              >
-            </div>
+            <!--
+          <input name="address" id='address' type="text" placeholder="Enter your address" autocomplete="off">
+          <button type="button"  id="search-button">
+            <i class="fa fa-search"></i>
+          </button>
+          <button type="button" onclick="getUserLocation()">
+            <i class="fas fa-map-marker-alt"></i>
+          </button>
+          <button type="button" onclick="getUserLocation()">
+              <i class="fas fa-map-marker-alt"></i>
+          </button>
+          -->
+            <div id="address" class="address"></div>
           </section>
         </section>
       </section>
+
       <!-- end of search-bar -->
     </header>
-
     <article class="col-12">
       <div id="loading" class="loading-overlay">
         <div class="loader"></div>
@@ -308,6 +313,16 @@
               <ul>
                 <li>
                   <button
+                    id="pm10"
+                    class="parammenu-button grey"
+                    onclick="changeContent(this.id)"
+                  >
+                    PM<sub>10</sub>
+                    <a id="pm10-unit">--</a>
+                  </button>
+                </li>
+                <li>
+                  <button
                     id="co"
                     class="parammenu-button grey"
                     onclick="changeContent(this.id)"
@@ -336,34 +351,12 @@
                     <a id="so2-unit">--</a>
                   </button>
                 </li>
-                <li>
-                  <button
-                    id="pm10"
-                    class="parammenu-button grey"
-                    onclick="changeContent(this.id)"
-                  >
-                    PM<sub>10</sub>
-                    <a id="pm10-unit">--</a>
-                  </button>
-                </li>
               </ul>
             </section>
             <!-- End of parammenu -->
           </section>
           <!-- End of content -->
-          <section class="unit-btn-block" id="unit-btn-block-id">
-            <button
-              id="unit-btn-left-id"
-              class="active"
-              onclick="onUnitChange(this.id)"
-            >
-              ppb</button
-            >|
-            <button id="unit-btn-right-id" onclick="onUnitChange(this.id)">
-              μg/m<sup>3</sup>
-            </button>
-          </section>
-          <h2>
+          <h2 class="col-12">
             <span id="time">No Data Available</span>
           </h2>
         </section>
@@ -389,7 +382,6 @@
               </ul>
               -->
             </div>
-
             <h1 id="legend"></h1>
             <h2 id="legend-unit"></h2>
           </section>
@@ -397,7 +389,7 @@
           <section class="param-chart">
             <canvas id="myChart" height="300" width="700"></canvas>
           </section>
-          <section class="period-choose col-10" id="period">
+          <section class="period-choose col-12" id="period">
             <ul>
               <li>
                 <button

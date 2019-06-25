@@ -13,15 +13,13 @@ function onMainLoad() {
 
     let user_device_list = window.sessionStorage.getItem("device_id");
     if (user_device_list !== null) {
-      user_device_id = parseInt(user_device_list.split(",")[0]);
+      user_device_id = user_device_list.split(",").map(Number);
     }
     //console.log("user_api_key: " + user_api_key + "\nuser_device_id: " +user_device_id);
   } catch (err) {
-    console.error(err);
+    window.alert("We have some issuse when loading some configuration:" + err);
   }
-
   loadingInfo();
-
   onResize();
 }
 
@@ -42,21 +40,22 @@ let user_api_key, user_device_id;
 /***************************************************************************/
 //} else {
 /*******************For website hosted on GitHub*****************************/
-const INFO_URL = "https://www.signalfusion.com:9000/api/v1.3/getinfo";
-const GET_LATEST_URL =
-  "https://www.signalfusion.com:9000/api/v1.3/getlatestlogin";
-const SENSOR_URL =
-  "https://www.signalfusion.com:9000/api/v1.3/getlocationlogin";
-const POLLUTANT_URL =
-  "https://www.signalfusion.com:9000/api/v1.3/getpollutantlogin";
+const INFO_URL = "http://api.airsence.com:9000/getinfo";
+const GET_LATEST_URL = "http://api.airsence.com:9000/getlatestlogin";
+const SENSOR_URL = "http://api.airsence.com:9000/getlocationlogin";
+const POLLUTANT_URL = "http://api.airsence.com:9000/getpollutantlogin";
+const LOGOUT_URL = "http://api.airsence.com:9000/logout";
+const LOGIN_URL = "http://api.airsence.com:9000/login";
 /****************************************************************************/
 //}
 
-/***********For website hosted inside AUG (using test DB)*******************/
-//const INFO_URL = "api/test/getinfo";
-//const GET_LATEST_URL = "api/test/getlatest";
-//const SENSOR_URL = "api/test/getlocation";
-//const POLLUTANT_URL = "api/test/getpollutant";
+/***********For website hosted inside AUG*******************/
+// const INFO_URL = "http://localhost:5000/getinfo";
+// const GET_LATEST_URL = "http://localhost:5000/getlatestlogin";
+// const SENSOR_URL = "http://localhost:5000/getlocationlogin";
+// const POLLUTANT_URL = "http://localhost:5000/getpollutantlogin";
+// const LOGOUT_URL = "http://localhost:5000/logout";
+// const LOGIN_URL = "http://localhost:5000/login";
 /***************************************************************************/
 /******************************************************
  * Check cookie to verify whether this user is first time
@@ -193,7 +192,7 @@ function loadingInfo() {
   //console.log("Enter loadingInfo");
   // postJSON(
   //   INFO_URL,
-  //   function(err, json) {
+  //   function (err, json) {
   //     if (err == null) {
   //       initMap(json[0].map_feature, json[0].mapCenter);
   //       getChartFeature(json[0].chart_feature);
@@ -206,12 +205,12 @@ function loadingInfo() {
   //       refreshTimeChart = json[0].refreshTimeChart;
   //       refreshTimeButton = json[0].refreshTimeButton;
   //       //refreshTimeChart = 20 * 1000;
-  //       //refreshTimeButton = 30 * 1000;
-  //       guideStep = json[0].guide_step;
+  //       //refreshTimeBJSON 1000;
+  //       guideStep = jsJSONstep;
   //       drawChart();
-  //       autoRefreshChart();
-  //       autoRefreshButton();
-  //       //setGeocoder();
+  //       autoRefreshChaJSON
+  //       autoRefreshButJSON
+  //       setGeocoder();JSON
   //     } else {
   //       console.error("ERROR when loadingInfo: " + err);
   //       window.alert(
@@ -221,6 +220,7 @@ function loadingInfo() {
   //   },
   //   encodeURI("id=" + UID)
   // );
+
   let json = infoJSON;
   initMap(json[0].map_feature, json[0].mapCenter);
   getChartFeature(json[0].chart_feature);
@@ -232,14 +232,15 @@ function loadingInfo() {
   lastClick = json[0].lastClick;
   refreshTimeChart = json[0].refreshTimeChart;
   refreshTimeButton = json[0].refreshTimeButton;
-  ppbConversion = json[0].ppbConversion;
+  unitConversion = json[0].unitConversion;
   //refreshTimeChart = 20 * 1000;
   //refreshTimeButton = 30 * 1000;
   guideStep = json[0].guide_step;
   drawChart();
   autoRefreshChart();
   autoRefreshButton();
-  setGeocoder();
+  unitType = "ugm3";
+  //setGeocoder();
 }
 const UID = "4F09FC2FFE674AA9A568A2BD23C95CB9";
 let thresholdInfo,
@@ -250,7 +251,8 @@ let thresholdInfo,
   refreshTimeButton,
   checkDays,
   guideStep,
-  ppbConversion;
+  unitConversion,
+  unitType;
 
 /*********************************************
  * Function to set period button to disable
@@ -372,21 +374,49 @@ function changeContent(buttonID) {
       legend.innerHTML = "PM<sub>2.5</sub>";
       legendUnit.innerHTML = "μg/m<sup>3</sup>";
       break;
+    // case "no2":
+    //   legend.innerHTML = "NO<sub>2</sub>";
+    //   legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+    //   break;
+    // case "no":
+    //   legend.innerHTML = "NO<sub>&nbsp;</sub>";
+    //   legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+    //   break;
+    // case "co":
+    //   legend.innerHTML = "CO<sub>&nbsp;</sub>";
+    //   legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+    //   break;
+    // case "o3":
+    //   legend.innerHTML = "O<sub>3</sub>";
+    //   legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+    //   break;
+    // case "aqhi":
+    //   legend.innerHTML = "AQHI<sub>&nbsp;</sub>";
+    //   legendUnit.innerHTML = "&nbsp;<sup>&nbsp;</sup>";
+    //   break;
+    // case "so2":
+    //   legend.innerHTML = "SO<sub>2</sub>";
+    //   legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+    //   break;
+    // case "co2":
+    //   legend.innerHTML = "CO<sub>2</sub>";
+    //   legendUnit.innerHTML = "ppm<sup>&nbsp;</sup>";
+    //   break;
     case "no2":
       legend.innerHTML = "NO<sub>2</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+      legendUnit.innerHTML = "μg/m<sup>3</sup>";
       break;
     case "no":
       legend.innerHTML = "NO<sub>&nbsp;</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+      legendUnit.innerHTML = "μg/m<sup>3</sup>";
       break;
     case "co":
       legend.innerHTML = "CO<sub>&nbsp;</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+      legendUnit.innerHTML = "μg/m<sup>3</sup>";
       break;
     case "o3":
       legend.innerHTML = "O<sub>3</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+      legendUnit.innerHTML = "μg/m<sup>3</sup>";
       break;
     case "aqhi":
       legend.innerHTML = "AQHI<sub>&nbsp;</sub>";
@@ -394,11 +424,11 @@ function changeContent(buttonID) {
       break;
     case "so2":
       legend.innerHTML = "SO<sub>2</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
+      legendUnit.innerHTML = "μg/m<sup>3</sup>";
       break;
     case "co2":
       legend.innerHTML = "CO<sub>2</sub>";
-      legendUnit.innerHTML = "ppm<sup>&nbsp;</sup>";
+      legendUnit.innerHTML = "mg/m<sup>3</sup>";
       break;
     case "pm10":
       legend.innerHTML = "PM<sub>10</sub>";
@@ -415,113 +445,6 @@ function changeContent(buttonID) {
 }
 let lastClickPollution = "aqhi";
 let enoughPoint = true;
-
-function changeContent_deprecated(buttonID) {
-  //console.log("enter changeContent with",let1);
-  /*
-        Get all the element that need to be change when
-        a pollution button is clicked.
-    */
-  lastClickPollution = buttonID; //store the last clicked pollution for later period button click
-  //console.log("lastClickPollution in changeContent",lastClickPollution);
-  let paramname = document.getElementById("paramname"); //pollution name shown in the circle
-  let unit = document.getElementById("unit"); //pollution unit shown in the circle
-  let legend = document.getElementById("legend"); //pollution name shown in the chart
-  let legendUnit = document.getElementById("legend-unit"); //pollution unit shown in the chart
-  let circle = document.getElementById("circle"); //circle color
-  circle.className = "circle";
-  let selectedButton = document.getElementById(buttonID); //pollution button selected now
-  let paramButtons = document.getElementsByClassName("parammenu-button"); //array of all pollution button
-  let infoBlocks = document.getElementsByClassName("information-section"); //array of all information block below chart
-  let infoBlock = document.getElementById(buttonID + "-info"); //the seleted pollution information block
-  closeAllInfoBlock();
-  enablePeriodButton(3);
-  clickHereClicked = false;
-  for (let i = 0; i < paramButtons.length; i++) {
-    paramButtons[i].classList.remove("active");
-  }
-  for (let i = 0; i < infoBlocks.length; i++) {
-    infoBlocks[i].classList.remove("active");
-  }
-  circle.classList.add(selectedButton.className.split(" ")[1]);
-  //Change the value and color for the circle
-  try {
-    if (singleSensorJSON != null && singleSensorJSON.length > 0) {
-      let unitNum = singleSensorJSON[0][buttonID];
-      if (buttonID == "aqhi") {
-        unit.innerHTML =
-          unitNum != null && unitNum != "NULL" ? parseInt(unitNum) : "--";
-      } else {
-        if (unitNum != null && unitNum != "NULL") {
-          if (unitNum >= thresholdInfo[buttonID].low_limit) {
-            unit.innerHTML = unitNum.toFixed(1);
-          } else {
-            unit.innerHTML = "<" + thresholdInfo[buttonID].low_limit;
-          }
-        } else {
-          unit.innerHTML = "--";
-        }
-      }
-    }
-    //enoughPoint flag is to check whether there are enough points for updating the chart
-    checkEnoughPoint(buttonID);
-    updateChart(buttonID);
-  } catch (exception) {
-    console.error("ERROR when changeContent: " + exception);
-    window.alert(
-      "We have ERROR when we try to refresh button. Please refresh and try again."
-    );
-  }
-  //change the name and unit in the circle accrodingly
-  switch (buttonID) {
-    case "pm2_5":
-      paramname.innerHTML = "PM<sub>2.5</sub>";
-      legend.innerHTML = "PM<sub>2.5</sub>";
-      legendUnit.innerHTML = "μg/m<sup>3</sup>";
-      break;
-    case "no2":
-      paramname.innerHTML = "NO<sub>2</sub>";
-      legend.innerHTML = "NO<sub>2</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
-      break;
-    case "no":
-      paramname.innerHTML = "NO<sub>&nbsp;</sub>";
-      legend.innerHTML = "NO<sub>&nbsp;</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
-      break;
-    case "co":
-      paramname.innerHTML = "CO<sub>&nbsp;</sub>";
-      legend.innerHTML = "CO<sub>&nbsp;</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
-      break;
-    case "o3":
-      paramname.innerHTML = "O<sub>3</sub>";
-      legend.innerHTML = "O<sub>3</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
-      break;
-    case "aqhi":
-      paramname.innerHTML = "AQHI<sub>&nbsp;</sub>";
-      legend.innerHTML = "AQHI<sub>&nbsp;</sub>";
-      legendUnit.innerHTML = "&nbsp;<sup>&nbsp;</sup>";
-      break;
-    case "so2":
-      paramname.innerHTML = "SO<sub>2</sub>";
-      legend.innerHTML = "SO<sub>2</sub>";
-      legendUnit.innerHTML = "ppb<sup>&nbsp;</sup>";
-      break;
-    case "co2":
-      paramname.innerHTML = "CO<sub>2</sub>";
-      legend.innerHTML = "CO<sub>2</sub>";
-      legendUnit.innerHTML = "ppm<sup>&nbsp;</sup>";
-      break;
-  }
-  //Set selected button to active and show the infoBlock of selected pollutant
-  selectedButton.classList.add("active");
-  infoBlock.classList.add("active");
-  //Change the gradient color bar level number
-  //changeLevel(buttonID);
-  //showColorBar();
-}
 
 /*********************************************
  * Function to add Enter for searhing to the
@@ -707,6 +630,7 @@ function postJSON(url, callback, message = null) {
   xhr.open("POST", url, true);
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhr.responseType = "json";
+  xhr.withCredentials = true;
   xhr.onload = function() {
     let status = xhr.status;
     if (status === 200) {
@@ -1073,6 +997,10 @@ function updateChart(pollutant) {
   let value = new Array(numPoint).fill(-100);
   let dict = {};
   let multiple = numPoint == 49 ? 1 : 2;
+  let ppbConversionMul = 1;
+  if (pollutant in unitConversion) {
+    ppbConversionMul = unitConversion[pollutant];
+  }
   try {
     if (pollutantJSON != null && pollutantJSON.length > 0 && enoughPoint) {
       let now = new Date();
@@ -1096,7 +1024,7 @@ function updateChart(pollutant) {
 
       for (let i = 0; i < numPoint; i++) {
         if (dict[date[i]]) {
-          value[i] = dict[date[i]];
+          value[i] = dict[date[i]] * ppbConversionMul;
         }
       }
       // let numPointIndex, pollutantJSONIndex;
@@ -1146,25 +1074,99 @@ function updateChart(pollutant) {
       //console.log(pollutantJSON,pollutantJSON.length,enoughPoint)
       window.alert("No data can be used for updating the chart");
     }
-    thresholdInfo[pollutant]["high"].high = Math.max(...value);
-    if (Math.max(...value) > thresholdInfo[pollutant].medium.high) {
-      //Ajust yAxes according to the pollutant
-      eval("myChart.options.scales.yAxes[0] = " + pollutant + "_yAxes");
-      //myChart.data.datasets[0].backgroundColor = normalGradient;
-      changeGradient(pollutant, 5);
-    } else {
-      //Ajust yAxes according to the pollutant to the half version
-      eval("myChart.options.scales.yAxes[0] = " + pollutant + "_yAxes_half");
-      //myChart.data.datasets[0].backgroundColor = halfGradient;
-      changeGradient(pollutant, 3);
+    let valueMax = Math.max(...value);
+    let pollutantThreshold = new PollutantThreahold(
+      thresholdInfo[unitType][pollutant]
+    );
+    if (pollutantThreshold["high"].low < valueMax) {
+      pollutantThreshold["high"].high = valueMax;
+      let axes_feature = {
+        ticks: {
+          beginAtZero: true,
+          fontSize: 14,
+          min: 0
+        },
+        fontColor: "#515151"
+      };
+      myChart.options.scales.yAxes[0] = axes_feature;
+      changeGradient(pollutantThreshold, 5);
+    } else if (pollutantThreshold["medium_high"].low < valueMax) {
+      // pollutantThreshold["medium_high"].high = valueMax;
+      let axes_feature = {
+        ticks: {
+          beginAtZero: true,
+          fontSize: 14,
+          min: 0,
+          max: pollutantThreshold["medium_high"].high
+        },
+        fontColor: "#515151"
+      };
+      myChart.options.scales.yAxes[0] = axes_feature;
+      changeGradient(pollutantThreshold, 4);
+    } else if (pollutantThreshold["medium"].low < valueMax) {
+      // pollutantThreshold["medium"].high = valueMax;
+      let axes_feature = {
+        ticks: {
+          beginAtZero: true,
+          fontSize: 14,
+          min: 0,
+          max: pollutantThreshold["medium"].high
+        },
+        fontColor: "#515151"
+      };
+      myChart.options.scales.yAxes[0] = axes_feature;
+      changeGradient(pollutantThreshold, 3);
+    } else if (pollutantThreshold["low"].low < valueMax) {
+      // pollutantThreshold["low"].high = valueMax;
+      let axes_feature = {
+        ticks: {
+          beginAtZero: true,
+          fontSize: 14,
+          min: 0,
+          max: pollutantThreshold["low"].high
+        },
+        fontColor: "#515151"
+      };
+      myChart.options.scales.yAxes[0] = axes_feature;
+      changeGradient(pollutantThreshold, 2);
+    } else if (pollutantThreshold["very_low"].low < valueMax) {
+      // pollutantThreshold["very_low"].high = valueMax;
+      let axes_feature = {
+        ticks: {
+          beginAtZero: true,
+          fontSize: 14,
+          min: 0,
+          max: pollutantThreshold["very_low"].high
+        },
+        fontColor: "#515151"
+      };
+      myChart.options.scales.yAxes[0] = axes_feature;
+      changeGradient(pollutantThreshold, 1);
     }
+    // if (Math.max(...value) > thresholdInfo[pollutant].medium.high) {
+    //   //Ajust yAxes according to the pollutant
+    // } else {
+    //   let axes_feature = {
+    //     ticks: {
+    //       beginAtZero: true,
+    //       fontSize: 14,
+    //       max: thresholdInfo[pollutant]["medium"].high,
+    //       min: 0
+    //     },
+    //     fontColor: "#515151"
+    //   };
+    //   //Ajust yAxes according to the pollutant to the half version
+    //   myChart.options.scales.yAxes[0] = axes_feature;
+    //   //myChart.data.datasets[0].backgroundColor = halfGradient;
+    //   changeGradient(pollutant, 3);
+    // }
     myChart.data.labels = date;
     myChart.data.datasets[0].data = value;
     if (["co2", "aqhi"].includes(pollutant)) {
       myChart.options.annotation.annotations[0].value = -100;
     } else {
       myChart.options.annotation.annotations[0].value =
-        thresholdInfo[pollutant].low_limit;
+        thresholdInfo[unitType][pollutant].low_limit;
     }
     myChart.update();
   } catch (exception) {
@@ -1174,6 +1176,31 @@ function updateChart(pollutant) {
     console.error("ERROR when updateChart: ", exception);
   }
 }
+class PollutantThreahold {
+  constructor(thresholdInfo) {
+    this.low_limit = thresholdInfo.low_limit;
+    this.very_low = {
+      low: thresholdInfo["very_low"].low,
+      high: thresholdInfo["very_low"].high
+    };
+    this.low = {
+      low: thresholdInfo["low"].low,
+      high: thresholdInfo["low"].high
+    };
+    this.medium = {
+      low: thresholdInfo["medium"].low,
+      high: thresholdInfo["medium"].high
+    };
+    this.medium_high = {
+      low: thresholdInfo["medium_high"].low,
+      high: thresholdInfo["medium_high"].high
+    };
+    this.high = {
+      low: thresholdInfo["high"].low,
+      high: thresholdInfo["high"].high
+    };
+  }
+}
 /*************************************************************************
  * Change gradient for color bar and chart background. The gradient is
  * generated differently according to different pollutant. It will use
@@ -1181,7 +1208,7 @@ function updateChart(pollutant) {
  * stop point of the color.
  ************************************************************************/
 
-function changeGradient(pollutant, levelNum) {
+function changeGradient(pollutantThreshold, levelNum) {
   let ctx = document.getElementById("myChart").getContext("2d");
   let gradient = ctx.createLinearGradient(0, 0, 0, 300);
   let colorBar = document.getElementById("color-bar").getContext("2d");
@@ -1191,10 +1218,8 @@ function changeGradient(pollutant, levelNum) {
   let difference, percentage, colorPrecentage;
   for (let i = 0; i < levelNum; i++) {
     difference =
-      thresholdInfo[pollutant][level[i]].high -
-      thresholdInfo[pollutant][level[i]].low;
-    percentage =
-      difference / thresholdInfo[pollutant][level[levelNum - 1]].high;
+      pollutantThreshold[level[i]].high - pollutantThreshold[level[i]].low;
+    percentage = difference / pollutantThreshold[level[levelNum - 1]].high;
     colorPrecentage = full - percentage >= 0 ? full - percentage : 0;
     gradient.addColorStop(colorPrecentage, colorMap[level[i]]);
     gradientBar.addColorStop(colorPrecentage, colorMap[level[i]]);
@@ -1384,8 +1409,8 @@ function addMarker(sensorInfo) {
   try {
     //console.log("enter addMarker");
     /*
-            Here we construct a new marker object. In a marker object, 
-            we store the location name of the sensor, the  google marker 
+            Here we construct a new marker object. In a marker object,
+            we store the location name of the sensor, the  google marker
             object, the color of the pin on the map, and then sensor ID.
             Also contain the the google information object that will show
             when client click on the pin on the map
@@ -1431,14 +1456,14 @@ function addMarker(sensorInfo) {
       };
 
       /*
-             Here we add marker onclick listener to Mapbox marker object 
+             Here we add marker onclick listener to Mapbox marker object
              (Not the marker object we make ourselves).This marker object is
-             binded with a html element. 
-             This onclick function will first close the information that shown on the map according 
-             to the which pin is last clicked. Then it will show the information 
-             of the clicked pin for this time. It will also change the data panel 
-             to shown the AQHI data of the place that clicked and 
-             change other information in the data panel accordingly. 
+             binded with a html element.
+             This onclick function will first close the information that shown on the map according
+             to the which pin is last clicked. Then it will show the information
+             of the clicked pin for this time. It will also change the data panel
+             to shown the AQHI data of the place that clicked and
+             change other information in the data panel accordingly.
             */
 
       markerElement.addEventListener("click", function() {
@@ -1513,7 +1538,7 @@ function addMarker(sensorInfo) {
                 } else {
                   notLatestSensor();
                 }
-              } else nullPollutantJSON();
+              } // else nullPollutantJSON(); // Removed! Enabling this will hide latest data if average is missing
 
               //    Auto refresh and client click have different process way.
               //    For auto refresh, it will not change the button to AQHI and
@@ -1574,11 +1599,18 @@ function changeButtonColor(newMarker) {
     singleSensorJSON = [newMarker.pollutant_data];
 
     for (let i = 0; i < buttons.length; i++) {
-      let threshold = thresholdInfo[buttons[i].id];
+      let threshold = thresholdInfo[unitType][buttons[i].id];
       let value = singleSensorJSON[0][buttons[i].id];
+      if (buttons[i].id in unitConversion && value) {
+        value = value * unitConversion[buttons[i].id];
+      }
       checkColor(value, buttons[i].id, threshold);
     }
-    checkColor(singleSensorJSON[0]["aqhi"], "aqhi", thresholdInfo["aqhi"]);
+    checkColor(
+      singleSensorJSON[0]["aqhi"],
+      "aqhi",
+      thresholdInfo[unitType]["aqhi"]
+    );
 
     let temperature = document.getElementById("temperature");
     let humidity = document.getElementById("humidity");
@@ -1799,18 +1831,26 @@ function notLatestSensor() {
  * Function to handle logout for user
  ******************************************************/
 function OnLogoutClicked() {
+  // let xhr = new XMLHttpRequest();
+  // xhr.open("POST", LOGOUT_URL, true);
+  // xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  // //let user_api_key = window.sessionStorage.getItem("api_key");
+  // let message = encodeURI("id=" + user_api_key);
+  // xhr.send(message);
+  // ClearSession();
+  window.location.replace("/logout");
+}
+function LogoutUser() {
   let xhr = new XMLHttpRequest();
   xhr.open("POST", LOGOUT_URL, true);
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
+  xhr.withCredentials = true;
   //let user_api_key = window.sessionStorage.getItem("api_key");
   let message = encodeURI("id=" + user_api_key);
-
   xhr.send(message);
-
+  console.log("logout");
   ClearSession();
 }
-
 /******************************************************
  * Function to clear variables from session storage
  * after a session is closed

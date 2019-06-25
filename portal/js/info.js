@@ -261,10 +261,10 @@ let infoJSON = [
           low_limit: 5,
           very_low: {
             low: 0,
-            high: 16
+            high: 15
           },
           low: {
-            low: 16,
+            low: 15,
             high: 30
           },
           medium: {
@@ -561,23 +561,23 @@ let infoJSON = [
         low_limit: 5,
         very_low: {
           low: 0,
-          high: 25
+          high: 10
         },
         low: {
-          low: 25,
-          high: 75
+          low: 10,
+          high: 30
         },
         medium: {
-          low: 75,
-          high: 130
+          low: 30,
+          high: 50
         },
         medium_high: {
-          low: 130,
-          high: 180
+          low: 50,
+          high: 70
         },
         high: {
-          low: 180,
-          high: 300
+          low: 70,
+          high: 120
         }
       },
       pm2_5: {
