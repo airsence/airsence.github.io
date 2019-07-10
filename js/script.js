@@ -1312,7 +1312,7 @@ function initMap(mapFeature, mapCenter) {
         initMarker();
         window.setTimeout(function() {
           boundLock = false;
-        }, 4000);
+        }, mapRefreshTime);
       }
     });
   } catch (err) {
@@ -1322,6 +1322,7 @@ function initMap(mapFeature, mapCenter) {
     console.err("ERROR when initMap: ", err);
   }
 }
+const mapRefreshTime = 1000;
 let map, infoWindow;
 let sensorInfoJSON;
 let markers = [];

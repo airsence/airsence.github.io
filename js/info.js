@@ -629,7 +629,7 @@ let infoJSON = [
     },
     map_feature: {
       style: "mapbox://styles/mapbox/light-v9",
-      zoom: 15,
+      zoom: 10,
       accessToken:
         "pk.eyJ1IjoiYWlyc2VuY2UiLCJhIjoiY2pqdTRudnptMHFkdzNqbXJudDlxNTNtNSJ9.SyH1YLu7o00oWFaK4A26XA"
     },
