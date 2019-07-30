@@ -5,7 +5,7 @@ let infoJSON = [
         aqhi: {
           low_limit: 0,
           very_low: {
-            low: 1,
+            low: 0,
             high: 3
           },
           low: {
@@ -214,7 +214,7 @@ let infoJSON = [
         aqhi: {
           low_limit: 0,
           very_low: {
-            low: 1,
+            low: 0,
             high: 3
           },
           low: {
