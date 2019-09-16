@@ -1072,7 +1072,7 @@ function updateChart(pollutant) {
 
       for (let i = 0; i < numPoint; i++) {
         if (dict[date[i]]) {
-          value[i] = dict[date[i]] * unitConversionMul;
+          value[i] = dict[date[i]] * unitConversionMul > 0 ? dict[date[i]] * unitConversionMul : 0;
         }
       }
       // let numPointIndex, pollutantJSONIndex;
