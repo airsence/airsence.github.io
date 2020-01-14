@@ -1520,7 +1520,11 @@ function addMarker(sensorInfo) {
         .format("YYYY-MM-DD HH:mm:ss");
       if (checkTime(local)) {
         sensorColor = checkAQHI(parseInt(sensorInfo.sensor_info.aqhi));
-        iconPath = "/images/" + parseInt(sensorInfo.sensor_info.aqhi) + ".png";
+        if (parseInt(sensorInfo.sensor_info.aqhi) < 10){
+          iconPath = "/images/" + parseInt(sensorInfo.sensor_info.aqhi) + ".png";
+        } else {
+          iconPath = "/images/10.png";
+        }
       } else {
         sensorColor = "grey";
         iconPath = "/images/grey.png";
