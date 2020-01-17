@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>AirSENCE - Breathe Safe, Breathe Easy</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8" />
+  <!--<meta name="viewport" content="width=device-width">-->
+  <!--<meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8">-->
+  <link rel="stylesheet" href="./static/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
+  <script src="https://code.jquery.com/jquery-1.11.1.min.js" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"
+    id="bootstrap-css" />
+    <!-- <script src="./static/FileSaver.min.js"></script> -->
+    <script src="./static/main.js"></script>
+  <style>
+    h2 {
+      margin: 2px;
+      padding: 1px;
+    }
+
+    #drop_zone {
+      border: 2px dashed #bbb;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      padding: 25px;
+      text-align: center;
+      font: 20pt bold 'Vollkorn';
+      color: #bbb;
+    }
+    output{
+      color: black;
+    }
+  </style>
+
+  <!------ Include the above in your HEAD tag ---------->
+</head>
+
+<body>
+  <article class="col-12">
+    <section class="profile-section col-3">
+      <section class="bar">
+        <h1></h1>
+        <section class="container">
+          <div class="row justify-content-center align-items-center" style="height:50vh">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                    <div class="aab controls col-md-5"></div>
+                    <div class="controls">
+                        <input type="file" id="files" name="files[]" multiple />
+                        <div id="drop_zone">Drop files here</div>
+                        <output id="list"></output>
+                    </div>
+                  <script>
+                    document.getElementById('files').addEventListener('change', handleFileSelectButton, false);
+                    document.getElementById('files').addEventListener('click', clearFileName, false);
+                    var dropZone = document.getElementById('drop_zone');
+                    dropZone.addEventListener('dragover', handleDragOver, false);
+                    dropZone.addEventListener('drop', handleFileSelectDrag, false);
+                  </script>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </section>
+    <!--end of video-section -->
+
+    <section class="profile-section col-6">
+      <section class="bar">
+        <h1>DEVICE CONFIG</h1>
+      </section>
+      <section class="content">
+        <div class="container">
+          <div class="row justify-content-center align-items-center" style="height:50vh">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <form method="post" onsubmit="submitUpdate(event)" id="id_config_form">
+        <div id="id_cell_apn" name="cell_apn">
+    <label for="id_cell_apn" class="control-label">
+        Cell APN
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_cell_apn">
+        
+                <label for="id_apn" class="control-label requiredField">
+            APN
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="apn" style="margin-bottom: 10px"
+                type="text" id="id_apn"/>
+        </div>
+                
+                <label for="id_username" class="control-label requiredField">
+            Username
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="username" style="margin-bottom: 10px"
+                type="text" id="id_username"/>
+        </div>
+                
+                <label for="id_password" class="control-label requiredField">
+            Password
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="password" style="margin-bottom: 10px"
+                type="text" id="id_password"/>
+        </div>
+                    </div>
+</div>
+<div id="id_airsence_server" name="airsence_server">
+    <label for="id_airsence_server" class="control-label">
+        AirSENCE&trade; Server
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_airsence_server">
+        
+                <label for="id_host_airsence" class="control-label requiredField">
+            Host
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="host" style="margin-bottom: 10px"
+                type="text" id="id_host_airsence"/>
+        </div>
+                
+                <label for="id_uri_airsence" class="control-label requiredField">
+            URI
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="uri" style="margin-bottom: 10px"
+                type="text" id="id_uri_airsence"/>
+        </div>
+                
+                <label for="id_port_airsence" class="control-label requiredField">
+            Port
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="port" style="margin-bottom: 10px"
+                type="text" id="id_port_airsence"/>
+        </div>
+                    </div>
+</div>
+<div id="id_time_provider" name="time_provider">
+    <label for="id_time_provider" class="control-label">
+        Time Provider
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_time_provider">
+        
+                <label for="id_host_time" class="control-label requiredField">
+            Host
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="host" style="margin-bottom: 10px"
+                type="text" id="id_host_time"/>
+        </div>
+                
+                <label for="id_uri_time" class="control-label requiredField">
+            URI
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="uri" style="margin-bottom: 10px"
+                type="text" id="id_uri_time"/>
+        </div>
+                
+                <label for="id_port_time" class="control-label requiredField">
+            Port
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="port" style="margin-bottom: 10px"
+                type="text" id="id_port_time"/>
+        </div>
+                
+                <label for="id_sntp_ip_time" class="control-label requiredField">
+            SNTP IP
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="sntp_ip" style="margin-bottom: 10px"
+                type="text" id="id_sntp_ip_time"/>
+        </div>
+                    </div>
+</div>
+<div id="id_timing_config" name="timing_config">
+    <label for="id_timing_config" class="control-label">
+        Timing Config
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_timing_config">
+        
+                <label for="id_com_period" class="control-label requiredField">
+            Com Period
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="com_period" style="margin-bottom: 10px"
+                type="number" id="id_com_period"/>
+        </div>
+                
+                <label for="id_sync_clock_period" class="control-label requiredField">
+            Sync Clock Period
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="sync_clock_period" style="margin-bottom: 10px"
+                type="number" id="id_sync_clock_period"/>
+        </div>
+                    </div>
+</div>
+<div id="id_ethernet" name="ethernet">
+    <label for="id_ethernet" class="control-label">
+        Ethernet
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_ethernet">
+        
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_use_static" name="use_static" class="form-check-input"/>
+                <label for="id_use_static" class="form-check-label requiredField">
+                    Use Static
+                </label>
+            </div>
+        </div>
+                
+                <label for="id_ip_address" class="control-label requiredField">
+            IP Address
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="ip_address" style="margin-bottom: 10px"
+                type="text" id="id_ip_address"/>
+        </div>
+                
+                <label for="id_subnet_mask" class="control-label requiredField">
+            Subnet Mask
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="subnet_mask" style="margin-bottom: 10px"
+                type="text" id="id_subnet_mask"/>
+        </div>
+                
+                <label for="id_gateway" class="control-label requiredField">
+            Gateway
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="gateway" style="margin-bottom: 10px"
+                type="text" id="id_gateway"/>
+        </div>
+                
+                <label for="id_dns_1" class="control-label requiredField">
+            DNS 1
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="dns1" style="margin-bottom: 10px"
+                type="text" id="id_dns_1"/>
+        </div>
+                
+                <label for="id_dns_2" class="control-label requiredField">
+            DNS 2
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="dns2" style="margin-bottom: 10px"
+                type="text" id="id_dns_2"/>
+        </div>
+                
+                <label for="id_dns_3" class="control-label requiredField">
+            DNS 3
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="dns3" style="margin-bottom: 10px"
+                type="text" id="id_dns_3"/>
+        </div>
+                    </div>
+</div>
+<div id="id_potentiometer_values" name="potentiometer_values">
+    <label for="id_potentiometer_values" class="control-label">
+        Potentiometer Values
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_potentiometer_values">
+        
+                <label for="id_mics_5524" class="control-label requiredField">
+            MICS 5524
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="mics_5524" style="margin-bottom: 10px"
+                type="number" id="id_mics_5524"/>
+        </div>
+                
+                <label for="id_tgs_822" class="control-label requiredField">
+            TGS 822
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="tgs_822" style="margin-bottom: 10px"
+                type="number" id="id_tgs_822"/>
+        </div>
+                
+                <label for="id_mics_4514_ox" class="control-label requiredField">
+            MICS 4514 OX
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="mics_4514ox" style="margin-bottom: 10px"
+                type="number" id="id_mics_4514_ox"/>
+        </div>
+                
+                <label for="id_mics_4514_red" class="control-label requiredField">
+            MICS 4515 RED
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="mics_4514red" style="margin-bottom: 10px"
+                type="number" id="id_mics_4514_red"/>
+        </div>
+                
+                <label for="id_mq_131" class="control-label requiredField">
+            MQ 131
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="mq_131" style="margin-bottom: 10px"
+                type="number" id="id_mq_131"/>
+        </div>
+                
+                <label for="id_tgs_2600" class="control-label requiredField">
+            TGS 2600
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="tgs_2600" style="margin-bottom: 10px"
+                type="number" id="id_tgs_2600"/>
+        </div>
+                
+                <label for="id_tgs_2620" class="control-label requiredField">
+            TGS 2620
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="tgs_2620" style="margin-bottom: 10px"
+                type="number" id="id_tgs_2620"/>
+        </div>
+                
+                <label for="id_mq_3" class="control-label requiredField">
+            MQ 3
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="mq_3" style="margin-bottom: 10px"
+                type="number" id="id_mq_3"/>
+        </div>
+                    </div>
+</div>
+<div id="id_system_variables" name="system_variables">
+    <label for="id_system_variables" class="control-label">
+        System Variables
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_system_variables">
+        
+                <label for="id_logging_level" class="control-label requiredField">
+            Logging Level
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="logging_level" style="margin-bottom: 10px"
+                type="number" id="id_logging_level"/>
+        </div>
+                
+                <label for="id_com_method" class="control-label requiredField">
+            Com Method
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="com_method" style="margin-bottom: 10px"
+                type="number" id="id_com_method"/>
+        </div>
+                
+                <label for="id_j3_sensor" class="control-label requiredField">
+            J3 Sensor
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="j3_sensor" style="margin-bottom: 10px"
+                type="text" id="id_j3_sensor"/>
+        </div>
+                    </div>
+</div>
+<div id="id_sensors" name="sensors">
+    <label for="id_sensors" class="control-label">
+        Sensor
+    </label>
+    <div class="p-3 mb-5 bg-white rounded border" for="id_sensors">
+        
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_mics_5524_sensor" name="mics_5524" class="form-check-input"/>
+                <label for="id_mics_5524_sensor" class="form-check-label requiredField">
+                    MICS 5524
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_tgs_822_sensor" name="tgs_822" class="form-check-input"/>
+                <label for="id_tgs_822_sensor" class="form-check-label requiredField">
+                    TGS 882
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_mics_4514_ox_sensor" name="mics_4514ox" class="form-check-input"/>
+                <label for="id_mics_4514_ox_sensor" class="form-check-label requiredField">
+                    MICS 4514 OX
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_mics_4514_red_sensor" name="mics_4514red" class="form-check-input"/>
+                <label for="id_mics_4514_red_sensor" class="form-check-label requiredField">
+                    MICS 4514 RED
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_mq_131_sensor" name="mq_131" class="form-check-input"/>
+                <label for="id_mq_131_sensor" class="form-check-label requiredField">
+                    MQ 131
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_tgs_2600_sensor" name="tgs_2600" class="form-check-input"/>
+                <label for="id_tgs_2600_sensor" class="form-check-label requiredField">
+                    TGS 2600
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_tgs_2620_sensor" name="tgs_2620" class="form-check-input"/>
+                <label for="id_tgs_2620_sensor" class="form-check-label requiredField">
+                    TGS 2620
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_mq_3_sensor" name="mq_3" class="form-check-input"/>
+                <label for="id_mq_3_sensor" class="form-check-label requiredField">
+                    MQ 3
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_plantower_sensor" name="plantower" class="form-check-input"/>
+                <label for="id_plantower_sensor" class="form-check-label requiredField">
+                    Plantower
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_alpha_no_sensor" name="alpha_NO" class="form-check-input"/>
+                <label for="id_alpha_no_sensor" class="form-check-label requiredField">
+                    Alpha NO
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_alpha_co_sensor" name="alpha_CO" class="form-check-input"/>
+                <label for="id_alpha_co_sensor" class="form-check-label requiredField">
+                    Alpha CO
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_alpha_so2_sensor" name="alpha_SO2" class="form-check-input"/>
+                <label for="id_alpha_so2_sensor" class="form-check-label requiredField">
+                    Alpha SO2
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_ambient_sensor" name="ambient" class="form-check-input"/>
+                <label for="id_ambient_sensor" class="form-check-label requiredField">
+                    Ambient
+                </label>
+            </div>
+        </div>
+                
+                <label for="id_bme280_sensor" class="control-label requiredField">
+            BME280
+        </label>
+        <div class="form-group">
+            <!--input type="password" class="form-control" name="password" -->
+            <input class="input-md  textinput textInput form-control" name="bme280" style="margin-bottom: 10px"
+                type="number" id="id_bme280_sensor"/>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_sht10_sensor" name="sht_10" class="form-check-input"/>
+                <label for="id_sht10_sensor" class="form-check-label requiredField">
+                    SHT10
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_dgs_no2_sensor" name="dgs_no2" class="form-check-input"/>
+                <label for="id_dgs_no2_sensor" class="form-check-label requiredField">
+                    DGS NO2
+                </label>
+            </div>
+        </div>
+                
+                <div class="form-group">
+            <div class="form-check">
+
+                <!--input type="password" class="form-control" name="password" -->
+
+                <input type="checkbox" id="id_k30_co2_sensor" name="k30_co2" class="form-check-input"/>
+                <label for="id_k30_co2_sensor" class="form-check-label requiredField">
+                    K30 CO2
+                </label>
+            </div>
+        </div>
+                    </div>
+</div>
+        <div class="form-group">
+          <div class="aab controls col-md-5"></div>
+          <div class="controls">
+            <input type="submit" name="Update" value="Update" class="btn btn-primary btn btn-info"
+              id="id_submit" />
+          </div>
+
+        </div>
+      </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+    <!-- end of tweets-section -->
+    <section class="profile-section col-3">
+      <section class="bar">
+        <h1></h1>
+      </section>
+      <!-- end of content section-->
+    </section>
+    <!--end of article section -->
+  </article>
+</body>
+
+</html>
