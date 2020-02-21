@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>AirSENCE - Breathe Safe, Breathe Easy</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge" charset="utf-8" />-->
+		<link rel="stylesheet" href="static/container.min.css" type="text/css" />
+		<link rel="stylesheet" href="static/grid.min.css" type="text/css" />
+		<link rel="stylesheet" href="static/header.min.css" type="text/css" />
+		<!--<link rel="stylesheet" href="static/icon.min.css" type="text/css" />-->
+		<link rel="stylesheet" href="static/input.min.css" type="text/css" />
+		<link rel="stylesheet" href="static/label.min.css" type="text/css" />
+		<link rel="stylesheet" href="static/range.css" type="text/css" />
+	</head>
+
+	<body>
+		<article class="ui grid container">
+			<h2 class="ui header">ENCLOSURE(S) BUDGET</h2>
+			<section class="ui four column grid container">
+				<div class="ui row">
+					<label for="id_budget" class="ui column label">BUDGET: $</label>
+					<input class="ui column input" type="text" id="id_budget" name="budget" value="800" />
+				</div>
+				<div class="ui row">
+					<label for="id_cost" class="ui label column">COST: $</label>
+					<input class="ui input column" type="text" id="id_cost" name="cost" value="200" />
+				</div>
+				<div class="ui row">
+					<span class="ui column"><label for="id_material" class="ui label">MATERIALS:</label>&nbsp;$</span>
+					<output id="id_op_material" class="ui input column">100</output>
+					<input class="ui range column" type="range" id="id_material" name="material" min="0" max="800" step="10" value="100" onchange="updateCost" />
+				</div>
+				<div class="ui row">
+					<label for="id_build" class="ui label column">Time to Build (machine/cut/drill) enclosure + chamber:&nbsp;</label>
+					<span class="ui column"><output id="id_op_build" class="ui input">2</output>&nbsp; hours</span>
+					<input class="ui range column" type="range" id="id_build" name="build" min="0" max="8" step="0.25" value="2" onchange="updateCost" />
+				</div>
+				<div class="ui row">
+					<label for="id_assemble" class="ui label column">Time to Assemble Electronics:&nbsp;</label>
+					<span class="ui column"><output id="id_op_assemble" class="ui input column">0.5</output>&nbsp; hours</span>
+					<input class="ui range column" type="range" id="id_assemble" name="assemble" min="0" max="2" step="0.25" value="0.5" onchange="updateCost" />
+				</div>
+				<script>
+					function updateCost() {
+						var materialCost = document.getElementById("id_material").value;
+						var mechLaborCost = 40 * document.getElementById("id_build").value;
+						var elecLaborCost = 40 * document.getElementById("id_assemble").value;
+
+						// Update the output elements
+						document.getElementById("id_op_material").innerHTML = materialCost;
+						document.getElementById("id_op_build").innerHTML = mechLaborCost;
+						document.getElementById("id_op_assemble").innerHTML = elecLaborCost;
+
+						// Calculate estimated cost of enclosure+chamber
+						var costEstimate = materialCost + mechLaborCost + elecLaborCost;
+
+						// Display the estimated cost
+						var costTextElem = document.getElementById("id_cost");
+						costTextElem.value = costEstimate;
+					}
+				</script>
+			</section>
+		</article>
+	</body>
+
+</html>
