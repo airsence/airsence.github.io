@@ -37,11 +37,11 @@ function submitUpdate(event) {
     } else {
         var filename = configFile[0].name;
     }
-    var blob = new Blob([JSON.stringify(content)], {
+    var blob = new Blob([JSON.stringify(content,null,2)], {
         type: "text/plain;charset=utf-8"
     });
     // saveAs(blob, filename)
-    fileDownload(filename, JSON.stringify(content))
+    fileDownload(filename, JSON.stringify(content,null,2))
 }
 
 function fileDownload(filename, text) {
