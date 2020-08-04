@@ -1,0 +1,23 @@
+{
+    "dir": "ltr",
+    "lang": "en",
+    "name": "AirSENCE",
+    "short_name": "AirSENCE",
+    "scope": "/config/",
+    "display": "browser",
+    "start_url": "https://airsence.ca/config/",
+    "background_color": "transparent",
+    "theme_color": "transparent",
+    "description": "Breathe Safe, Breathe Easy",
+    "orientation": "any",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "/images/config//favicon.ico",
+            "sizes": "256x138"
+        }
+    ],
+    "url": "https://airsence.ca/config/",
+    "screenshots": []
+}
