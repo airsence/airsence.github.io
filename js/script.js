@@ -557,7 +557,7 @@ function autoRefreshButton() {
                   notLatestSensor();
                 }
               } else if (err == 401) {
-                window.alert("Seesion timeout! Please login again.");
+                window.alert("Session timeout! Please login again.");
                 window.location.replace("/login");
               } else {
                 console.error(
@@ -1361,7 +1361,7 @@ function initMarker() {
           sensorInfoJSON = json;
           drop();
         } else if (err == 401) {
-          window.alert("Seesion timeout! Please login again.");
+          window.alert("Session timeout! Please login again.");
           window.location.replace("/login");
         } else {
           console.error(err);
@@ -1380,7 +1380,7 @@ function initMarker() {
           sensorInfoJSON = json;
           drop();
         } else if (err == 401) {
-          window.alert("Seesion timeout! Please login again.");
+          window.alert("Session timeout! Please login again.");
           window.location.replace("/login");
         } else {
           console.error(err);
@@ -1692,7 +1692,7 @@ function addMarker(sensorInfo) {
                 checkCookie();
               }
             } else if (err == 401) {
-              window.alert("Seesion timeout! Please login again.");
+              window.alert("Session timeout! Please login again.");
               window.location.replace("/login");
             } else {
               console.error(err);
